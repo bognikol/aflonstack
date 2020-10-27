@@ -3,6 +3,6 @@ module.exports = {
     output: {
         filename: "index.js",
         library: "aflon-studio",
-        libraryTarget: "umd"
+        libraryTarget: "amd"
     }
 };
