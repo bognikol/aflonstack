@@ -401,25 +401,3 @@ AflonStudio.style = {
         borderLeft: "solid 1px lightgray"
     }
 };
-
-AflonStudio.register({
-    class: NamedTextBox, 
-    viewportSize: { width: "300px", height: "300px" },
-    initializer: elem => elem.setName("Target").setText("content").setPlaceholder("root")
-});
-
-AflonStudio.register({
-    class: NamedSelectBox, 
-    viewportSize: { width: "300px", height: "300px" },
-    initializer: elem => elem.setName("Target").insertOptions([
-        { text: "No repeat", value: "norepeat" },
-        { text: "Loop",      value: "loop"     },
-        { text: "Flip",      value: "flip"     },
-        { text: "Yoyo",      value: "yoyo"     }
-    ])
-});
-
-AflonStudio.register({
-    class: PrimitiveAnimationPanel, 
-    viewportSize: { width: "300px", height: "300px" }
-});
