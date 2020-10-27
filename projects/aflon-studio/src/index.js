@@ -331,7 +331,7 @@ export default class AflonStudio extends aflon.Element {
 
         const instance = new config.class();
         for (var key in instance) {
-            if (instance[key] instanceof aflon.Element) {
+            if (aflon.isAflonElement(instance[key])) {
                 autoInitialStyle[key] = { };
             }
         }

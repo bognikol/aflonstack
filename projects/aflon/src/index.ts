@@ -240,7 +240,17 @@ class Animation
 
 type AflonAnimationDefinition = Record<string, AnimationDefinition>;
 
-export abstract class Element {
+export function isAflonElement(object: any)
+{
+    if (!object || !object.constructor) return false;
+    let aflonElementTag = object.constructor["_aflonElementTag"];
+    if (!aflonElementTag) return false;
+    return String(aflonElementTag) == "u44qfkX2EK";
+}
+
+export class Element {
+
+    private static _aflonElementTag: string = "u44qfkX2EK";
 
     public static style: AflonCss;
     public static animations: AflonAnimationDefinition;
@@ -351,7 +361,7 @@ export abstract class Element {
         return this;
     }
 
-    getText(): string | null {
+    getText(): string {
         if (this._root.textContent == null)
             return "";
 
@@ -569,6 +579,18 @@ export interface ISelectBox extends IInput {
     getAllOptions(): ISelectOption[];
 }
 
+export interface ILabeled {
+    setLabel(label: string): this;
+    getLabel(): string;
+}
+
+type ILabeledTextBox        = ITextBox           & ILabeled
+type ILabeledButton         = IButton            & ILabeled
+type ILabeledToggableButton = IToggableButton    & ILabeled
+type ILabeledRadioButton    = IRadioButton       & ILabeled
+type ILabeledSelectBox      = IDBCursorWithValue & ILabeled
+
+
 export abstract class Input extends Element implements IInput
 {
     setReadOnly(readOnly: boolean): this {
@@ -749,7 +771,17 @@ export class TextArea extends TextBox implements ITextBox {
 }
 
 export class App {
-    static run(root: Element): void {
-        document.body.appendChild(root.getHtmlElement());
+    static run(root: Element, rootId: string = null): void {
+        if (rootId == null)
+        {
+            document.body.appendChild(root.getHtmlElement());
+            return;
+        }
+
+        let element = document.getElementById(rootId);
+        if (element) 
+            element.appendChild(root.getHtmlElement());
+        else
+            throw new Error(`Error running Aflon application. Cannot find root element with id ${rootId}.`);
     }
 }
