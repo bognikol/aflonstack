@@ -1,0 +1,24 @@
+{
+  "name": "aflon-studio",
+  "version": "1.0.15",
+  "description": "",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "ws -d ./dist --spa index.html",
+    "build": "webpack --config webpack.config.js",
+    "build-prod": "webpack --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bogdan Nikolic <bogdan_nikolic@hotmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "aflon": "^1.1.4"
+  },
+  "devDependencies": {
+    "webpack": "^5.1.0",
+    "webpack-cli": "^4.0.0"
+  }
+}
