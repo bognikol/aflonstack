@@ -86,7 +86,22 @@ export class LabeledTextBox extends aflon.Div implements aflon.ITextBox, aflon.I
     }
 }
 
-LabeledTextBox.style = {};
+LabeledTextBox.style = {
+    "_": {
+        "fontFamily": "'Source Sans Pro', sans-serif",
+        "display": "flex",
+        "flexFlow": "column nowrap",
+        "alignItems": "stretch",
+        "padding": "3px"
+    },
+    "label": {
+        "fontSize": "13px",
+        "margin": "0px 10px"
+    },
+    "textBox": {
+        "width": "100%"
+    }
+};
 
 AflonStudio.register({
     class: LabeledTextBox,
