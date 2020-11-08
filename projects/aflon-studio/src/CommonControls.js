@@ -26,7 +26,7 @@ TypiconButton.style = {
             "color": "#999"
         }
     }
-}
+};
 
 export class TextBox extends aflon.TextBox { }
 
@@ -45,7 +45,7 @@ TextBox.style = {
             "fontStyle": "italic"
         }
     }
-}
+};
 
 export class SelectBox extends aflon.SelectBox { }
 

@@ -31,10 +31,10 @@ class AflonPreviewer extends aflon.Element {
                             if (!this.expanded) {
                                 this.widthTextBox.setText(this.container.getInlineCss().width);
                                 this.heightTextBox.setText(this.container.getInlineCss().height);
-                                this.expand.start();
+                                this.animations("expand").start();
                                 this.expanded = true;
                             } else {
-                                this.contract.start();
+                                this.animations("contract").start();
                                 this.expanded = false;
                             }
                         })
@@ -65,13 +65,13 @@ class AflonPreviewer extends aflon.Element {
 
     runAnimationCommand(animationName, command) {
         if (command == "start")
-            this.previewElement[animationName].start();
+            this.previewElement.animations(animationName).start();
         else if (command == "pause")
-            this.previewElement[animationName].pause();
+            this.previewElement.animations(animationName).pause();
         else if (command == "reset")
-            this.previewElement[animationName].reset();
+            this.previewElement.animations(animationName).reset();
         else if (command == "reverse")
-            this.previewElement[animationName].reverse();
+            this.previewElement.animations(animationName).reverse();
     }
 
     signifyElement(elementName) {
@@ -183,7 +183,7 @@ AflonPreviewer.style = {
         cursor: "pointer",
         userSelect: "none"
     }
-}
+};
 
 AflonPreviewer.animations = {
     expand: {

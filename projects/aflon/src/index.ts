@@ -29,10 +29,17 @@ export class CSS {
 }
 
 export type AflonCss = Record<string, CSSProperties>;
+type CompiledAflonCss = Record<string, string>;
 
 export type EasingFunc = (value: number) => number;
 
-export let Easing: Record<string, EasingFunc> = {
+export type PredefinedEasing = "linear" | "anticipate" | 
+    "easeIn"   | "easeOut"   | "easeInOut" | 
+    "circIn"   | "circOut"   | "circInOut" | 
+    "backIn"   | "backOut"   | "backInOut" |
+    "bounceIn" | "bounceOut" | "bounceInOut";
+
+export let PredefinedEasingFuncs: Record<PredefinedEasing, EasingFunc> = {
     linear:      popmotion.easing.linear,
     easeIn:      popmotion.easing.easeIn,
     easeOut:     popmotion.easing.easeOut,
@@ -49,9 +56,11 @@ export let Easing: Record<string, EasingFunc> = {
     bounceInOut: popmotion.easing.bounceInOut
 };
 
+export type Easing = PredefinedEasing | EasingFunc;
+
 export interface AnimationFallBackDefinition {
     target?: string;
-    ease?: EasingFunc;
+    ease?: Easing;
     duration?: number;
     delay?: number;
     elapsed?: number;
@@ -85,18 +94,35 @@ class PrimitiveAnimation {
     private _styler: Styler;
     private _durationWithAfterDelay: number;
     private _context: Element;
+    private _ease: EasingFunc;
 
     private _prepeare() {
         if (this._prepeared) return;
+
+        if (typeof(this._animationDefinition.ease) == "string" && 
+            PredefinedEasingFuncs[this._animationDefinition.ease])
+        {
+            this._ease = PredefinedEasingFuncs[this._animationDefinition.ease];
+        }
+        else if (typeof(this._animationDefinition.ease) == "function")
+        {
+            this._ease = this._animationDefinition.ease;
+        }
+        else
+        {
+            this._ease = PredefinedEasingFuncs.linear;
+        }
 
         if (this._animationDefinition.target === undefined ||
             this._animationDefinition.target === "")
             this._styler = (this._context.getHtmlElement() as AflonHtmlElement).styler;
         else
             this._styler = ((this._context as any)[this._animationDefinition.target].getHtmlElement() as AflonHtmlElement).styler;
-    
-            if (this._animationDefinition.from === undefined)
-                this._animationDefinition.from = this._styler.get(this._animationDefinition.track);
+    }
+
+    instant(): void {
+        this._prepeare();
+        //this._styler.set(this._animationDefinition.track, this._animationDefinition.to);
     }
 
     start(): void {
@@ -111,11 +137,15 @@ class PrimitiveAnimation {
         if (totalDuration < this._durationWithAfterDelay)
             totalDuration = this._durationWithAfterDelay;
 
+        let effectiveFrom: AnimatableValue = this._animationDefinition.from;
+        if (effectiveFrom === undefined)
+            effectiveFrom = this._styler.get(this._animationDefinition.track);
+
         this._tweenAnimation =
            popmotion.keyframes({ 
                 values: [
-                    this._animationDefinition.from as string,
-                    this._animationDefinition.from as string,
+                    effectiveFrom as string,
+                    effectiveFrom as string,
                     this._animationDefinition.to as string,
                     this._animationDefinition.to as string
                 ],
@@ -125,7 +155,7 @@ class PrimitiveAnimation {
                     (this._animationDefinition.delay + this._animationDefinition.duration) / totalDuration,
                     1
                 ],
-                easings: [popmotion.easing.linear, this._animationDefinition.ease, popmotion.easing.linear],
+                easings: [popmotion.easing.linear, this._ease, popmotion.easing.linear],
                 duration: totalDuration,
                 elapsed: this._animationDefinition.elapsed,
                 flip: this._animationDefinition.flip,
@@ -163,12 +193,12 @@ class PrimitiveAnimation {
     }
 }
 
-class Animation
+export class Animation
 {
     constructor(animationDefinition: AnimationDefinition, context: Element) 
     {
         const fallbackAnimationDefinition: AnimationFallBackDefinition = {
-            ease:     popmotion.easing.linear,
+            ease:     PredefinedEasingFuncs.linear,
             duration: 300,
             delay:    0,
             elapsed:  0,
@@ -207,6 +237,10 @@ class Animation
 
     private _primitiveAnimations: PrimitiveAnimation[] = [];
 
+    instant(): void {
+        this._primitiveAnimations.forEach(animation => animation.instant());
+    }
+
     start(): void {
         this._primitiveAnimations.forEach(animation => animation.start());
     }
@@ -238,7 +272,7 @@ class Animation
     }
 }
 
-type AflonAnimationDefinition = Record<string, AnimationDefinition>;
+export type AflonAnimationDefinition = Record<string, AnimationDefinition>;
 
 export function isAflonElement(object: any)
 {
@@ -248,40 +282,39 @@ export function isAflonElement(object: any)
     return String(aflonElementTag) == "u44qfkX2EK";
 }
 
-export class Element {
+export abstract class Element {
 
     private static _aflonElementTag: string = "u44qfkX2EK";
 
-    public static style: AflonCss;
+    public static style: AflonCss = {};
     public static animations: AflonAnimationDefinition;
 
     protected _root: AflonHtmlElement;
-    protected _style: AflonCss;
-    protected _animations: AflonAnimationDefinition;
+    protected _style: CompiledAflonCss = {};
+    protected _animations: Record<string, Animation> = {};
 
     constructor() {
+        this._setAflonAnimations();
+        this._setAflonStyle();
+
         this._root = this._createElement();
         this._root.aflonElement = this;
         this._root.styler = popmotion.styler(this._root);
 
-        this._setAflonStyle();
-        this._setAflonAnimations();
-        setTimeout(() => this._applyAflonStyle(), 0);
+        this._applyAflonStyleToOwner();
     }
 
     protected _createElement(): HTMLElement {
         return document.createElement("div");
     }
 
-    private _applyAflonStyle(): this {
-        if (!this._style) return this;
+    private _applyAflonStyleToOwner(): void {
+        if (this._style && this._style["_"])
+            this.addClass(this._style["_"]);
+    }
 
+    private _applyAflonStyleToChilder(): void {
         for (let key in this._style) {
-            if (key == "_") {
-                this.addCssClass(this._style[key]);
-                continue;
-            }
-
             if (!this.hasOwnProperty(key)) continue;
 
             let element = (this as any)[key] as Element;
@@ -290,22 +323,49 @@ export class Element {
                 !element.getHtmlElement())
                 continue;
 
-            element.addCssClass(this._style[key]);
+            element.addClass(this._style[key]);
         }
-        return this;
     }
 
-    protected _setAflonStyle() 
-    {
-        this._style = (this.constructor as any)["style"];
-    };
+    private _removeAflonStyleFromChild(child: Element): void {
+        for (let key in this._style) {
+            if (!this.hasOwnProperty(key)) continue;
+
+            let element = (this as any)[key] as Element;
+
+            if (element != child) continue;
+
+            if (!element.getHtmlElement || 
+                !element.getHtmlElement())
+                continue;
+
+            element.removeClass(this._style[key]);
+        }
+    }
 
     protected _setAflonAnimations(): void {
-        this._animations = (this.constructor as any)["animations"];
+        let animationDefinitions = (this.constructor as any)["animations"];
 
-        for (var animDef in this._animations) {
-            (this as any)[animDef] = new Animation(this._animations[animDef], this);
+        for (var animDef in animationDefinitions) {
+            this._animations[animDef] = new Animation(animationDefinitions[animDef], this);
         }
+    }
+
+    protected _setAflonStyle(): void {
+        let styleDefinition = (this.constructor as any)["style"];
+
+        for (var key in styleDefinition) {
+            this._style[key] = style(styleDefinition[key]);
+        }
+
+    }
+
+    animations(animationName: string): Animation
+    {
+        if (!(animationName in this._animations))
+            throw new Error(`Animation with name ${animationName} does not exist at ${this.constructor.name}.`);
+
+        return this._animations[animationName];
     }
 
     getHtmlElement(): HTMLElement {
@@ -314,27 +374,40 @@ export class Element {
 
     append(children: Array<Element>): this {
         children.forEach(child => this._root.appendChild(child._root));
+        this._applyAflonStyleToChilder();
         return this;
     }
 
     prepend(children: Array<Element>): this {
         children.reverse().forEach(child => this._root.prepend(child._root));
+        this._applyAflonStyleToChilder();
         return this;
     }
 
     removeChild(child: Element): this {
+        this._removeAflonStyleFromChild(child);
         this._root.removeChild(child._root);
         return this;
     }
 
     insertAfter(elem: Element): this {
         this._root.insertBefore(elem._root, this._root.nextElementSibling);
+        let parent = this.parent();
+        if (parent) parent._applyAflonStyleToChilder();
         return this;
     }
     
     insertBefore(elem: Element): this {
         this._root.insertBefore(elem._root, this._root);
+        let parent = this.parent();
+        if (parent) parent._applyAflonStyleToChilder();
         return this;
+    }
+
+    parent(): Element {
+        let parentElement: AflonHtmlElement = this._root.parentElement as AflonHtmlElement;
+        if (!parentElement || !parentElement.aflonElement) return null;
+        return parentElement.aflonElement;
     }
 
     children(): Element[] {
@@ -542,6 +615,8 @@ export interface IInput {
     isEnabled(): boolean;
     setReadOnly(readOnly: boolean): this;
     isReadOnly(): boolean;
+    focus(): void;
+    blur(): void;
 }
 
 export interface ITextBox extends IInput {
@@ -601,6 +676,14 @@ export abstract class Input extends Element implements IInput
 
     isReadOnly(): boolean {
         return this.getAttr("readonly") == "true";
+    }
+
+    focus() {
+        this._root.focus();
+    }
+
+    blur() {
+        this._root.blur();
     }
 }
 

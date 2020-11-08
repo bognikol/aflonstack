@@ -123,6 +123,8 @@ export class PrimitiveAnimationPanel extends aflon.Element {
     constructor() {
         super();
 
+        this.customFunction = null;
+
         this.append([
             (this.target = new NamedTextBox())
                 .setName("Target")
@@ -144,7 +146,9 @@ export class PrimitiveAnimationPanel extends aflon.Element {
                 .on("change", () => this.onChange()),
             (this.easing = new NamedSelectBox())
                 .setName("Easing")
-                .insertOptions(Object.keys(aflon.Easing).map(key => ({ text: key, value: key })))
+                .insertOption({ text: "default", value: "default" })
+                .insertOptions(Object.keys(aflon.PredefinedEasingFuncs).map(key => ({ text: key, value: key })))
+                .insertOption({ text: "customFunction", value: "customFunction" })
                 .on("change", () => this.onChange()),
             (this.repeat = new NamedSelectBox())
                 .setName("Repeat")
@@ -180,7 +184,17 @@ export class PrimitiveAnimationPanel extends aflon.Element {
         else if (definition.yoyo) this.repeat.setSelectedOption("yoyo");
         else                      this.repeat.setSelectedOption("norepeat");
 
-        //if (definition.ease) this.easing.setSelectedOption(definition.ease);
+        if (typeof(definition.ease) == "string") {
+            this.easing.setSelectedOption(definition.ease);
+            this.customFunction = null;
+        }
+        else if (typeof(definition.ease) == "function") {
+            this.easing.setSelectedOption("customFunction");
+            this.customFunction = definition.ease;
+        }
+        else {
+            this.customFunction = null;
+        }
 
         return this;
     }
@@ -199,7 +213,12 @@ export class PrimitiveAnimationPanel extends aflon.Element {
         if (selectedRepeat && selectedRepeat != "norepeat")
             definition[selectedRepeat] = Number.POSITIVE_INFINITY;
         
-        definition.ease = aflon.Easing[this.easing.getSelectedOption().value];
+        const selectedEasing = this.easing.getSelectedOption().value;
+        if (selectedEasing == "customFunction" && this.customFunction) {
+            definition.ease = this.customFunction;
+        } else if (selectedEasing != "default") {
+            definition.ease = selectedEasing;
+        }
 
         return definition;
     }
@@ -254,7 +273,9 @@ export class AnimationFallbackPanel extends aflon.Element {
                 .on("change", () => this.onChange()),
             (this.easing = new NamedSelectBox())
                 .setName("Default Easing")
-                .insertOptions(Object.keys(aflon.Easing).map(key => ({ text: key, value: key })))
+                .insertOption({ text: "default", value: "default" })
+                .insertOptions(Object.keys(aflon.PredefinedEasingFuncs).map(key => ({ text: key, value: key })))
+                .insertOption({ text: "customFunction", value: "customFunction" })
                 .on("change", () => this.onChange()),
             (this.repeat = new NamedSelectBox())
                 .setName("Default Repeat")
@@ -290,7 +311,17 @@ export class AnimationFallbackPanel extends aflon.Element {
         else if (definition.yoyo) this.repeat.setSelectedOption("yoyo");
         else                      this.repeat.setSelectedOption("norepeat");
 
-        //if (definition.ease) this.easing.setSelectedOption(definition.ease);
+        if (definition.ease && typeof(definition.ease) == "string") {
+            this.easing.setSelectedOption(definition.ease);
+            this.customFunction = null;
+        }
+        else if (typeof(definition.ease) == "function") {
+            this.easing.setSelectedOption("customFunction");
+            this.customFunction = definition.ease;
+        }
+        else {
+            this.customFunction = null;
+        }
 
         return this;
     }
@@ -305,7 +336,12 @@ export class AnimationFallbackPanel extends aflon.Element {
         if (selectedRepeat && selectedRepeat != "norepeat")
             definition[selectedRepeat] = Number.POSITIVE_INFINITY;
         
-            definition.ease = aflon.Easing[this.easing.getSelectedOption().value];
+        const selectedEasing = this.easing.getSelectedOption().value;
+        if (selectedEasing == "customFunction" && this.customFunction) {
+            definition.ease = this.customFunction;
+        } else if (selectedEasing != "default") {
+            definition.ease = selectedEasing;
+        }
 
         return definition;
     }
