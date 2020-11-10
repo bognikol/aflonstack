@@ -1,5 +1,5 @@
-import { App } from "aflon";
+import * as aflon from "aflon";
 
-import BlaControl from "./controls/BlaControl";
+import "./defaults";
 
-App.run(new BlaControl());
+aflon.App.run(new aflon.Div());

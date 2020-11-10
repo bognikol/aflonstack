@@ -1,9 +1,7 @@
 import * as aflon from "aflon";
 import AflonStudio from "aflon-studio";
 
-export class TextBox extends aflon.TextBox {}
-
-TextBox.style = {
+aflon.TextBox.style = {
     "_": {
         "appearance": "none",
         "outline": "none",
@@ -22,263 +20,38 @@ TextBox.style = {
 };
 
 AflonStudio.register({
-    class: TextBox
+    class: aflon.TextBox
 });
 
-export class LabeledTextBox extends aflon.Div implements aflon.ITextBox, aflon.ILabeled
-{
-    private textBox: TextBox;
-    private label: aflon.Div;
+aflon.PassBox.style = aflon.TextBox.style;
 
-    constructor()
-    {
-        super();
+AflonStudio.register({
+    class: aflon.PassBox
+});
 
-        this.append([
-            (this.label = new aflon.Div()),
-            (this.textBox = new TextBox())
-                .on("focus", () => this.onTextBoxFocus())
-                .on("blur", () => this.onTextBoxBlur())
-        ])
-        .on("click", () => this.onClick());
-    }
-    
-    onClick(): void
-    {
-        this.textBox.focus();
-    }
-
-    onTextBoxBlur(): void
-    {
-        this.animations("focusOut").reset();
-        this.animations("focusOut").start();
-
-        if (this.textBox.getText().length == 0) {
-            this.animations("toEmpty").reset();
-            this.animations("toEmpty").start();
-        }
-    }
-
-    onTextBoxFocus(): void
-    {
-        this.animations("focusIn").reset();
-        this.animations("focusIn").start();
-        if (this.textBox.getText().length == 0){
-            this.animations("fromEmpty").reset();
-            this.animations("fromEmpty").start();
-        }
-    }
-
-    focus(): void
-    {
-        this.getHtmlElement().focus();
-    }
-
-    blur(): void
-    {
-        this.getHtmlElement().blur();
-    }
-
-    setReadOnly(readOnly: boolean): this
-    {
-        this.textBox.setReadOnly(readOnly);
-        return this;
-    }
-
-    isReadOnly(): boolean
-    {
-        return this.textBox.isReadOnly();
-    }
-
-    setText(text: string): this
-    {
-        this.textBox.setText(text);
-        /*if (text.length != 0)
-            this.animations("toEmpty").instant();
-        else
-            this.animations("fromEmpty").instant();*/
-
-        return this;
-    }
-
-    getText(): string
-    {
-        return this.textBox.getText();
-    }
-
-    setPlaceholder(placeholderText: string): this
-    {
-        this.label.setText(placeholderText);
-        return this;
-    }
-    
-    getPlaceholder(): string
-    {
-        return this.label.getText();
-    }
-
-    setLabel(label: string): this
-    {
-        this.label.setText(label);
-        return this;
-    }
-
-    getLabel(): string
-    {
-        return this.label.getText();
-    }
-}
-
-LabeledTextBox.style = {
+aflon.Button.style = {
     "_": {
+        "padding": "7px 20px",
+        "color": "white",
         "fontFamily": "'Source Sans Pro', sans-serif",
-        "display": "flex",
-        "flexFlow": "column nowrap",
-        "alignItems": "stretch",
-        "height": "43px",
-        "borderRadius": "10px",
-        "boxShadow": "0px 2px 6px 0px rgba(0,0,0,0.2);",
-        "padding": "10px",
-        "background": "white",
-        "cursor": "text"
-    },
-    "label": {
+        "background": "black",
+        "outline": "0",
+        "appearance": "none",
+        "border": "solid 1px black",
+        "borderRadius": "100px",
         "fontSize": "15px",
-        "position": "absolute",
-        "zIndex": 1,
-        "color": "#C4C4C4",
-        "fontWeight": 500,
-        "top": "12px",
-        "right": "10px",
-        "left": "15px"
-    },
-    "textBox": {
-        "border": "0",
-        "outline": "none",
-        "borderRadius": "0",
-        "position": "absolute",
-        "bottom": "0",
-        "fontWeight": 300,
-        "fontSize": "16px",
-        "color": "#AAA",
-        "right": "10px",
-        "left": "10px",
-        "width": "90%",
-        "padding": "0",
-        "opacity": "0",
+        "boxShadow": "0px 2px 6px 0px rgba(0,0,0,0.3)",
         "&:focus": {
-            "border": "none"
+            "border": "solid 1px red"
         },
-        "&::placeholder": {
-            "color": "transparent"
+        "&:active": {
+            "transform": "translate(0, 1px)"
         }
-    }
-};
-
-LabeledTextBox.animations = {
-    "focusIn": {
-        "duration": 350,
-        "ease": "circOut",
-        "animations": [
-            {
-                "track": "boxShadow",
-                "to": "0px 6px 14px 0px rgba(0,0,0,0.13)"
-            },
-            {
-                "track": "transform",
-                "to": "scale(1.1, 1.1)",
-                "from": "scale(1.0, 1.0)"
-            }
-        ]
-    },
-    "fromEmpty": {
-        "ease": "linear",
-        "duration": 350,
-        "animations": [
-            {
-                "target": "label",
-                "track": "top",
-                "to": "4px",
-                "ease": "circOut"
-            },
-            {
-                "target": "label",
-                "track": "color",
-                "to": "#777",
-                "ease": "linear"
-            },
-            {
-                "target": "label",
-                "track": "fontSize",
-                "to": "11px",
-                "ease": "circOut"
-            },
-            {
-                "target": "label",
-                "track": "left",
-                "to": "10px",
-                "ease": "circOut"
-            },
-            {
-                "target": "textBox",
-                "track": "opacity",
-                "to": "1",
-            }
-        ]
-    },
-    "focusOut": {
-        "duration": 350,
-        "ease": "easeOut",
-        "animations": [
-            {
-                "track": "boxShadow",
-                "to": "0px 2px 6px 0px rgba(0,0,0,0.13)"
-            },
-            {
-                "track": "transform",
-                "to": "scale(1.0, 1.0)",
-                "from": "scale(1.1, 1.1)"
-            }
-        ]
-    },
-    "toEmpty": {
-        "duration": 350,
-        "ease": "circOut",
-        "animations": [
-            {
-                "target": "label",
-                "track": "color",
-                "to": "#C4C4C4",
-                "ease": "linear"
-            },
-            {
-                "target": "label",
-                "track": "top",
-                "to": "12px"
-            },
-            {
-                "target": "label",
-                "track": "fontSize",
-                "to": "15px"
-            },
-            {
-                "target": "label",
-                "track": "left",
-                "to": "15px"
-            },
-            {
-                "target": "textBox",
-                "track": "opacity",
-                "to": "0",
-                "ease": "linear"
-            }
-        ]
     }
 };
 
 AflonStudio.register({
-    class: LabeledTextBox,
-    initializer: element => {
-        element.setLabel("Full name")
-    }
+    class: aflon.Button,
+    initializer: element => element.setText("Submit"),
+    backgroundColor: "#C4C4C4"
 });

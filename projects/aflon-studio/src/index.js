@@ -45,6 +45,12 @@ class AflonPreviewer extends aflon.Element {
     setPreviewConfig(config) {
         this.previewElementConfig = config;
         this.setViewportSize(this.previewElementConfig.viewportSize);
+
+        if (this.previewElementConfig.backgroundColor)
+            this.setInlineCss({ backgroundColor: this.previewElementConfig.backgroundColor });
+        else
+            this.setInlineCss({ backgroundColor: "white" });
+
         this.update();
         return this;
     }
@@ -66,12 +72,8 @@ class AflonPreviewer extends aflon.Element {
     runAnimationCommand(animationName, command) {
         if (command == "start")
             this.previewElement.animations(animationName).start();
-        else if (command == "pause")
-            this.previewElement.animations(animationName).pause();
-        else if (command == "reset")
-            this.previewElement.animations(animationName).reset();
-        else if (command == "reverse")
-            this.previewElement.animations(animationName).reverse();
+        else if (command == "stop")
+            this.previewElement.animations(animationName).stop();
     }
 
     signifyElement(elementName) {
@@ -340,7 +342,6 @@ export default class AflonStudio extends aflon.Element {
 
         this.previewer.setPreviewConfig(config);
         this.styleCP.setAflonStyle(config.class.style);
-
         this.animationCP.setAflonAnimationDefinition(config.class.animations)
 
         return this;

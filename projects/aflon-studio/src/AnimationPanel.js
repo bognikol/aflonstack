@@ -459,13 +459,7 @@ export class AnimationControlBox extends aflon.Element {
                 .on("click", () => this.raise("commandRequested", { command: "start" })),
             (this.pause   = new common.TypiconButton())
                 .setTypicon("media-pause")
-                .on("click", () => this.raise("commandRequested", { command: "pause" })),
-            (this.reset   = new common.TypiconButton())
-                .setTypicon("media-rewind")
-                .on("click", () => this.raise("commandRequested", { command: "reset" })),
-            (this.reverse = new common.TypiconButton())
-                .setTypicon("media-play-reverse")
-                .on("click", () => this.raise("commandRequested", { command: "reverse" })),
+                .on("click", () => this.raise("commandRequested", { command: "stop" })),
             (this.buffer = new aflon.Div()),
             (this.addPrimitiveAnimation = new common.TypiconButton())
                 .setTypicon("plus")

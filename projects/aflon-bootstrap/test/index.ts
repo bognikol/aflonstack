@@ -1,6 +1,7 @@
-import "../src/controls/BlaControl";
-import "../src/controls/LogInControl";
 import "../src/defaults";
+import "../src/controls/LabeledTextBox";
+import "../src/controls/LogInControl";
+import "../src/DemoApp";
 
 import AflonStudio from "aflon-studio";
 
