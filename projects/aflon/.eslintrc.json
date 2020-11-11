@@ -38,8 +38,15 @@
             "@typescript-eslint/no-explicit-any": "off",
             "@typescript-eslint/no-empty-interface": "off",
             "@typescript-eslint/explicit-module-boundary-types": ["warn", { "allowArgumentsExplicitlyTypedAsAny": true }],
-            "@typescript-eslint/no-inferrable-types": "off"
-        }
+            "@typescript-eslint/no-inferrable-types": "off",
+            "@typescript-eslint/member-ordering": "warn",
+                "@typescript-eslint/naming-convention": [
+                  "warn",
+                    { "selector": "memberLike", "modifiers": [ "public" ], "format": ["camelCase"], "leadingUnderscore": "forbid" },
+                    { "selector": "memberLike", "modifiers": [ "protected" ], "format": ["camelCase"], "leadingUnderscore": "require" },
+                    { "selector": "memberLike", "modifiers": [ "private" ], "format": ["camelCase"], "leadingUnderscore": "require" }
+                ]
+            }
         }
       ]
 }

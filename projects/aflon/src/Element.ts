@@ -18,10 +18,10 @@ export function isAflonElement(object: any): boolean {
 
 export abstract class Element {
 
-    private static _aflonElementTag: string = "u44qfkX2EK";
-
     public static style: AflonCss = {};
     public static animations: AflonAnimationDefinition;
+
+    private static _aflonElementTag: string = "u44qfkX2EK";
 
     protected _root: AflonHtmlElement;
     protected _style: AflonCss = {};
@@ -36,62 +36,6 @@ export abstract class Element {
         this._setAflonAnimations();
         this._setAflonStyle();
         this._applyAflonStyleToOwner();
-    }
-
-    protected _createElement(): HTMLElement {
-        return document.createElement("div");
-    }
-
-    private _applyAflonStyleToOwner(): void {
-        if (!this._style["_"]) return;
-
-        let className = CSS.class(this._style["_"]);
-        this.addClass(className);
-    }
-
-    private _applyAflonStyleToChildren(): void {
-        for (let key in this._style) {
-            if (!this.hasOwnProperty(key)) continue;
-
-            let element = (this as any)[key] as Element;
-
-            if (!element.getHtmlElement ||
-                !element.getHtmlElement())
-                continue;
-
-            let className = CSS.class(this._style[key]);
-
-            if (element.getClasses().indexOf(className) < 0) {
-                element.addClass(className);
-                this._activeClasses[key] = className;
-            }
-        }
-    }
-
-    private _removeAflonStyleFromChild(child: Element): void {
-        for (let key in this._style) {
-            if (!this.hasOwnProperty(key)) continue;
-            if (!this._activeClasses[key]) continue;
-
-            let element = (this as any)[key] as Element;
-
-            if (element == child) {
-                element.removeClass(this._activeClasses[key]);
-                break;
-            }
-        }
-    }
-
-    protected _setAflonAnimations(): void {
-        let animationDefinitions = (this.constructor as any)["animations"];
-
-        for (let animDef in animationDefinitions) {
-            this._animations[animDef] = new Animation(animationDefinitions[animDef], this);
-        }
-    }
-
-    protected _setAflonStyle(): void {
-        this._style = (this.constructor as any)["style"];
     }
 
     animations(animationName: string): Animation {
@@ -280,6 +224,62 @@ export abstract class Element {
         this.getHtmlElement().dispatchEvent(new CustomEvent(eventName, { bubbles: bubbles, detail: args }));
         return this;
     }
+
+    protected _setAflonAnimations(): void {
+        let animationDefinitions = (this.constructor as any)["animations"];
+
+        for (let animDef in animationDefinitions) {
+            this._animations[animDef] = new Animation(animationDefinitions[animDef], this);
+        }
+    }
+
+    protected _setAflonStyle(): void {
+        this._style = (this.constructor as any)["style"];
+    }
+
+    protected _createElement(): HTMLElement {
+        return document.createElement("div");
+    }
+
+    private _applyAflonStyleToOwner(): void {
+        if (!this._style["_"]) return;
+
+        let className = CSS.class(this._style["_"]);
+        this.addClass(className);
+    }
+
+    private _applyAflonStyleToChildren(): void {
+        for (let key in this._style) {
+            if (!this.hasOwnProperty(key)) continue;
+
+            let element = (this as any)[key] as Element;
+
+            if (!element.getHtmlElement ||
+                !element.getHtmlElement())
+                continue;
+
+            let className = CSS.class(this._style[key]);
+
+            if (element.getClasses().indexOf(className) < 0) {
+                element.addClass(className);
+                this._activeClasses[key] = className;
+            }
+        }
+    }
+
+    private _removeAflonStyleFromChild(child: Element): void {
+        for (let key in this._style) {
+            if (!this.hasOwnProperty(key)) continue;
+            if (!this._activeClasses[key]) continue;
+
+            let element = (this as any)[key] as Element;
+
+            if (element == child) {
+                element.removeClass(this._activeClasses[key]);
+                break;
+            }
+        }
+    }
 }
 
 export class Div extends Element { }
@@ -333,10 +333,6 @@ export class P extends Element {
 }
 
 export class Image extends Element {
-    protected _createElement(): AflonHtmlElement {
-        return document.createElement("img");
-    }
-
     setSource(source: string): this {
         this.addAttr("src", source);
         return this;
@@ -344,6 +340,10 @@ export class Image extends Element {
 
     getSource(): string | null {
         return this.getAttr("src");
+    }
+
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("img");
     }
 }
 
@@ -431,12 +431,6 @@ export class Button extends Input implements IButton {
 }
 
 export class TextBox extends Input implements ITextBox {
-    protected _createElement(): AflonHtmlElement {
-        const textBox = document.createElement("input");
-        textBox.setAttribute("type", "text");
-        return textBox;
-    }
-
     setText(text: string): this {
         (this._root as HTMLInputElement).value = text;
         return this;
@@ -454,6 +448,12 @@ export class TextBox extends Input implements ITextBox {
     getPlaceholder(): string {
         return this.getStringAttr("placeholder");
     }
+
+    protected _createElement(): AflonHtmlElement {
+        const textBox = document.createElement("input");
+        textBox.setAttribute("type", "text");
+        return textBox;
+    }
 }
 
 export class PassBox extends TextBox implements ITextBox {
@@ -465,12 +465,6 @@ export class PassBox extends TextBox implements ITextBox {
 }
 
 export class CheckBox extends Input implements IToggableButton {
-    protected _createElement(): AflonHtmlElement {
-        const checkbox = document.createElement("input");
-        checkbox.setAttribute("type", "checkbox");
-        return checkbox;
-    }
-
     check(): this {
         this.addAttr("checked", "true");
         return this;
@@ -484,15 +478,15 @@ export class CheckBox extends Input implements IToggableButton {
     isChecked(): boolean {
         return this.getAttr("checked") == "true";
     }
+
+    protected _createElement(): AflonHtmlElement {
+        const checkbox = document.createElement("input");
+        checkbox.setAttribute("type", "checkbox");
+        return checkbox;
+    }
 }
 
 export class RadioButton extends CheckBox implements IRadioButton {
-    protected _createElement(): AflonHtmlElement {
-        const radioButton = document.createElement("input");
-        radioButton.setAttribute("type", "radio");
-        return radioButton;
-    }
-
     constructor(groupName?: string) {
         super();
 
@@ -513,14 +507,15 @@ export class RadioButton extends CheckBox implements IRadioButton {
         this.removeAttr("name");
         return this;
     }
+
+    protected _createElement(): AflonHtmlElement {
+        const radioButton = document.createElement("input");
+        radioButton.setAttribute("type", "radio");
+        return radioButton;
+    }
 }
 
 export class SelectBox extends Input implements ISelectBox {
-    protected _createElement(): AflonHtmlElement {
-        const select = document.createElement("select");
-        return select;
-    }
-
     constructor(options?: ISelectOption[]) {
         super();
 
@@ -580,6 +575,11 @@ export class SelectBox extends Input implements ISelectBox {
             });
         }
         return options;
+    }
+
+    protected _createElement(): AflonHtmlElement {
+        const select = document.createElement("select");
+        return select;
     }
 }
 

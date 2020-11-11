@@ -54,13 +54,6 @@ export interface AnimationDefinition extends AnimationFallBackDefinition {
 }
 
 class PrimitiveAnimation {
-    constructor(animationDefinition: PrimitiveAnimationDefintion, context: Element, durationWithAfterDelay: number = 0) {
-        this._animationDefinition = animationDefinition;
-        this._context = context;
-        this._durationWithAfterDelay = durationWithAfterDelay;
-        if (animationDefinition.from === undefined)
-            this._autoFrom = true;
-    }
 
     private _autoFrom: boolean = false;
     private _prepeared: boolean = false;
@@ -70,6 +63,49 @@ class PrimitiveAnimation {
     private _durationWithAfterDelay: number;
     private _context: Element;
     private _ease: EasingFunc;
+
+    constructor(animationDefinition: PrimitiveAnimationDefintion, context: Element, durationWithAfterDelay: number = 0) {
+        this._animationDefinition = animationDefinition;
+        this._context = context;
+        this._durationWithAfterDelay = durationWithAfterDelay;
+        if (animationDefinition.from === undefined)
+            this._autoFrom = true;
+    }
+
+    start(): void {
+        if (this._autoFrom || !this._prepeared)
+            this._prepeare();
+
+        this._tweenAnimation.seek(0);
+        this._tweenAnimation.resume();
+    }
+
+    stop(): void {
+        if (!this._tweenAnimation) return;
+        this._tweenAnimation.pause();
+    }
+
+    toBegining(): void {
+        if (!this._autoFrom) return;
+
+        if (!this._styler) this._prepeareStyler();
+        this._styler.set(this._animationDefinition.track, this._animationDefinition.from);
+    }
+
+    toEnd(): void {
+        if (!this._styler) this._prepeareStyler();
+        this._styler.set(this._animationDefinition.track, this._animationDefinition.to);
+    }
+
+    getElapsed(): number {
+        if (!this._tweenAnimation) return 0;
+        return this._tweenAnimation.getElapsed();
+    }
+
+    getProgress(): number {
+        if (!this._tweenAnimation) return 0;
+        return this._tweenAnimation.getProgress();
+    }
 
     private _prepeareStyler() {
         if (this._styler) return;
@@ -128,44 +164,12 @@ class PrimitiveAnimation {
 
         this._prepeared = true;
     }
-
-    start(): void {
-        if (this._autoFrom || !this._prepeared)
-            this._prepeare();
-
-        this._tweenAnimation.seek(0);
-        this._tweenAnimation.resume();
-    }
-
-    stop(): void {
-        if (!this._tweenAnimation) return;
-        this._tweenAnimation.pause();
-    }
-
-    toBegining(): void {
-        if (!this._autoFrom) return;
-
-        if (!this._styler) this._prepeareStyler();
-        this._styler.set(this._animationDefinition.track, this._animationDefinition.from);
-    }
-
-    toEnd(): void {
-        if (!this._styler) this._prepeareStyler();
-        this._styler.set(this._animationDefinition.track, this._animationDefinition.to);
-    }
-
-    getElapsed(): number {
-        if (!this._tweenAnimation) return 0;
-        return this._tweenAnimation.getElapsed();
-    }
-
-    getProgress(): number {
-        if (!this._tweenAnimation) return 0;
-        return this._tweenAnimation.getProgress();
-    }
 }
 
 export class Animation {
+
+    private _primitiveAnimations: PrimitiveAnimation[] = [];
+
     constructor(animationDefinition: AnimationDefinition, context: Element) {
         const fallbackAnimationDefinition: AnimationFallBackDefinition = {
             ease:     PredefinedEasingFuncs.linear,
@@ -204,8 +208,6 @@ export class Animation {
                 animDefinition => new PrimitiveAnimation(animDefinition, context, maxDuration)
             );
     }
-
-    private _primitiveAnimations: PrimitiveAnimation[] = [];
 
     start(): void {
         this._primitiveAnimations.forEach(animation => animation.start());
