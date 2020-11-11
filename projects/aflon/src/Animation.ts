@@ -5,9 +5,9 @@ import { AflonHtmlElement, Element } from "./Element";
 
 export type EasingFunc = (value: number) => number;
 
-export type PredefinedEasing = "linear" | "anticipate" | 
-    "easeIn"   | "easeOut"   | "easeInOut" | 
-    "circIn"   | "circOut"   | "circInOut" | 
+export type PredefinedEasing = "linear" | "anticipate" |
+    "easeIn"   | "easeOut"   | "easeInOut" |
+    "circIn"   | "circOut"   | "circInOut" |
     "backIn"   | "backOut"   | "backInOut" |
     "bounceIn" | "bounceOut" | "bounceInOut";
 
@@ -79,23 +79,18 @@ class PrimitiveAnimation {
             this._styler = (this._context.getHtmlElement() as AflonHtmlElement).styler;
         else
             this._styler = ((this._context as any)[this._animationDefinition.target].getHtmlElement() as AflonHtmlElement).styler;
-    
+
     }
 
     private _prepeare() {
         this._prepeareStyler();
 
-        if (typeof(this._animationDefinition.ease) == "string" && 
-            PredefinedEasingFuncs[this._animationDefinition.ease])
-        {
+        if (typeof(this._animationDefinition.ease) == "string" &&
+            PredefinedEasingFuncs[this._animationDefinition.ease]) {
             this._ease = PredefinedEasingFuncs[this._animationDefinition.ease];
-        }
-        else if (typeof(this._animationDefinition.ease) == "function")
-        {
+        } else if (typeof(this._animationDefinition.ease) == "function") {
             this._ease = this._animationDefinition.ease;
-        }
-        else
-        {
+        } else {
             this._ease = PredefinedEasingFuncs.linear;
         }
 
@@ -108,7 +103,7 @@ class PrimitiveAnimation {
             effectiveFrom = this._styler.get(this._animationDefinition.track);
 
         this._tweenAnimation =
-            popmotion.keyframes({ 
+            popmotion.keyframes({
                 values: [
                     effectiveFrom as string,
                     effectiveFrom as string,
@@ -116,7 +111,7 @@ class PrimitiveAnimation {
                     this._animationDefinition.to as string
                 ],
                 times: [
-                    0, 
+                    0,
                     this._animationDefinition.delay / totalDuration,
                     (this._animationDefinition.delay + this._animationDefinition.duration) / totalDuration,
                     1
@@ -128,9 +123,9 @@ class PrimitiveAnimation {
                 loop: this._animationDefinition.loop,
                 yoyo: this._animationDefinition.yoyo
             })
-            .start((v: any) => this._styler.set(this._animationDefinition.track, v));
-            this._tweenAnimation.pause();
-        
+                .start((v: any) => this._styler.set(this._animationDefinition.track, v));
+        this._tweenAnimation.pause();
+
         this._prepeared = true;
     }
 
@@ -170,10 +165,8 @@ class PrimitiveAnimation {
     }
 }
 
-export class Animation
-{
-    constructor(animationDefinition: AnimationDefinition, context: Element) 
-    {
+export class Animation {
+    constructor(animationDefinition: AnimationDefinition, context: Element) {
         const fallbackAnimationDefinition: AnimationFallBackDefinition = {
             ease:     PredefinedEasingFuncs.linear,
             duration: 300,
@@ -206,7 +199,7 @@ export class Animation
                 maxDuration = fullDuration;
         });
 
-        this._primitiveAnimations = 
+        this._primitiveAnimations =
             primitiveAnimationDefinitions.map(
                 animDefinition => new PrimitiveAnimation(animDefinition, context, maxDuration)
             );
@@ -233,15 +226,15 @@ export class Animation
     getElapsed(): number {
         if (this._primitiveAnimations.length == 0)
             return 0;
-        
+
         return this._primitiveAnimations[0].getElapsed();
     }
 
     getProgress(): number {
         if (this._primitiveAnimations.length == 0)
             return 0;
-    
-        return this._primitiveAnimations[0].getProgress();   
+
+        return this._primitiveAnimations[0].getProgress();
     }
 }
 

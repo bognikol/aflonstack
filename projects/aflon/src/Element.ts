@@ -9,8 +9,7 @@ export interface AflonHtmlElement extends HTMLElement {
     styler?: Styler;
 }
 
-export function isAflonElement(object: any)
-{
+export function isAflonElement(object: any): boolean {
     if (!object || !object.constructor) return false;
     let aflonElementTag = object.constructor["_aflonElementTag"];
     if (!aflonElementTag) return false;
@@ -56,7 +55,7 @@ export abstract class Element {
 
             let element = (this as any)[key] as Element;
 
-            if (!element.getHtmlElement || 
+            if (!element.getHtmlElement ||
                 !element.getHtmlElement())
                 continue;
 
@@ -86,7 +85,7 @@ export abstract class Element {
     protected _setAflonAnimations(): void {
         let animationDefinitions = (this.constructor as any)["animations"];
 
-        for (var animDef in animationDefinitions) {
+        for (let animDef in animationDefinitions) {
             this._animations[animDef] = new Animation(animationDefinitions[animDef], this);
         }
     }
@@ -95,8 +94,7 @@ export abstract class Element {
         this._style = (this.constructor as any)["style"];
     }
 
-    animations(animationName: string): Animation
-    {
+    animations(animationName: string): Animation {
         if (!(animationName in this._animations))
             throw new Error(`Animation with name ${animationName} does not exist at ${this.constructor.name}.`);
 
@@ -131,7 +129,7 @@ export abstract class Element {
         if (parent) parent._applyAflonStyleToChildren();
         return this;
     }
-    
+
     insertBefore(elem: Element): this {
         this._root.insertBefore(elem._root, this._root);
         let parent = this.parent();
@@ -150,7 +148,7 @@ export abstract class Element {
         this._root.childNodes.forEach(child => {
             const aflonElement = (child as AflonHtmlElement).aflonElement;
             if (aflonElement)
-                children.push(aflonElement)
+                children.push(aflonElement);
         });
         return children;
     }
@@ -223,7 +221,7 @@ export abstract class Element {
 
     addCssClass(css: CSSProperties): this {
         this.addClass(CSS.class(css));
-        return this;   
+        return this;
     }
 
     addClasses(classNames: string[]): this {
@@ -252,7 +250,7 @@ export abstract class Element {
         return this;
     }
 
-    removeId() {
+    removeId(): this {
         this.removeAttr("id");
         return this;
     }
@@ -278,7 +276,7 @@ export abstract class Element {
         return this;
     }
 
-    raise(eventName: string, args: Object = {}, bubbles: boolean = false): this {
+    raise(eventName: string, args: Record<string, unknown> = {}, bubbles: boolean = false): this {
         this.getHtmlElement().dispatchEvent(new CustomEvent(eventName, { bubbles: bubbles, detail: args }));
         return this;
     }
@@ -334,15 +332,14 @@ export class P extends Element {
     }
 }
 
-export class Image extends Element
-{
+export class Image extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("img");
     }
 
     setSource(source: string): this {
-        this.addAttr("src", source); 
-        return this;           
+        this.addAttr("src", source);
+        return this;
     }
 
     getSource(): string | null {
@@ -400,30 +397,29 @@ export interface ILabeled {
     getLabel(): string;
 }
 
-type ILabeledTextBox        = ITextBox           & ILabeled
-type ILabeledButton         = IButton            & ILabeled
-type ILabeledToggableButton = IToggableButton    & ILabeled
-type ILabeledRadioButton    = IRadioButton       & ILabeled
-type ILabeledSelectBox      = IDBCursorWithValue & ILabeled
+export type ILabeledTextBox        = ITextBox         & ILabeled
+export type ILabeledButton         = IButton          & ILabeled
+export type ILabeledToggableButton = IToggableButton  & ILabeled
+export type ILabeledRadioButton    = IRadioButton     & ILabeled
+export type ILabeledSelectBox      = ISelectBox       & ILabeled
 
 
-export abstract class Input extends Element implements IInput
-{
+export abstract class Input extends Element implements IInput {
     setReadOnly(readOnly: boolean): this {
-        if (readOnly) this.addAttr("readonly", "true");          
-        else this.addAttr("readonly", "false"); 
-        return this;         
+        if (readOnly) this.addAttr("readonly", "true");
+        else this.addAttr("readonly", "false");
+        return this;
     }
 
     isReadOnly(): boolean {
         return this.getAttr("readonly") == "true";
     }
 
-    focus() {
+    focus(): void {
         this._root.focus();
     }
 
-    blur() {
+    blur(): void {
         this._root.blur();
     }
 }
@@ -447,16 +443,16 @@ export class TextBox extends Input implements ITextBox {
     }
 
     getText(): string {
-        return (this._root as HTMLInputElement).value;    
+        return (this._root as HTMLInputElement).value;
     }
 
     setPlaceholder(placeholderText: string): this {
         this.addAttr("placeholder", placeholderText);
-        return this;          
+        return this;
     }
 
     getPlaceholder(): string {
-        return this.getStringAttr("placeholder");     
+        return this.getStringAttr("placeholder");
     }
 }
 
@@ -477,12 +473,12 @@ export class CheckBox extends Input implements IToggableButton {
 
     check(): this {
         this.addAttr("checked", "true");
-        return this;          
+        return this;
     }
 
     uncheck(): this {
         this.addAttr("checked", "false");
-        return this;                        
+        return this;
     }
 
     isChecked(): boolean {
@@ -501,7 +497,7 @@ export class RadioButton extends CheckBox implements IRadioButton {
         super();
 
         if (groupName)
-            this.addAttr("name", groupName);            
+            this.addAttr("name", groupName);
     }
 
     setGroup(groupName: string): this {
@@ -521,7 +517,7 @@ export class RadioButton extends CheckBox implements IRadioButton {
 
 export class SelectBox extends Input implements ISelectBox {
     protected _createElement(): AflonHtmlElement {
-        const select = document.createElement("select");     
+        const select = document.createElement("select");
         return select;
     }
 
@@ -539,14 +535,14 @@ export class SelectBox extends Input implements ISelectBox {
         optionElement.text = option.text;
         optionElement.setAttribute("value", option.value);
         this.getHtmlElement().append(optionElement);
-        return this;           
+        return this;
     }
 
     removeOption(optionValue: string): this {
         let selectIndex = -1;
-        const select = (<HTMLSelectElement>this.getHtmlElement());
-        for (let i = 0; i < select.options.length; i++){
-            if (select.options[i].value == optionValue) 
+        const select = (<HTMLSelectElement>(this.getHtmlElement()));
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value == optionValue)
                 selectIndex = i;
         }
         if (selectIndex != -1)
@@ -567,7 +563,7 @@ export class SelectBox extends Input implements ISelectBox {
     }
 
     getSelectedOption(): ISelectOption {
-        const select = (<HTMLSelectElement>this.getHtmlElement());
+        const select = (<HTMLSelectElement>(this.getHtmlElement()));
         return {
             value: select.options[select.selectedIndex].value,
             text: select.options[select.selectedIndex].text
@@ -576,8 +572,8 @@ export class SelectBox extends Input implements ISelectBox {
 
     getAllOptions(): ISelectOption[] {
         let options: ISelectOption[] = [];
-        const select = (<HTMLSelectElement>this.getHtmlElement());
-        for (let i = 0; i < select.options.length; i++){
+        const select = (<HTMLSelectElement>(this.getHtmlElement()));
+        for (let i = 0; i < select.options.length; i++) {
             options.push({
                 value: select.options[i].value,
                 text: select.options[i].text
