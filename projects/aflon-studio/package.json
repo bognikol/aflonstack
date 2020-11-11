@@ -18,7 +18,7 @@
     "aflon": "^1.1.4"
   },
   "devDependencies": {
-    "webpack": "^5.1.0",
-    "webpack-cli": "^4.0.0"
+    "webpack": "~5.4.0",
+    "webpack-cli": "~4.2.0"
   }
 }
