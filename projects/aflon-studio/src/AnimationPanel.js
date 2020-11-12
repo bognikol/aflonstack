@@ -1,7 +1,7 @@
 import * as aflon from "aflon";
 import * as common from "./CommonControls";
 
-export class NamedTextBox extends aflon.Element {
+export class NamedTextBox extends aflon.Div {
     constructor() {
         super();
 
@@ -55,7 +55,7 @@ NamedTextBox.style = {
     }
 };
 
-export class NamedSelectBox extends aflon.Element {
+export class NamedSelectBox extends aflon.Div {
     constructor() {
         super();
 
@@ -119,7 +119,7 @@ NamedSelectBox.style = {
     }
 };
 
-export class PrimitiveAnimationPanel extends aflon.Element {
+export class PrimitiveAnimationPanel extends aflon.Div {
     constructor() {
         super();
 
@@ -260,7 +260,7 @@ PrimitiveAnimationPanel.style = {
     }
 };
 
-export class AnimationFallbackPanel extends aflon.Element {
+export class AnimationFallbackPanel extends aflon.Div {
     constructor() {
         super();
 
@@ -364,7 +364,7 @@ AnimationFallbackPanel.style = {
     }
 };
 
-export class AnimationPanel extends aflon.Element {
+export class AnimationPanel extends aflon.Div {
     constructor() {
         super();
 
@@ -449,7 +449,7 @@ AnimationPanel.style = {
     }
 };
 
-export class AnimationControlBox extends aflon.Element {
+export class AnimationControlBox extends aflon.Div {
     constructor() {
         super();
 
@@ -489,7 +489,7 @@ AnimationControlBox.style = {
     }
 };
 
-export class AflonAnimationPanel extends aflon.Element
+export class AflonAnimationPanel extends aflon.Div
 {
     constructor() {
         super();

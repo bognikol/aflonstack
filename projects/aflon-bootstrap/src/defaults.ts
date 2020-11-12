@@ -1,6 +1,22 @@
 import * as aflon from "aflon";
 import AflonStudio from "aflon-studio";
 
+aflon.CSS.import("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&display=swap");
+aflon.CSS.import("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap");
+aflon.CSS.import("https://cdnjs.cloudflare.com/ajax/libs/typicons/2.0.9/typicons.min.css");
+
+aflon.CSS.createRule("html, body", {
+    width: "100%",
+    height: "100%",
+    margin: 0,
+    padding: 0
+});
+
+aflon.CSS.createRule("*", {
+    boxSizing: "border-box",
+    position: "relative"
+});
+
 aflon.TextBox.style = {
     "_": {
         "appearance": "none",

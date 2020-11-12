@@ -1,4 +1,4 @@
-import { style, media, cssRaw } from "typestyle";
+import { style, media, cssRaw, cssRule } from "typestyle";
 import * as typestyleTypes from "typestyle/lib/types";
 
 export type CSSProperties = typestyleTypes.CSSProperties | typestyleTypes.NestedCSSSelectors;
@@ -16,8 +16,12 @@ export class CSS {
         return media(mediaQuery, ...css);
     }
 
-    static importUrl(url: string): void {
+    static import(url: string): void {
         cssRaw(`@import url('${url}');`);
+    }
+
+    static createRule(selector: string, css: NestedCSSProperties): void {
+        cssRule(selector, css);
     }
 }
 

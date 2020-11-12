@@ -1,6 +1,7 @@
 import * as popmotion from "popmotion";
-import { Styler } from "stylefire";
+import * as stylefire from "stylefire";
 import * as typestyleTypes from "typestyle/lib/types";
+
 import { AflonHtmlElement, Element } from "./Element";
 
 export type EasingFunc = (value: number) => number;
@@ -53,13 +54,15 @@ export interface AnimationDefinition extends AnimationFallBackDefinition {
     animations: PrimitiveAnimationDefintion[]
 }
 
+export type AflonAnimationDefinition = Record<string, AnimationDefinition>;
+
 class PrimitiveAnimation {
 
     private _autoFrom: boolean = false;
     private _prepeared: boolean = false;
     private _animationDefinition: PrimitiveAnimationDefintion;
     private _tweenAnimation: popmotion.ColdSubscription;
-    private _styler: Styler;
+    private _styler: stylefire.Styler;
     private _durationWithAfterDelay: number;
     private _context: Element;
     private _ease: EasingFunc;
@@ -239,5 +242,3 @@ export class Animation {
         return this._primitiveAnimations[0].getProgress();
     }
 }
-
-export type AflonAnimationDefinition = Record<string, AnimationDefinition>;

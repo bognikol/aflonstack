@@ -1,7 +1,7 @@
 import * as aflon from "aflon";
 import * as common from "./CommonControls";
 
-export class NameValuePair extends aflon.Element {
+export class NameValuePair extends aflon.Div {
     constructor() {
         super();
 
@@ -64,7 +64,7 @@ NameValuePair.style = {
     }
 };
 
-export class NameValuePanel extends aflon.Element {
+export class NameValuePanel extends aflon.Div {
     constructor() {
         super();
 
@@ -138,7 +138,7 @@ NameValuePanel.style = {
     }
 };
 
-export class SimpleStylePanel extends aflon.Element {
+export class SimpleStylePanel extends aflon.Div {
     constructor() {
         super();
 
@@ -278,7 +278,7 @@ SimpleStylePanel.style = {
     }
 };
 
-export class CompositeStylePanel extends aflon.Element {
+export class CompositeStylePanel extends aflon.Div {
     constructor() {
         super();
 
@@ -373,7 +373,7 @@ CompositeStylePanel.style = {
     }
 };
 
-export class ElementStylePanel extends aflon.Element {
+export class ElementStylePanel extends aflon.Div {
     constructor() {
         super();
 
@@ -479,7 +479,7 @@ ElementStylePanel.style = {
     }
 };
 
-export default class AflonStylePanel extends aflon.Element {
+export default class AflonStylePanel extends aflon.Div {
     constructor() {
         super();
 

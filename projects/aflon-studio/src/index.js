@@ -4,7 +4,7 @@ import * as common from "./CommonControls";
 import AflonStylePanel from "./StylePanel";
 import { AflonAnimationPanel, NamedTextBox, NamedSelectBox, PrimitiveAnimationPanel } from "./AnimationPanel";
 
-class AflonPreviewer extends aflon.Element {
+class AflonPreviewer extends aflon.Div {
     constructor() {
         super();
 
@@ -214,7 +214,7 @@ AflonPreviewer.animations = {
     }
 };
 
-export default class AflonStudio extends aflon.Element {
+export default class AflonStudio extends aflon.Div {
     static register(config) {
         AflonStudio.configurations.push(config);
     }
