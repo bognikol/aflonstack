@@ -1,0 +1,1 @@
+Aflon is object-oriented old-school UI frameword for web.
