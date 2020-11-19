@@ -26,20 +26,20 @@ npm install --save aflon
 
 and then modify you entry-point file as following:
 
-```
-import * as aflon from "aflon";
+```TypeScript
+import { App, Div } from "aflon";
 
-aflon.App.run(new aflon.Div().setText("Hello world!"));
+App.run(new Div().setText("Hello world!"));
 ```
 
 Code above is completely valid Aflon program.
 
 We can define ```HelloWorld``` component which by default contains "Hello world" text. If we want to style HelloWorld, we can set static ```HelloWorld.style``` to appropriate ```AflonCss``` object. Aflon use typestyle in order to offer strongly-typed in-code styling experience. View documentation to get more information about ```AflonCss```.
 
-```
-import * as aflon from "aflon";
+```TypeScript
+import { App, Div } from "aflon";
 
-class HelloWorld extends aflon.Div() {
+class HelloWorld extends Div() {
 	constructor() {
 		super();
 		this.setText("Hello world!");
@@ -54,7 +54,7 @@ HelloWorld.style = {
 	}
 };
 
-aflon.App.run(new HelloWorld());
+App.run(new HelloWorld());
 ```
 
 ## Motivation
@@ -87,7 +87,7 @@ All other HTML elements are modeled as classes inheriting aflon.Element overridi
 
 Aflon components contain methods, of which some are setters and getters. Setters and getters are always functions; Aflon does not use ECMAScript properties. Setters in general start with 'set' word, and getters with 'get' word. **Every setter by convention returns ```this```.** This convention is important because it allows compact configuration of an object in code. This pattern is known as [chaining](https://en.wikipedia.org/wiki/Method_chaining). (Developers should stick with this convention when implementing their own types extended from aflon.Element.) For example, if we want to create div element witch has text "Hello world", has id "root", and reacts on click event we can write something like this:
 
-```
+```TypeScript
 	new Div()
 		.setText("Hello world")
 		.setId("root")
@@ -96,7 +96,7 @@ Aflon components contain methods, of which some are setters and getters. Setters
 
 Furthermore, if we want to create red div which contains previously defined div, we can do it like this:
 
-```
+```TypeScript
 	new Div()
 		.setInlineStyle({ background: "red" })
 		.append([
@@ -108,7 +108,7 @@ Furthermore, if we want to create red div which contains previously defined div,
 ```
 Using chaining we can create hierarchical representation of UI in JavaScript code without using declarative languages. This code creates DOM tree equivalent to following HTML snippet:
 
-```
+```HTML
 	<div style="background: red">
 		<div id="root" onclick="alert('Hello world')">
 			Hello world
@@ -120,7 +120,7 @@ Using chaining we can create hierarchical representation of UI in JavaScript cod
 
 We can take previously configured red div and make it a custom component - let's call it Reddy. Custom components are created by extending existing components. Because Reddy is essentially a red div, we will extend aflon.Div class, and configure it in the constructor:
 
-```
+```TypeScript
 class Reddy extends aflon.Div {
 	constructor() {
 		super();
@@ -139,7 +139,7 @@ class Reddy extends aflon.Div {
 
 Now we can introduce private (or protected) field which would hold reference to internal div, so we can easily change it in code, and add public method to Reddy to change the text "Hello world" to "Goodbye world". Let's say that we also want that clicking inner div doesn't show alert, but changes Reddy's color to green:
 
-```
+```TypeScript
 class Reddy extends aflon.Div {
 
 	private innerDiv: aflon.Div;
@@ -167,7 +167,7 @@ class Reddy extends aflon.Div {
 
 We can now instantiate Reddy by calling its constructor. Let's say that we want to create new custom component called MultyRed which is consisted of 5 Reddys:
 
-```
+```TypeScript
 class MultyRed extends aflon.Div {
 	constructor() {
 		super();
@@ -185,13 +185,13 @@ class MultyRed extends aflon.Div {
 
 Let's say that MultyRed is our application. Aflon has class App which is used for starting the application:
 
-```
+```TypeScript
 aflon.App.run(new MultyRed());
 ```
 
 Therefore, whole code would look like this:
 
-```
+```TypeScript
 import * as aflon from "aflon";
 	
 class Reddy extends aflon.Div {
@@ -241,7 +241,7 @@ Aflon does not expect any particular styling strategy.
 
 However, according to its philosophy **Everything in Javascript**, Aflon offers infrastructure for type-safe definitions of CSS rules (and in particular classes) in JavaScript code using object literals. Main type used for definition of CSS style in Aflon is ```CSSProperties```, which a type is reexposed from Aflon's dependency library [typestyle](https://typestyle.github.io/). For more information view [typestyle documentation](https://typestyle.github.io/#/core). Example of defining CSS rule in-code in Aflon is as following:
 
-```
+```TypeScript
 aflon.CSS.createRule("html, body", {
     width: "100%", height: "100%", margin: 0, padding: 0
 });
@@ -251,7 +251,7 @@ Furthermore, as a component is the fundamental building block of Aflon applicati
 
 Static ```style``` field (of type AflonCss) is essentially a string dictionary of CSSProperties (eg. ```Record<string, CSSProperties>```). If component class has field ```this.something``` which contains a reference to its child, then the key ```something``` in style record configures CSS of that child. Key ```_``` (underscore) configures CSS of the component itself. For example:
 
-```
+```TypeScript
 class SomeComponent extends aflon.Div {
 	private element1: aflon:Div;
 	private element2: aflon.Div;
@@ -280,7 +280,7 @@ This way class definitions do not need to contain any reference to styling, fund
 
 Let's consider some practical examples. Suppose that we have following CSS class rules defined somewhere:
 
-```
+```CSS
 .innerDivClass {
 	fontSize: 20px;
 	fontWeight: bold;
@@ -293,7 +293,7 @@ Let's consider some practical examples. Suppose that we have following CSS class
 
 Now we can add ```innerDivClass``` to ```this.innerDiv``` and ```reddyClass``` to ```this```:
 
-```
+```TypeScript
 class Reddy extends aflon.Div {
 
 	private innerDiv: aflon.Div;
@@ -319,7 +319,7 @@ class Reddy extends aflon.Div {
 
 However, Aflon's attitude is only to use JavaScript; therefore we can use simple mechanism for in-code definition of CSS classes. This functionality is based on typestyle library, which does not only generates class rules but offers strongly-typed environment for defining these rules. Previous CSS code can be equivalently defined in following manner:
 
-```
+```TypeScript
 const innerDivClass = aflon.CSS.class({
 	fontSize: "20px",
 	fontWeight: "bold"
@@ -354,7 +354,7 @@ In any case, we can notice that we have already gave name to our 'Hello World' d
 
 In order to simplify styling of complex components, we can use static ```style``` field of type AflonCss which represents default style of the component. This style can be overriden before any instance of component is created. Therefore, instead of creating a class and then adding class name to component, we only specify ```style``` field while rest is done in background. Following code is equivalent to previous snippets:
 
-```
+```TypeScript
 class Reddy extends aflon.Div {
 
 	private innerDiv: aflon.Div;
