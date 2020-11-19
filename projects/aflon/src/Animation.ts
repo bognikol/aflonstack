@@ -59,9 +59,8 @@ export type AflonAnimationDefinition = Record<string, AnimationDefinition>;
 class PrimitiveAnimation {
 
     private _autoFrom: boolean = false;
-    private _prepeared: boolean = false;
     private _animationDefinition: PrimitiveAnimationDefintion;
-    private _tweenAnimation: popmotion.ColdSubscription;
+    private _animation: popmotion.ColdSubscription;
     private _styler: stylefire.Styler;
     private _durationWithAfterDelay: number;
     private _context: Element;
@@ -75,17 +74,25 @@ class PrimitiveAnimation {
             this._autoFrom = true;
     }
 
-    start(): void {
-        if (this._autoFrom || !this._prepeared)
-            this._prepeare();
+    start(onComplete?: () => void): void {
+        if (this._autoFrom || !this._animation) {
+            this._animation = this._createAndStartAnimation(onComplete);
+        } else {
+            this._animation.resume();
+        }
+    }
 
-        this._tweenAnimation.seek(0);
-        this._tweenAnimation.resume();
+    async startAsync(): Promise<void> {
+        return new Promise<void>((resolve) => {
+            this.start(() => {
+                resolve();
+            });
+        });
     }
 
     stop(): void {
-        if (!this._tweenAnimation) return;
-        this._tweenAnimation.pause();
+        if (!this._animation) return;
+        this._animation.pause();
     }
 
     toBegining(): void {
@@ -101,13 +108,13 @@ class PrimitiveAnimation {
     }
 
     getElapsed(): number {
-        if (!this._tweenAnimation) return 0;
-        return this._tweenAnimation.getElapsed();
+        if (!this._animation) return 0;
+        return this._animation.getElapsed();
     }
 
     getProgress(): number {
-        if (!this._tweenAnimation) return 0;
-        return this._tweenAnimation.getProgress();
+        if (!this._animation) return 0;
+        return this._animation.getProgress();
     }
 
     private _prepeareStyler() {
@@ -121,7 +128,7 @@ class PrimitiveAnimation {
 
     }
 
-    private _prepeare() {
+    private _createAndStartAnimation(onComplete: () => void): popmotion.ColdSubscription {
         this._prepeareStyler();
 
         if (typeof(this._animationDefinition.ease) == "string" &&
@@ -141,31 +148,32 @@ class PrimitiveAnimation {
         if (this._autoFrom)
             effectiveFrom = this._styler.get(this._animationDefinition.track);
 
-        this._tweenAnimation =
-            popmotion.keyframes({
-                values: [
-                    effectiveFrom as string,
-                    effectiveFrom as string,
-                    this._animationDefinition.to as string,
-                    this._animationDefinition.to as string
-                ],
-                times: [
-                    0,
-                    this._animationDefinition.delay / totalDuration,
-                    (this._animationDefinition.delay + this._animationDefinition.duration) / totalDuration,
-                    1
-                ],
-                easings: [popmotion.easing.linear, this._ease, popmotion.easing.linear],
-                duration: totalDuration,
-                elapsed: this._animationDefinition.elapsed,
-                flip: this._animationDefinition.flip,
-                loop: this._animationDefinition.loop,
-                yoyo: this._animationDefinition.yoyo
-            })
-                .start((v: any) => this._styler.set(this._animationDefinition.track, v));
-        this._tweenAnimation.pause();
-
-        this._prepeared = true;
+        return popmotion.keyframes({
+            values: [
+                effectiveFrom as string,
+                effectiveFrom as string,
+                this._animationDefinition.to as string,
+                this._animationDefinition.to as string
+            ],
+            times: [
+                0,
+                this._animationDefinition.delay / totalDuration,
+                (this._animationDefinition.delay + this._animationDefinition.duration) / totalDuration,
+                1
+            ],
+            easings: [popmotion.easing.linear, this._ease, popmotion.easing.linear],
+            duration: totalDuration,
+            elapsed: this._animationDefinition.elapsed,
+            flip: this._animationDefinition.flip,
+            loop: this._animationDefinition.loop,
+            yoyo: this._animationDefinition.yoyo
+        }).start({
+            update: (v: any) => this._styler.set(this._animationDefinition.track, v),
+            complete: () => {
+                if (onComplete)
+                    onComplete();
+            }
+        });
     }
 }
 
@@ -212,8 +220,20 @@ export class Animation {
             );
     }
 
-    start(): void {
-        this._primitiveAnimations.forEach(animation => animation.start());
+    start(onComlete?: () => void): void {
+        let completed: boolean = false;
+        this._primitiveAnimations.forEach(animation => animation.start(() => {
+            if (completed) return;
+            onComlete();
+        }));
+    }
+
+    async startAsync(): Promise<void> {
+        return new Promise<void>(resolve => {
+            this.start(() => {
+                resolve();
+            });
+        });
     }
 
     stop(): void {
@@ -240,5 +260,29 @@ export class Animation {
             return 0;
 
         return this._primitiveAnimations[0].getProgress();
+    }
+}
+
+export function animate(context: Element, definition: PrimitiveAnimationDefintion, onComleted?: () => void): void {
+    new PrimitiveAnimation(definition, context).start(onComleted);
+}
+
+export async function animateAsync(context: Element, definition: PrimitiveAnimationDefintion): Promise<void> {
+    return new PrimitiveAnimation(definition, context).startAsync();
+}
+
+export class Anims {
+    static fadeIn(element: Element, duration: number = 250, ease: Easing = "linear", onComplete?: () => void): void {
+        let animation = new Animation({
+            animations: [{ track: "opacity", to: "1.0", duration: duration, ease: ease }]
+        }, element);
+        animation.start(onComplete);
+    }
+
+    static async fadeInAsync(element: Element, duration: number = 250, ease: Easing = "linear"): Promise<void> {
+        let animation = new Animation({
+            animations: [{ track: "opacity", to: "1.0", duration: duration, ease: ease }]
+        }, element);
+        return animation.startAsync();
     }
 }

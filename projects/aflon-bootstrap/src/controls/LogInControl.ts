@@ -6,8 +6,8 @@ import LabeledTextBox from "./LabeledTextBox";
 export default class LogInControl extends aflon.Div
 {
     private title: aflon.Div;
-    private usernameTextBox: LabeledTextBox;
-    private passwordTextBox: LabeledTextBox;
+    private usernameTextBox: LabeledTextBox<aflon.TextBox>;
+    private passwordTextBox: LabeledTextBox<aflon.PassBox>;
     private submitButton: aflon.Button;
 
     constructor()
@@ -17,9 +17,9 @@ export default class LogInControl extends aflon.Div
         this.append([
             (this.title = new aflon.Div())
                 .setText("Log In"),
-            (this.usernameTextBox = new LabeledTextBox())
+            (this.usernameTextBox = new LabeledTextBox<aflon.TextBox>(aflon.TextBox))
                 .setPlaceholder("Username"),
-            (this.passwordTextBox = new LabeledTextBox())
+            (this.passwordTextBox = new LabeledTextBox<aflon.PassBox>(aflon.PassBox))
                 .setPlaceholder("Password"),
             (this.submitButton = new aflon.Button())
                 .setText("Submit")

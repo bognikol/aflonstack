@@ -5,12 +5,8 @@
   "scripts": {
     "start": "ws -d ./dist --spa index.html -p 9000",
     "start-studio": "ws -d ./dist --spa aflonStudio.html -p 9090",
-    "build": "webpack --config webpack.config.js",
-    "build-prod": "webpack -p --config webpack.config.js --entry ./src/index.ts --filename main.js",
-    "build-studio": "webpack -d --config webpack.config.js --entry ./test/index.ts --filename afst.js"
+    "build": "webpack --config webpack.config.js"
   },
-  "author": "Bogdan Nikolic <bogdan_nikolic@hotmail.com>",
-  "license": "ISC",
   "devDependencies": {
     "aflon-studio": "1.0.15",
     "local-web-server": "^4.2.1",
@@ -20,6 +16,6 @@
     "webpack-cli": "~4.2.0"
   },
   "dependencies": {
-    "aflon": "^1.1.4"
+    "aflon": "^1.2.0"
   }
 }

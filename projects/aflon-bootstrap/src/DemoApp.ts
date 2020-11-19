@@ -3,7 +3,6 @@ import AflonStudio from "aflon-studio";
 
 import LogInControl from "./controls/LogInControl";
 
-
 export default class DemoApp extends aflon.Div 
 {
     private aflonTitle: aflon.Div;

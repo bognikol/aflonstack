@@ -1,18 +1,19 @@
 import * as aflon from "aflon";
 import AflonStudio from "aflon-studio";
 
-export default class LabeledTextBox extends aflon.Div implements aflon.ITextBox
+export default class LabeledTextBox<T extends aflon.AbstractTextBox> 
+    extends aflon.Div implements aflon.AbstractTextBox
 {
-    private textBox: aflon.TextBox;
+    private textBox: aflon.AbstractTextBox;
     private placeholder: aflon.Div;
 
-    constructor()
+    constructor(private textBoxType: new () => T)
     {
         super();
 
         this.append([
             (this.placeholder = new aflon.Div()),
-            (this.textBox = new aflon.TextBox())
+            (this.textBox = new this.textBoxType())
                 .on("focus", () => this.onTextBoxFocus())
                 .on("blur",  () => this.onTextBoxBlur())
         ])
