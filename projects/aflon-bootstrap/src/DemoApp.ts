@@ -8,6 +8,8 @@ export default class DemoApp extends aflon.Div
     private aflonTitle: aflon.Div;
     private logInControl: LogInControl;
 
+    private currentScale: number = 1.0;
+
     constructor() {
         super();
 
@@ -15,7 +17,25 @@ export default class DemoApp extends aflon.Div
             (this.aflonTitle = new aflon.Div())
                 .setText("Aflon"),
             (this.logInControl = new LogInControl())
-        ]);
+        ])
+        .on("wheel", (e: Event) => this.onMouseWheel(e));
+    }
+
+    async onMouseWheel(e: Event) {
+        let eventWheel: WheelEvent = e as WheelEvent;
+
+        let currentScaleString = `scale(${this.currentScale}, ${this.currentScale})`;
+
+        if (eventWheel.deltaY > 0)
+            this.currentScale += 0.2;
+        else
+            this.currentScale *= 0.8;
+
+        let newScaleString = `scale(${this.currentScale}, ${this.currentScale})`;
+
+        await aflon.animateAsync(this.logInControl, {
+            track: "transform", to: newScaleString, from: currentScaleString, ease: "circOut"
+        });
     }
 }
 

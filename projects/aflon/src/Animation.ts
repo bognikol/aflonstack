@@ -58,6 +58,16 @@ export type AflonAnimationDefinition = Record<string, AnimationDefinition>;
 
 class PrimitiveAnimation {
 
+    private static _fallbackAnimationDefinition: AnimationFallBackDefinition = {
+        ease:     PredefinedEasingFuncs.linear,
+        duration: 300,
+        delay:    0,
+        elapsed:  0,
+        loop:     0,
+        flip:     0,
+        yoyo:     0
+    };
+
     private _autoFrom: boolean = false;
     private _animationDefinition: PrimitiveAnimationDefintion;
     private _animation: popmotion.ColdSubscription;
@@ -67,7 +77,7 @@ class PrimitiveAnimation {
     private _ease: EasingFunc;
 
     constructor(animationDefinition: PrimitiveAnimationDefintion, context: Element, durationWithAfterDelay: number = 0) {
-        this._animationDefinition = animationDefinition;
+        this._animationDefinition = { ...PrimitiveAnimation._fallbackAnimationDefinition, ...animationDefinition };
         this._context = context;
         this._durationWithAfterDelay = durationWithAfterDelay;
         if (animationDefinition.from === undefined)
@@ -76,8 +86,10 @@ class PrimitiveAnimation {
 
     start(onComplete?: () => void): void {
         if (this._autoFrom || !this._animation) {
+            console.log("Starting anim");
             this._animation = this._createAndStartAnimation(onComplete);
         } else {
+            this._animation.seek(0);
             this._animation.resume();
         }
     }
@@ -128,7 +140,7 @@ class PrimitiveAnimation {
 
     }
 
-    private _createAndStartAnimation(onComplete: () => void): popmotion.ColdSubscription {
+    private _createAndStartAnimation(onComplete?: () => void): popmotion.ColdSubscription {
         this._prepeareStyler();
 
         if (typeof(this._animationDefinition.ease) == "string" &&
@@ -170,8 +182,7 @@ class PrimitiveAnimation {
         }).start({
             update: (v: any) => this._styler.set(this._animationDefinition.track, v),
             complete: () => {
-                if (onComplete)
-                    onComplete();
+                if (onComplete) onComplete();
             }
         });
     }
@@ -220,11 +231,12 @@ export class Animation {
             );
     }
 
-    start(onComlete?: () => void): void {
+    start(onComplete?: () => void): void {
         let completed: boolean = false;
         this._primitiveAnimations.forEach(animation => animation.start(() => {
             if (completed) return;
-            onComlete();
+            if (onComplete) onComplete();
+            completed = true;
         }));
     }
 
@@ -263,8 +275,8 @@ export class Animation {
     }
 }
 
-export function animate(context: Element, definition: PrimitiveAnimationDefintion, onComleted?: () => void): void {
-    new PrimitiveAnimation(definition, context).start(onComleted);
+export function animate(context: Element, definition: PrimitiveAnimationDefintion, onCompleted?: () => void): void {
+    new PrimitiveAnimation(definition, context).start(onCompleted);
 }
 
 export async function animateAsync(context: Element, definition: PrimitiveAnimationDefintion): Promise<void> {

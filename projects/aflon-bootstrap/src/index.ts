@@ -12,7 +12,7 @@ import DemoApp from "./DemoApp";
 
 // App.run starts the application by clearing the body and then
 // insering aflon.Element suplied as first argument to body.
-// Second argument which is optional is an id of existing
+// Second (optional) argument is an id of existing
 // html element where first argument aflon.Element should be
 // inserted.
 aflon.App.run(new DemoApp());

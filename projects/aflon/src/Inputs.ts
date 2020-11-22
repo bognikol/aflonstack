@@ -1,11 +1,13 @@
 import { Element, AflonHtmlElement } from "./Element";
 
 export interface IInput {
-    disable(): this;
-    enable(): this;
-    isEnabled(): boolean;
+    eventChange: string;
+    eventInput: string;
+
+    setEnabled(enabled: boolean): this;
+    getEnabled(): boolean;
     setReadOnly(readOnly: boolean): this;
-    isReadOnly(): boolean;
+    getReadOnly(): boolean;
     focus(): void;
     blur(): void;
 }
@@ -20,9 +22,10 @@ export interface ITextBox extends IInput {
 export interface IButton extends IInput { }
 
 export interface IToggableButton extends IButton {
-    check(): this;
-    uncheck(): this;
-    isChecked(): boolean;
+    eventChecked: string;
+
+    setChecked(checked: boolean): this;
+    getChecked(): boolean;
 }
 
 export interface IRadioButton extends IToggableButton {
@@ -37,6 +40,8 @@ export interface ISelectOption {
 }
 
 export interface ISelectBox extends IInput {
+    eventSelected: string;
+
     insertOption(option: ISelectOption): this;
     removeOption(optionValue: string): this;
     insertOptions(options: ISelectOption[]): this;
@@ -58,11 +63,13 @@ export interface IValidateable {
 }
 
 export abstract class AbstractInput extends Element implements IInput {
-    abstract disable(): this;
-    abstract enable(): this;
-    abstract isEnabled(): boolean;
+    eventChange: string = "change";
+    eventInput: string  = "input";
+
+    abstract setEnabled(enabled: boolean): this;
+    abstract getEnabled(): boolean;
     abstract setReadOnly(readOnly: boolean): this;
-    abstract isReadOnly(): boolean;
+    abstract getReadOnly(): boolean;
     abstract focus(): void;
     abstract blur(): void;
 }
@@ -77,9 +84,10 @@ export abstract class AbstractTextBox extends AbstractInput implements ITextBox 
 export abstract class AbstractButton extends AbstractInput implements IButton { }
 
 export abstract class AbstractToggableButton extends AbstractInput implements IToggableButton {
-    abstract check(): this;
-    abstract uncheck(): this;
-    abstract isChecked(): boolean;
+    eventChecked: string = "checked";
+
+    abstract setChecked(checked: boolean): this;
+    abstract getChecked(): boolean;
 }
 
 export abstract class AbstractRadioButton extends AbstractToggableButton implements IToggableButton {
@@ -89,6 +97,8 @@ export abstract class AbstractRadioButton extends AbstractToggableButton impleme
 }
 
 export abstract class AbstractSelectBox extends AbstractInput implements ISelectBox {
+    eventSelected: string = "selected";
+
     abstract insertOption(option: ISelectOption): this;
     abstract removeOption(optionValue: string): this;
     abstract insertOptions(options: ISelectOption[]): this;
@@ -98,13 +108,16 @@ export abstract class AbstractSelectBox extends AbstractInput implements ISelect
 }
 
 export abstract class Input extends Element implements IInput, AbstractInput {
+    eventChange: string = "change";
+    eventInput: string  = "input";
+    
     setReadOnly(readOnly: boolean): this {
         if (readOnly) this.addAttr("readonly", "true");
         else this.addAttr("readonly", "false");
         return this;
     }
 
-    isReadOnly(): boolean {
+    getReadOnly(): boolean {
         return this.getAttr("readonly") == "true";
     }
 
@@ -158,23 +171,26 @@ export class PassBox extends TextBox implements ITextBox, AbstractTextBox {
 }
 
 export class CheckBox extends Input implements IToggableButton, AbstractToggableButton {
-    check(): this {
-        this.addAttr("checked", "true");
+    public eventChecked = "checked";
+
+    setChecked(checked: boolean): this {
+        if (checked) {
+            this.addAttr("checked", "true");
+        } else {
+            this.addAttr("checked", "false");
+        }
+
         return this;
     }
 
-    uncheck(): this {
-        this.addAttr("checked", "false");
-        return this;
-    }
-
-    isChecked(): boolean {
+    getChecked(): boolean {
         return this.getAttr("checked") == "true";
     }
 
     protected _createElement(): AflonHtmlElement {
         const checkbox = document.createElement("input");
         checkbox.setAttribute("type", "checkbox");
+        checkbox.addEventListener("input", () => this.raise(this.eventChecked));
         return checkbox;
     }
 }
@@ -209,6 +225,8 @@ export class RadioButton extends CheckBox implements IRadioButton, AbstractRadio
 }
 
 export class SelectBox extends Input implements ISelectBox, AbstractSelectBox {
+    public eventSelected = "selected";
+
     constructor(options?: ISelectOption[]) {
         super();
 
@@ -272,6 +290,7 @@ export class SelectBox extends Input implements ISelectBox, AbstractSelectBox {
 
     protected _createElement(): AflonHtmlElement {
         const select = document.createElement("select");
+        select.addEventListener("change", () => this.raise(this.eventSelected));
         return select;
     }
 }

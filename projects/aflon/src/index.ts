@@ -18,7 +18,7 @@ export {
 } from "./Inputs";
 
 export {
-    PredefinedEasingFuncs, AflonAnimationDefinition, Animation
+    PredefinedEasingFuncs, AflonAnimationDefinition, Animation, animate, animateAsync
 } from "./Animation";
 
 export {
