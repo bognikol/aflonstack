@@ -40,18 +40,18 @@ Instead of configuring inline Div component, we can define ```HelloWorld``` comp
 import { App, Div } from "aflon";
 
 class HelloWorld extends Div {
-	constructor() {
-		super();
-		this.setText("Hello world!");
-	}
+    constructor() {
+        super();
+        this.setText("Hello world!");
+    }
 }
 
 HelloWorld.style = {
-	_: {
-		fontSize: "20px",
-		margin: "10px",
-		color: "red"
-	}
+    _: {
+        fontSize: "20px",
+        margin: "10px",
+        color: "red"
+    }
 };
 
 App.run(new HelloWorld());
@@ -127,18 +127,18 @@ We can take previously configured red div and make it a custom component - let's
 
 ```TypeScript
 class Reddy extends Div {
-	constructor() {
-		super();
-		
-		this
-			.setInlineCss({ background: "red" })
-			.append([
-				new Button()
-					.setText("Hello world")
-					.addClass("innerButton")
-					.on("click", () => alert("Hello world"))
-			]);
-	}
+    constructor() {
+        super();
+        
+        this
+            .setInlineCss({ background: "red" })
+            .append([
+                new Button()
+                    .setText("Hello world")
+                    .addClass("innerButton")
+                    .on("click", () => alert("Hello world"))
+            ]);
+    }
 }
 ```
 
@@ -147,20 +147,20 @@ Now we can introduce private (or protected) field which would hold reference to 
 ```TypeScript
 class Reddy extends Div {
 
-	private innerButton: Button;
-	
-	constructor() {
-		super();
-		
-		this
-			.setInlineCss({ background: "red" })
-			.append([
-				(this.innerButton = new Button())
-					.setText("Hello world")
-					.addClass("innerButton")
-					.on("click", () => this.onInnerButtonClick())
+    private innerButton: Button;
+    
+    constructor() {
+        super();
+        
+        this
+            .setInlineCss({ background: "red" })
+            .append([
+                (this.innerButton = new Button())
+                    .setText("Hello world")
+                    .addClass("innerButton")
+                    .on("click", () => this.onInnerButtonClick())
             ]);
-	}
+    }
     
     onInnerButtonClick(): void {
         console.log(this.innerButton.getText());
@@ -182,17 +182,17 @@ We can now instantiate Reddy by calling its constructor. Let's say that we want 
 
 ```TypeScript
 class MultyRed extends Div {
-	constructor() {
-		super();
-		
-		this.append([
-			new Reddy().setText("Reddy1"),
-			new Reddy().setText("Reddy2"),
-			new Reddy().setText("Reddy3"),
-			new Reddy().setText("Reddy4"),
-			new Reddy().setText("Reddy5")
-		]);
-	}
+    constructor() {
+        super();
+        
+        this.append([
+            new Reddy().setText("Reddy1"),
+            new Reddy().setText("Reddy2"),
+            new Reddy().setText("Reddy3"),
+            new Reddy().setText("Reddy4"),
+            new Reddy().setText("Reddy5")
+        ]);
+    }
 }
 ```
 
@@ -206,23 +206,23 @@ Therefore, whole code would look like this:
 
 ```TypeScript
 import { Div, Button, App } from "aflon";
-	
+    
 class Reddy extends Div {
 
-	private innerButton: Button;
-	
-	constructor() {
-		super();
-		
-		this
-			.setInlineCss({ background: "red" })
-			.append([
-				(this.innerButton = new Button())
-					.setText("Hello world")
-					.addClass("innerButton")
-					.on("click", () => this.onInnerButtonClick())
+    private innerButton: Button;
+    
+    constructor() {
+        super();
+        
+        this
+            .setInlineCss({ background: "red" })
+            .append([
+                (this.innerButton = new Button())
+                    .setText("Hello world")
+                    .addClass("innerButton")
+                    .on("click", () => this.onInnerButtonClick())
             ]);
-	}
+    }
     
     onInnerButtonClick(): void {
         console.log(this.innerButton.getText());
@@ -238,21 +238,21 @@ class Reddy extends Div {
         return this.innerButton.getText();
     }
 }
-	
+    
 class MultyRed extends Div {
-	constructor() {
-		super();
-		
-		this.append([
-			new Reddy().setText("Reddy1"),
-			new Reddy().setText("Reddy2"),
-			new Reddy().setText("Reddy3"),
-			new Reddy().setText("Reddy4"),
-			new Reddy().setText("Reddy5")
-		]);
-	}
+    constructor() {
+        super();
+        
+        this.append([
+            new Reddy().setText("Reddy1"),
+            new Reddy().setText("Reddy2"),
+            new Reddy().setText("Reddy3"),
+            new Reddy().setText("Reddy4"),
+            new Reddy().setText("Reddy5")
+        ]);
+    }
 }
-	
+    
 App.run(new MultyRed());
 ```
 
@@ -266,25 +266,25 @@ It the nutshell, Aflon eventing mechanism is implemented through 3 methods of ``
 
 ```TypeScript
 class Reddy extends Div {
-	private innerButton: Button;
+    private innerButton: Button;
 
-	constructor() {
-		super();
-		
-		this
-			.setInlineCss({ background: "red" })
-			.append([
-				(this.innerButton = new Button())
-					...
-					.on("click", e => this.onInnerButtonClick(e))
+    constructor() {
+        super();
+        
+        this
+            .setInlineCss({ background: "red" })
+            .append([
+                (this.innerButton = new Button())
+                    ...
+                    .on("click", e => this.onInnerButtonClick(e))
             ]);
-	}
+    }
     
     onInnerButtonClick(e): void {
         console.log(e.target.aflonElement.getText());
-		this.setInlineCss({ background: "green" });
-	}
-	...
+        this.setInlineCss({ background: "green" });
+    }
+    ...
 }
 ```
 
@@ -294,27 +294,27 @@ Note though that ```aflonElement``` is not present if the origin of the event is
 
 ```TypeScript
 class Reddy extends Div {
-	private innerButton: Button;
-	
-	constructor() {
-		super();
-		
-		this
-			.setInlineCss({ background: "red" })
-			.append([
-				(this.innerButton = new Button())
-					...
-					.on("click", this.onInnerButtonClick)
+    private innerButton: Button;
+    
+    constructor() {
+        super();
+        
+        this
+            .setInlineCss({ background: "red" })
+            .append([
+                (this.innerButton = new Button())
+                    ...
+                    .on("click", this.onInnerButtonClick)
             ]);
-	}
+    }
     
     onInnerButtonClick = (e) => {
         console.log(e.target.aflonElement.getText());
-		this.setInlineCss({ background: "green" });
-		e.target.aflonElement.off("click", this.onInnerButtonClick);
-		this.raise("checked");
-	}
-	...
+        this.setInlineCss({ background: "green" });
+        e.target.aflonElement.off("click", this.onInnerButtonClick);
+        this.raise("checked");
+    }
+    ...
 }
 ```
 
@@ -324,27 +324,27 @@ However, once we added ```checked``` event to ```Reddy``` (it became a part of i
 
 ```TypeScript
 interface ICheckable extends IEventable {
-	public eventChecked;
+    public eventChecked;
 }
 
 class Reddy extends Div implements ICheckable {
-	public eventChecked = "checked";
-	...
-	constructor() {
-		this
-			.append([
-				(this.innerButton = new Button())
-					...
-					.on(this.innerButton.eventClick, this.onInnerButtonClick)
+    public eventChecked = "checked";
+    ...
+    constructor() {
+        this
+            .append([
+                (this.innerButton = new Button())
+                    ...
+                    .on(this.innerButton.eventClick, this.onInnerButtonClick)
             ]);
-	}
+    }
     
     onInnerButtonClick = (e) => {
-		...
-		e.target.aflonElement.off(this.innerButton.eventClick, this.onInnerButtonClick);
-		this.raise(this.eventChecked);
-	}
-	...
+        ...
+        e.target.aflonElement.off(this.innerButton.eventClick, this.onInnerButtonClick);
+        this.raise(this.eventChecked);
+    }
+    ...
 }
 
 let someCheckable: ICheckable = new Reddy();
@@ -371,23 +371,23 @@ Static ```style``` field (of type AflonCss) is essentially a string dictionary o
 
 ```TypeScript
 class SomeComponent extends aflon.Div {
-	private element1: aflon:Div;
-	private element2: aflon.Div;
-	private element3: aflon.Div;
-	
-	constructor() {
-		...
-	}
-	...
+    private element1: aflon:Div;
+    private element2: aflon.Div;
+    private element3: aflon.Div;
+    
+    constructor() {
+        ...
+    }
+    ...
 }
 
 SomeComponenet.style = {
-	_: {
-		background: "red", // configures CSS of SomeComponent root
-	},
-	element1: { ... }, // configures CSS of element1
-	element2: { ... }, // configures CSS of element2
-	element3: { ... }  // ...
+    _: {
+        background: "red", // configures CSS of SomeComponent root
+    },
+    element1: { ... }, // configures CSS of element1
+    element2: { ... }, // configures CSS of element2
+    element3: { ... }  // ...
 };
 
 ```
@@ -417,20 +417,20 @@ Now we have already added ```innerButton``` to ```this.innerButton``` so we only
 ```TypeScript
 class Reddy extends Div {
 
-	private innerButton: Button;
-	
-	constructor() {
-		super();
-		
-		this
-			.addClass("reddy")
-			.append([
-				(this.innerButton = new Button())
-					.setText("Hello world")
-					.addClass("innerButton")
-					.on(this.innerButton.eventClick, () => this.onInnerButtonClick())
+    private innerButton: Button;
+    
+    constructor() {
+        super();
+        
+        this
+            .addClass("reddy")
+            .append([
+                (this.innerButton = new Button())
+                    .setText("Hello world")
+                    .addClass("innerButton")
+                    .on(this.innerButton.eventClick, () => this.onInnerButtonClick())
             ]);
-	}
+    }
     
     ...
 }
@@ -453,20 +453,20 @@ const reddyClass = CSS.class({
 
 class Reddy extends Div {
 
-	private innerButton: Button;
-	
-	constructor() {
-		super();
-		
-		this
-			.addClass(reddyClass)
-			.append([
-				(this.innerButton = new Button())
-					.setText("Hello world")
-					.addClass(innerButtonClass)
-					.on(this.innerButton.eventClick, () => this.onInnerButtonClick())
+    private innerButton: Button;
+    
+    constructor() {
+        super();
+        
+        this
+            .addClass(reddyClass)
+            .append([
+                (this.innerButton = new Button())
+                    .setText("Hello world")
+                    .addClass(innerButtonClass)
+                    .on(this.innerButton.eventClick, () => this.onInnerButtonClick())
             ]);
-	}
+    }
     
     ...
 }
@@ -482,32 +482,32 @@ In order to simplify styling of complex components, we can use static ```style``
 ```TypeScript
 class Reddy extends Div {
 
-	private innerButton: Button;
-	
-	constructor() {
-		super();
-		
-		this
-			.append([
-				(this.innerButton = new Button())
+    private innerButton: Button;
+    
+    constructor() {
+        super();
+        
+        this
+            .append([
+                (this.innerButton = new Button())
                 ...
             ]);
-	}
+    }
     
     ...
 }
 
 Reddy.style = {
-	_: {
-		background: "red",
-		display: "inline-block",
-		margin: "10px"
-	},
-	innerButton: {
-		fontSize: "20px",
+    _: {
+        background: "red",
+        display: "inline-block",
+        margin: "10px"
+    },
+    innerButton: {
+        fontSize: "20px",
         fontWeight: "bold",
         margin: "10px"
-	}
+    }
 };
 
 ```
