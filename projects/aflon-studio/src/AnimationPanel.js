@@ -449,7 +449,7 @@ AnimationPanel.style = {
     }
 };
 
-export class AnimationControlBox extends aflon.Div {
+export class AnimationControlBox extends aflon.Input {
     constructor() {
         super();
 
@@ -467,14 +467,14 @@ export class AnimationControlBox extends aflon.Div {
         ]);
     }
 
-    disable() {
-        this.children().forEach(child => child.disable());
-        super.disable();
-    }
-
-    enable() {
-        this.children().forEach(child => child.enable());
-        super.enable();
+    setDisabled(enabled) {
+        if (!enabled) {
+            this.children().forEach(child => { if (child.setDisabled) child.setDisabled(false) });
+            super.setDisabled(false);
+        } else {
+            this.children().forEach(child => { if (child.setDisabled)  child.setDisabled(true) });
+            super.setDisabled(true);
+        }
     }
 }
 
@@ -593,14 +593,14 @@ export class AflonAnimationPanel extends aflon.Div
         this.animationSelectBox.empty();
         
         if (!aflonAnimation || Object.keys(aflonAnimation).length == 0) {
-            this.animationSelectBox.disable();
-            this.deleteButton.disable();
-            this.controls.disable();
+            this.animationSelectBox.setDisabled(true);
+            this.deleteButton.setDisabled(true);
+            this.controls.setDisabled(true);
             this.animationPanel.setAnimationDefinition(null);
         } else {
-            this.animationSelectBox.enable();
-            this.deleteButton.enable();
-            this.controls.enable();
+            this.animationSelectBox.setDisabled(false);
+            this.deleteButton.setDisabled(false);
+            this.controls.setDisabled(false);
 
             for (let animation in aflonAnimation) {
                 this.animationSelectBox.insertOptions([{

@@ -1,10 +1,13 @@
 dependencies:
+  '@microsoft/api-documenter': 7.12.0
+  '@microsoft/api-extractor': 7.12.1
   '@rush-temp/aflon': 'file:projects/aflon.tgz'
   '@rush-temp/aflon-bootstrap': 'file:projects/aflon-bootstrap.tgz'
   '@rush-temp/aflon-studio': 'file:projects/aflon-studio.tgz'
   '@typescript-eslint/eslint-plugin': 4.7.0_e0872ac31e5aafe6623f77947c0152d6
   '@typescript-eslint/parser': 4.7.0_eslint@7.13.0+typescript@4.0.5
   eslint: 7.13.0
+  eslint-plugin-tsdoc: 0.2.10
   local-web-server: 4.2.1
   popmotion: 8.7.6
   stylefire: 7.0.3
@@ -59,6 +62,56 @@ packages:
       node: '>= 8.0.0'
     resolution:
       integrity: sha512-7ulRC1da/rBa6kj6P4g2aJfnET3z8Uf3SWu60cjbtxTA5g8lxRdX/Bd2P92EagGwwAhANeNw8T8if99rJliR6Q==
+  /@microsoft/api-documenter/7.12.0:
+    dependencies:
+      '@microsoft/api-extractor-model': 7.12.1
+      '@microsoft/tsdoc': 0.12.24
+      '@rushstack/node-core-library': 3.35.2
+      '@rushstack/ts-command-line': 4.7.8
+      colors: 1.2.5
+      js-yaml: 3.13.1
+      resolve: 1.17.0
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-G3nqmmHd7hX0kSohfmq0ms/Yfq4zTGwMNxQtPmc2PuhqvFUIQBqIsRWynCKjfvPLyns2QSn333+NOnj/brReJA==
+  /@microsoft/api-extractor-model/7.12.1:
+    dependencies:
+      '@microsoft/tsdoc': 0.12.24
+      '@rushstack/node-core-library': 3.35.2
+    dev: false
+    resolution:
+      integrity: sha512-Hw+kYfUb1gt6xPWGFW8APtLVWeNEWz4JE6PbLkSHw/j+G1hAaStzgxhBx3GOAWM/G0SCDGVJOpd5YheVOyu/KQ==
+  /@microsoft/api-extractor/7.12.1:
+    dependencies:
+      '@microsoft/api-extractor-model': 7.12.1
+      '@microsoft/tsdoc': 0.12.24
+      '@rushstack/node-core-library': 3.35.2
+      '@rushstack/rig-package': 0.2.9
+      '@rushstack/ts-command-line': 4.7.8
+      colors: 1.2.5
+      lodash: 4.17.20
+      resolve: 1.17.0
+      semver: 7.3.2
+      source-map: 0.6.1
+      typescript: 4.0.5
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-lleLrKkqiRvOQeoRMSHQY0wl/j9SxRVd9+Btyh/WWw0kHNy7nAKyzGmejvlz2XTn13H0elJWV6C3dxhaQy4mtA==
+  /@microsoft/tsdoc-config/0.13.9:
+    dependencies:
+      '@microsoft/tsdoc': 0.12.24
+      ajv: 6.12.6
+      jju: 1.4.0
+      resolve: 1.19.0
+    dev: false
+    resolution:
+      integrity: sha512-VqqZn+rT9f6XujFPFR2aN9XKF/fuir/IzKVzoxI0vXIzxysp4ee6S2jCakmlGFHEasibifFTsJr7IYmRPxfzYw==
+  /@microsoft/tsdoc/0.12.24:
+    dev: false
+    resolution:
+      integrity: sha512-Mfmij13RUTmHEMi9vRUhMXD7rnGR2VvxeNYtaGtaJ4redwwjT4UXYJ+nzmVJF7hhd4pn/Fx5sncDKxMVFJSWPg==
   /@nodelib/fs.scandir/2.1.3:
     dependencies:
       '@nodelib/fs.stat': 2.0.3
@@ -97,12 +150,47 @@ packages:
     dev: false
     resolution:
       integrity: sha512-jYO/8319fKoNLMlY4ZJPiPu8Ea8occYwRZhxpaNn/kZsK4QG2E7XFlXZMJBsTWDw7I1i0uaqyC4zn1nwEezLzg==
+  /@rushstack/node-core-library/3.35.2:
+    dependencies:
+      '@types/node': 10.17.13
+      colors: 1.2.5
+      fs-extra: 7.0.1
+      import-lazy: 4.0.0
+      jju: 1.4.0
+      resolve: 1.17.0
+      semver: 7.3.2
+      timsort: 0.3.0
+      z-schema: 3.18.4
+    dev: false
+    resolution:
+      integrity: sha512-SPd0uG7mwsf3E30np9afCUhtaM1SBpibrbxOXPz82KWV6SQiPUtXeQfhXq9mSnGxOb3WLWoSDe7AFxQNex3+kQ==
+  /@rushstack/rig-package/0.2.9:
+    dependencies:
+      '@types/node': 10.17.13
+      resolve: 1.17.0
+      strip-json-comments: 3.1.1
+    dev: false
+    resolution:
+      integrity: sha512-4tqsZ/m+BjeNAGeAJYzPF53CT96TsAYeZ3Pq3T4tb1pGGM3d3TWfkmALZdKNhpRlAeShKUrb/o/f/0sAuK/1VQ==
+  /@rushstack/ts-command-line/4.7.8:
+    dependencies:
+      '@types/argparse': 1.0.38
+      argparse: 1.0.10
+      colors: 1.2.5
+      string-argv: 0.3.1
+    dev: false
+    resolution:
+      integrity: sha512-8ghIWhkph7NnLCMDJtthpsb7TMOsVGXVDvmxjE/CeklTqjbbUFBjGXizJfpbEkRQTELuZQ2+vGn7sGwIWKN2uA==
   /@tootallnate/once/1.1.2:
     dev: false
     engines:
       node: '>= 6'
     resolution:
       integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
+  /@types/argparse/1.0.38:
+    dev: false
+    resolution:
+      integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==
   /@types/eslint-scope/3.7.0:
     dependencies:
       '@types/eslint': 7.2.4
@@ -125,6 +213,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
+  /@types/node/10.17.13:
+    dev: false
+    resolution:
+      integrity: sha512-pMCcqU2zT4TjqYFrWtYHKal7Sl30Ims6ulZ4UFXxI4xbtQqK/qqKwkDoBFCfooRqqmRu9vY3xaJRwxSh673aYg==
   /@types/node/14.14.0:
     dev: false
     resolution:
@@ -750,6 +842,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-puCDz0CzydiSYOrnXpz/PKd69zRrribezjtE9yd4zvytoRc8+RY/KJPvtPFKZS3E3wP6neGyMe0vOTlHO5L3Pw==
+  /colors/1.2.5:
+    dev: false
+    engines:
+      node: '>=0.1.90'
+    resolution:
+      integrity: sha512-erNRLao/Y3Fv54qUa0LBB+//Uf3YwMUmdJinN20yMXm9zdKKqH9wt7R9IIVZ+K7ShzfpLV/Zg8+VyrBJYB4lpg==
   /command-line-args/5.1.1:
     dependencies:
       array-back: 3.1.0
@@ -1119,6 +1217,13 @@ packages:
       node: '>=0.8.0'
     resolution:
       integrity: sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
+  /eslint-plugin-tsdoc/0.2.10:
+    dependencies:
+      '@microsoft/tsdoc': 0.12.24
+      '@microsoft/tsdoc-config': 0.13.9
+    dev: false
+    resolution:
+      integrity: sha512-LDK6K0tQ7tIyVzyktwX7P9V/aZZOMSIGYRnDP3x6+obITkVyrCrkc5yUhBiUjTc/S9gEy5GpjwD02wgcMPBFbA==
   /eslint-scope/5.1.1:
     dependencies:
       esrecurse: 4.3.0
@@ -1410,6 +1515,16 @@ packages:
     dev: false
     resolution:
       integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==
+  /fs-extra/7.0.1:
+    dependencies:
+      graceful-fs: 4.2.4
+      jsonfile: 4.0.0
+      universalify: 0.1.2
+    dev: false
+    engines:
+      node: '>=6 <7 || >=8'
+    resolution:
+      integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==
   /fs.realpath/1.0.0:
     dev: false
     resolution:
@@ -1659,6 +1774,12 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-cTPNrlvJT6twpYy+YmKUKrTSjWFs3bjYjAhCwm+z4EOCubZxAuO+hHpRN64TqjEaYSHs7tJAE0w1CKMGmsG/lw==
+  /import-lazy/4.0.0:
+    dev: false
+    engines:
+      node: '>=8'
+    resolution:
+      integrity: sha512-rKtvo6a868b5Hu3heneU+L4yEQ4jYKLtjpnPeUdK7h0yzXGmyBTypknlkCvHFBqfX9YlorEiMM6Dnq/5atfHkw==
   /import-local/3.0.2:
     dependencies:
       pkg-dir: 4.2.0
@@ -1712,6 +1833,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-jq1AH6C8MuteOoBPwkxHafmByhL9j5q4OaPGdbuD+ZtQJVzH+i6E3BJDQcBA09k57i2Hh2yQbEG8yObZ0jdlWw==
+  /is-core-module/2.2.0:
+    dependencies:
+      has: 1.0.3
+    dev: false
+    resolution:
+      integrity: sha512-XRAfAdyyY5F5cOXn7hYQDqh2Xmii+DEfIcQGxK/uNwMHhIkPWO0g8msXcbzLe+MpGoR951MlqM/2iIlU4vKDdQ==
   /is-docker/2.1.1:
     dev: false
     engines:
@@ -1822,10 +1949,22 @@ packages:
       node: '>= 10.13.0'
     resolution:
       integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==
+  /jju/1.4.0:
+    dev: false
+    resolution:
+      integrity: sha1-o6vicYryQaKykE+EpiWXDzia4yo=
   /js-tokens/4.0.0:
     dev: false
     resolution:
       integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
+  /js-yaml/3.13.1:
+    dependencies:
+      argparse: 1.0.10
+      esprima: 4.0.1
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-YfbcO7jXDdyj0DGxYVSlSeQNHbD7XPWvrVWeVUujrQEoZzWJIRrCPoyk6kL6IAjAG2IolMK4T0hNUe0HOUs5Jw==
   /js-yaml/3.14.0:
     dependencies:
       argparse: 1.0.10
@@ -1857,6 +1996,12 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-aKS4WQjPenRxiQsC93MNfjx+nbF4PAdYzmd/1JIj8HYzqfbu86beTuNgXDzPknWk0n0uARlyewZo4s++ES36Ow==
+  /jsonfile/4.0.0:
+    dev: false
+    optionalDependencies:
+      graceful-fs: 4.2.4
+    resolution:
+      integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=
   /jsonparse/1.3.1:
     dev: false
     engines:
@@ -2083,6 +2228,14 @@ packages:
     dev: false
     resolution:
       integrity: sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
+  /lodash.get/4.4.2:
+    dev: false
+    resolution:
+      integrity: sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
+  /lodash.isequal/4.5.0:
+    dev: false
+    resolution:
+      integrity: sha1-QVxEePK8wwEgwizhDtMib30+GOA=
   /lodash.throttle/4.1.1:
     dev: false
     resolution:
@@ -2771,6 +2924,12 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha1-xL2p9e+y/OZSR4c6s2u02DT+Fvc=
+  /resolve/1.17.0:
+    dependencies:
+      path-parse: 1.0.6
+    dev: false
+    resolution:
+      integrity: sha512-ic+7JYiV8Vi2yzQGFWOkiZD5Z9z7O2Zhm9XMaTxdJExKasieFCr+yXZ/WmXsckHiKl12ar0y6XiXDx3m4RHn1w==
   /resolve/1.18.1:
     dependencies:
       is-core-module: 2.0.0
@@ -2778,6 +2937,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-lDfCPaMKfOJXjy0dPayzPdF1phampNWr3qFCjAu+rw/qbQmr5jWH5xN2hwh9QKfw9E5v4hwV7A+jrCmL8yjjqA==
+  /resolve/1.19.0:
+    dependencies:
+      is-core-module: 2.2.0
+      path-parse: 1.0.6
+    dev: false
+    resolution:
+      integrity: sha512-rArEXAgsBG4UgRGcynxWIWKFvh/XZCcS8UJdHhwy91zwAvCZIbcs+vAbflgBnNjYMs/i/i+/Ux6IZhML1yPvxg==
   /restore-cursor/2.0.0:
     dependencies:
       onetime: 2.0.1
@@ -2984,6 +3150,12 @@ packages:
     dev: false
     resolution:
       integrity: sha1-gCAEN6mTzDnE/gAmO3s7kDrIevU=
+  /string-argv/0.3.1:
+    dev: false
+    engines:
+      node: '>=0.6.19'
+    resolution:
+      integrity: sha512-a1uQGz7IyVy9YwhqjZIZu1c8JO8dNIe20xBmSS6qu9kv++k3JGzCVmprbNN5Kn+BgzD5E7YYwg1CcjuJMRNsvg==
   /string-width/3.1.0:
     dependencies:
       emoji-regex: 7.0.3
@@ -3178,6 +3350,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
+  /timsort/0.3.0:
+    dev: false
+    resolution:
+      integrity: sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
   /to-buffer/1.1.1:
     dev: false
     resolution:
@@ -3310,6 +3486,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-mlExGW4w71ebDJviH16lQLtZS32VKqsSfk80GCfUlwT/4/hNRFsoscrF/c++9xinkMzECL1uL9DDwXqFWkruPg==
+  /universalify/0.1.2:
+    dev: false
+    engines:
+      node: '>= 4.0.0'
+    resolution:
+      integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==
   /unpipe/1.0.0:
     dev: false
     engines:
@@ -3350,6 +3532,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-gTpR5XQNKFwOd4clxfnhaqvfqMpqEwr4tOtCyz4MtYZX2JYhfr1JvBFKdS+7K/9rfpZR3VLX+YWBbKoxCgS43Q==
+  /validator/8.2.0:
+    dev: false
+    engines:
+      node: '>= 0.10'
+    resolution:
+      integrity: sha512-Yw5wW34fSv5spzTXNkokD6S6/Oq92d8q/t14TqsS3fAiA1RYnxSFSIZ+CY3n6PGGRCq5HhJTSepQvFUS2QUDxA==
   /vary/1.1.2:
     dev: false
     engines:
@@ -3535,6 +3723,17 @@ packages:
       node: '>= 4.0.0'
     resolution:
       integrity: sha512-faQrqNMzcPCHGVC2aaOINk13K+aaBDUPjGWl0teOXywElLjyVAB6Oe2jj62jHYtwsU49jXhScYbvPENK+6zAvQ==
+  /z-schema/3.18.4:
+    dependencies:
+      lodash.get: 4.4.2
+      lodash.isequal: 4.5.0
+      validator: 8.2.0
+    dev: false
+    hasBin: true
+    optionalDependencies:
+      commander: 2.20.3
+    resolution:
+      integrity: sha512-DUOKC/IhbkdLKKiV89gw9DUauTV8U/8yJl1sjf6MtDmzevLKOF2duNJ495S3MFVjqZarr+qNGCPbkg4mu4PpLw==
   'file:projects/aflon-bootstrap.tgz':
     dependencies:
       local-web-server: 4.2.1
@@ -3545,7 +3744,7 @@ packages:
     dev: false
     name: '@rush-temp/aflon-bootstrap'
     resolution:
-      integrity: sha512-3EwqXDnmVmWOlhrmMpA249yBiSU2bjD813dwTO3whnp69gpfTV4oLmYbdtC19I9U9x6y2ndjwVMa7jCklpo+CA==
+      integrity: sha512-3yuMFkwpGgPN0l9+6DHV7fATkKu5foHPkH6cMjDIjBe+jbGa9NRAlz4tTkFl4LBc9h/pVo3859l4mJqSH413NA==
       tarball: 'file:projects/aflon-bootstrap.tgz'
     version: 0.0.0
   'file:projects/aflon-studio.tgz':
@@ -3555,14 +3754,17 @@ packages:
     dev: false
     name: '@rush-temp/aflon-studio'
     resolution:
-      integrity: sha512-xbJQK+XjPQUINfyZepOY3QS53Bln+R13TZl3AejluabNPKNsSduQBarJl6LYI60U694zeIM1rbuOA0BPeA18Kw==
+      integrity: sha512-Cs/cn1woyE+KCuywlVYYekee4lRJPzYQ5HlQphA2IXED5tLDLUlj5V3LTo5XkihIeUqsgCFa3t2KAJ30le6XHA==
       tarball: 'file:projects/aflon-studio.tgz'
     version: 0.0.0
   'file:projects/aflon.tgz':
     dependencies:
+      '@microsoft/api-documenter': 7.12.0
+      '@microsoft/api-extractor': 7.12.1
       '@typescript-eslint/eslint-plugin': 4.7.0_e0872ac31e5aafe6623f77947c0152d6
       '@typescript-eslint/parser': 4.7.0_eslint@7.13.0+typescript@4.0.5
       eslint: 7.13.0
+      eslint-plugin-tsdoc: 0.2.10
       popmotion: 8.7.6
       stylefire: 7.0.3
       ts-loader: 8.0.11_typescript@4.0.5+webpack@5.4.0
@@ -3574,17 +3776,20 @@ packages:
     dev: false
     name: '@rush-temp/aflon'
     resolution:
-      integrity: sha512-E0WAVQVFw2RmwAL+eo2Hx9uhRtoEAGc5slfe8VpyD/AjpsGnUJZ2Z3rET85NgpFxLxaADb/f+EYi5+aAUIoatA==
+      integrity: sha512-oUqZeogSJIijeWJ9UBN2zd1vFprbrSLVEQ9losyERl1qiKZN5ugn/977ganVNs6kkLjFNiNadnyY2TElVraPeQ==
       tarball: 'file:projects/aflon.tgz'
     version: 0.0.0
 registry: ''
 specifiers:
+  '@microsoft/api-documenter': ~7.12.0
+  '@microsoft/api-extractor': ~7.12.1
   '@rush-temp/aflon': 'file:./projects/aflon.tgz'
   '@rush-temp/aflon-bootstrap': 'file:./projects/aflon-bootstrap.tgz'
   '@rush-temp/aflon-studio': 'file:./projects/aflon-studio.tgz'
   '@typescript-eslint/eslint-plugin': ~4.7.0
   '@typescript-eslint/parser': ~4.7.0
   eslint: ~7.13.0
+  eslint-plugin-tsdoc: ~0.2.10
   local-web-server: ^4.2.1
   popmotion: ^8.7.5
   stylefire: ^7.0.3

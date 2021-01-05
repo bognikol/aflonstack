@@ -35,11 +35,11 @@ aflon.TextBox.style = {
     }
 };
 
+aflon.PassBox.style = aflon.TextBox.style;
+
 AflonStudio.register({
     class: aflon.TextBox
 });
-
-aflon.PassBox.style = aflon.TextBox.style;
 
 AflonStudio.register({
     class: aflon.PassBox

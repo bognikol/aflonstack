@@ -10,7 +10,13 @@ Aflon ships with built-in support for styling and animation, as well as web appl
 
 * Quick Start
 * Motivation
-* 
+* Tutorial
+    * Building UI Tree
+    * Creating Custom Components and Running Application
+    * Eventing Infrastructure
+    * Styling Components
+    * Defining and Running Animations
+    * Using Aflon Studio
 
 ## Quick Start
 
@@ -93,7 +99,7 @@ Aflon components contain methods, of which some are setters and getters. Setters
 new Button()
     .setText("Hello world")
     .addClass("innerButton")
-    .on("click", () => alert("Hello world"));
+    .on("click", () => alert("Checked!"));
 ```
 
 Furthermore, if we want to create red div which contains previous button, we can do it like this:
@@ -105,7 +111,7 @@ new Div()
         new Button()
             .setText("Hello world")
             .addClass("innerButton")
-            .on("click", () => alert("Hello world"))
+            .on("click", () => alert("Checked!"))
     ]);
 ```
 Using chaining we can create hierarchical representation of UI in TypeScript code without using declarative languages. This code creates DOM tree equivalent to following HTML snippet:
@@ -116,17 +122,17 @@ Using chaining we can create hierarchical representation of UI in TypeScript cod
     <input 
         type="button" 
         class="innerButton" 
-        onclick="alert('Hello world')" 
+        onclick="alert('Checked!')" 
         value="Hello world">
 </div>
 ```
 
 ### Creating Custom Components and Running Application
 
-We can take previously configured red div and make it a custom component - let's call it Reddy. Custom components are created by extending existing components. Because Reddy is essentially a red div, we will extend aflon.Div class, and configure it in the constructor:
+We can take previously configured red div and make it a custom component - let's call it CheckButton. Custom components are created by extending existing components. Because CheckButton is essentially a red div, we will extend aflon.Div class, and configure it in the constructor:
 
 ```TypeScript
-class Reddy extends Div {
+class CheckButton extends Div {
     constructor() {
         super();
         
@@ -136,16 +142,16 @@ class Reddy extends Div {
                 new Button()
                     .setText("Hello world")
                     .addClass("innerButton")
-                    .on("click", () => alert("Hello world"))
+                    .on("click", () => alert("Checked!"))
             ]);
     }
 }
 ```
 
-Now we can introduce private (or protected) field which would hold reference to button, so we can easily reference it in code, and add public method to Reddy for changing the button textual content. Note that setText() and getText() methods are virtual methods inherited from aflon.Element. Let's say that we also want that clicking button doesn't show alert, but logs textual content of the button and changes Reddy's color to green:
+Now we can introduce private (or protected) field which would hold reference to button, so we can easily reference it in code, and add public method to CheckButton for changing the button textual content. Note that setText() and getText() methods are virtual methods inherited from aflon.Element.
 
 ```TypeScript
-class Reddy extends Div {
+class CheckButton extends Div {
 
     private innerButton: Button;
     
@@ -163,7 +169,7 @@ class Reddy extends Div {
     }
     
     onInnerButtonClick(): void {
-        console.log(this.innerButton.getText());
+        alert("Checked!");
         this.setInlineCss({ background: "green" });
     }
 
@@ -178,82 +184,28 @@ class Reddy extends Div {
 }
 ```
 
-We can now instantiate Reddy by calling its constructor. Let's say that we want to create new custom component called MultyRed which is consisted of 5 Reddys:
+We can now instantiate CheckButton by calling its constructor. Let's say that we want to create new custom component called MultyCheck which is consisted of 5 CheckButtons:
 
 ```TypeScript
-class MultyRed extends Div {
+class MultyCheck extends Div {
     constructor() {
         super();
         
         this.append([
-            new Reddy().setText("Reddy1"),
-            new Reddy().setText("Reddy2"),
-            new Reddy().setText("Reddy3"),
-            new Reddy().setText("Reddy4"),
-            new Reddy().setText("Reddy5")
+            new CheckButton().setText("Michael"),
+            new CheckButton().setText("Steve"),
+            new CheckButton().setText("Bill"),
+            new CheckButton().setText("Joe"),
+            new CheckButton().setText("Alfred")
         ]);
     }
 }
 ```
 
-Let's say that MultyRed is our application. Aflon has class App which is used for starting the application:
+Let's say that MultyCheck is our application. Aflon has class App which is used for starting the application:
 
 ```TypeScript
-aflon.App.run(new MultyRed());
-```
-
-Therefore, whole code would look like this:
-
-```TypeScript
-import { Div, Button, App } from "aflon";
-    
-class Reddy extends Div {
-
-    private innerButton: Button;
-    
-    constructor() {
-        super();
-        
-        this
-            .setInlineCss({ background: "red" })
-            .append([
-                (this.innerButton = new Button())
-                    .setText("Hello world")
-                    .addClass("innerButton")
-                    .on("click", () => this.onInnerButtonClick())
-            ]);
-    }
-    
-    onInnerButtonClick(): void {
-        console.log(this.innerButton.getText());
-        this.setInlineCss({ background: "green" });
-    }
-
-    setText(text: string): this {
-        this.innerButton.setText(text);
-        return this;
-    }
-
-    getText(): string {
-        return this.innerButton.getText();
-    }
-}
-    
-class MultyRed extends Div {
-    constructor() {
-        super();
-        
-        this.append([
-            new Reddy().setText("Reddy1"),
-            new Reddy().setText("Reddy2"),
-            new Reddy().setText("Reddy3"),
-            new Reddy().setText("Reddy4"),
-            new Reddy().setText("Reddy5")
-        ]);
-    }
-}
-    
-App.run(new MultyRed());
+aflon.App.run(new MultyCheck());
 ```
 
 ### Eventing Infrastructure
@@ -265,7 +217,7 @@ It the nutshell, Aflon eventing mechanism is implemented through 3 methods of ``
 ```on``` and ```off``` methods simply add or remove event handlers for specific string-identified event which are raised by underlying ```HTMLElement```. Event handlers receive native event arguments from the eventing system (whose type depends on the type of event handled) with a single difference - property ```target``` (which contains reference to background native ```HTMLElement``` which raised the event) contains property ```aflonElement``` - a reference to an Aflon counterpart of native element. For example:
 
 ```TypeScript
-class Reddy extends Div {
+class CheckButton extends Div {
     private innerButton: Button;
 
     constructor() {
@@ -281,7 +233,7 @@ class Reddy extends Div {
     }
     
     onInnerButtonClick(e): void {
-        console.log(e.target.aflonElement.getText());
+        alert(e.target.aflonElement.getText());
         this.setInlineCss({ background: "green" });
     }
     ...
@@ -290,10 +242,10 @@ class Reddy extends Div {
 
 Note though that ```aflonElement``` is not present if the origin of the event is ```HTMLElement``` which is not created through Aflon, e.g. does not have corresponding ```aflon.Element```. 
 
-```raise``` method, on the other hand, use native HTML eventing infrastructure to raise a string-identified event with custom event data; events raised this way can be handled even using ```addEventListener``` and ```removeEventListener``` methods. ```raise``` by default raises a non-bubbling event, but this can be configured. For example, if we want to raise custom event ```checked``` at the moment when our ```Reddy``` component becomes green, we can modify ```onInnerButtonClick``` in the following way:
+```raise``` method, on the other hand, use native HTML eventing infrastructure to raise a string-identified event with custom event data; events raised this way can be handled even using ```addEventListener``` and ```removeEventListener``` methods. ```raise``` by default raises a non-bubbling event, but this can be configured. For example, if we want to raise custom event ```checked``` at the moment when our ```CheckButton``` component becomes green, we can modify ```onInnerButtonClick``` in the following way:
 
 ```TypeScript
-class Reddy extends Div {
+class CheckButton extends Div {
     private innerButton: Button;
     
     constructor() {
@@ -309,25 +261,25 @@ class Reddy extends Div {
     }
     
     onInnerButtonClick = (e) => {
-        console.log(e.target.aflonElement.getText());
+        alert((e.target.aflonElement as AflonElement).getText());
         this.setInlineCss({ background: "green" });
-        e.target.aflonElement.off("click", this.onInnerButtonClick);
+        (e.target.aflonElement as AflonElement).off("click", this.onInnerButtonClick);
         this.raise("checked");
     }
     ...
 }
 ```
 
-```checked``` event does not contain any particular additional data, only default event argument which native eventing system generated. This argument also has ```target.aflonElement``` property which contains a reference to ```Reddy``` which raised the event. Note that we also unsubscribed ```onInnerButtonClick``` from ```click``` event. We also changed how we declared ```onInnerButtonClick``` in order to be able to unsubscribe it (view JavaScript context binding rules for method declarations).
+```checked``` event does not contain any particular additional data, only default event argument which native eventing system generated. This argument also has ```target.aflonElement``` property which contains a reference to ```CheckButton``` which raised the event. Note that we also unsubscribed ```onInnerButtonClick``` from ```click``` event. We also changed how we declared ```onInnerButtonClick``` in order to be able to unsubscribe it (view JavaScript context binding rules for method declarations).
 
-However, once we added ```checked``` event to ```Reddy``` (it became a part of its interface actually), how we can enable strong typing in situations when we are working with Reddy's instance or even subclass. There is no elegant way to do that because JavaScript (TypeScript) does not consider event to be a first-class object (like .NET languages for example). Therefore, in order to make events a part of an interface, for each event we are adding a string variable to the interface which is called ```event<actualEventName>``` and which contains event name. ```aflon.Element``` for example contains about 30 most popular events applicable to generic ```HTMLElement```; all its descendants contain them as well. However, **aflon.Element can handle any arbitrary event**; event name does not need to be a member of a component in order component to work with it. Furthermore, ```aflon.Input```, which is a subclass of ```aflon.Element``` inherits all ```aflon.Element``` events but adds two more, input-specific events: ```change``` and ```input```. To illustrate this, consider following code snippet:
+However, once we added ```checked``` event to ```CheckButton``` (it became a part of its interface actually), how we can enable strong typing in situations when we are working with CheckButton's instance or even subclass. There is no elegant way to do that because JavaScript (TypeScript) does not consider event to be a first-class object (like .NET languages for example). Therefore, in order to make events a part of an interface, for each event we are adding a string variable to the interface which is called ```event<actualEventName>``` and which contains event name. ```aflon.Element``` for example contains about 30 most popular events applicable to generic ```HTMLElement```; all its descendants contain them as well. However, **aflon.Element can handle any arbitrary event**; event name does not need to be a member of a component in order component to work with it. Furthermore, ```aflon.Input```, which is a subclass of ```aflon.Element``` inherits all ```aflon.Element``` events but adds two more, input-specific events: ```change``` and ```input```. To illustrate this, consider following code snippet:
 
 ```TypeScript
 interface ICheckable extends IEventable {
     public eventChecked;
 }
 
-class Reddy extends Div implements ICheckable {
+class CheckButton extends Div implements ICheckable {
     public eventChecked = "checked";
     ...
     constructor() {
@@ -339,15 +291,15 @@ class Reddy extends Div implements ICheckable {
             ]);
     }
     
-    onInnerButtonClick = (e) => {
+    onInnerButtonClick = () => {
         ...
-        e.target.aflonElement.off(this.innerButton.eventClick, this.onInnerButtonClick);
+        this.innerButton.off(this.innerButton.eventClick, this.onInnerButtonClick);
         this.raise(this.eventChecked);
     }
     ...
 }
 
-let someCheckable: ICheckable = new Reddy();
+let someCheckable: ICheckable = new CheckButton();
 someCheckable.on(someCheckable.eventChecked, () => alert("Some checkable is checked!"));
 ```
 
@@ -405,17 +357,17 @@ Let's consider some practical examples. Suppose that we have following CSS class
     margin: 10px;
 }
 
-.reddy {
+.checkButton {
     background: red;
     display: inline-block;
     margin: 10px;
 }
 ```
 
-Now we have already added ```innerButton``` to ```this.innerButton``` so we only need to add ```reddy``` to ```this```:
+Now we have already added ```innerButton``` to ```this.innerButton``` so we only need to add ```CheckButton``` to ```this```:
 
 ```TypeScript
-class Reddy extends Div {
+class CheckButton extends Div {
 
     private innerButton: Button;
     
@@ -423,7 +375,7 @@ class Reddy extends Div {
         super();
         
         this
-            .addClass("reddy")
+            .addClass("checkButton")
             .append([
                 (this.innerButton = new Button())
                     .setText("Hello world")
@@ -445,13 +397,13 @@ const innerButtonClass = CSS.class({
     margin: "10px"
 });
 
-const reddyClass = CSS.class({
+const checkButtonClass = CSS.class({
     background: "red",
     display: "inline-block",
     margin: "10px"
 });
 
-class Reddy extends Div {
+class CheckButton extends Div {
 
     private innerButton: Button;
     
@@ -459,7 +411,7 @@ class Reddy extends Div {
         super();
         
         this
-            .addClass(reddyClass)
+            .addClass(checkButtonClass)
             .append([
                 (this.innerButton = new Button())
                     .setText("Hello world")
@@ -470,17 +422,16 @@ class Reddy extends Div {
     
     ...
 }
-
 ```
 
-Note that ```innerButtonClass``` and ```reddyClass``` are not names of CSS classes but variables that contain names. ```aflon.CSS.class``` returns the name of generated class which is a hash of style object. For more information view documentation of typestyle and its dependencies. 
+Note that ```innerButtonClass``` and ```checkButtonClass``` are not names of CSS classes but variables that contain names. ```aflon.CSS.class``` returns the name of generated class which is a hash of style object. For more information view documentation of typestyle and its dependencies. 
 
-In any case, we can notice that we have already given name to our button - ```this.innerButton``` - and to our root Reddy div - as ```class Reddy```. Therefore exposing name of default CSS class for any element introduce redundancy and noise.
+In any case, we can notice that we have already given name to our button - ```this.innerButton``` - and to our root CheckButton div - as ```class CheckButton```. Therefore exposing name of default CSS class for any element introduce redundancy and noise.
 
 In order to simplify styling of complex components, we can use static ```style``` field of type AflonCss which represents default style of the component. This style can be overriden before any instance of component is created. Therefore, instead of creating a class and then adding class name to component, we only specify ```style``` field while rest is done in background. Following code is equivalent to previous snippets:
 
 ```TypeScript
-class Reddy extends Div {
+class CheckButton extends Div {
 
     private innerButton: Button;
     
@@ -497,7 +448,7 @@ class Reddy extends Div {
     ...
 }
 
-Reddy.style = {
+CheckButton.style = {
     _: {
         background: "red",
         display: "inline-block",
@@ -512,13 +463,171 @@ Reddy.style = {
 
 ```
 
-### Input Interfaces
-
-
-
 ### Defining and Running Animations
 
+There are several ways to define and run animations in Aflon. The simplest way is to use ```aflon.animate``` or ```aflon.animateAsync``` functions. Both functions are essentially the same except ```aflon.animateAsync``` returns promise which is resolved when animation finishes. It takes two arguments: ```element```, which is an ```aflon.Element``` upon which animation will be executed, and ```definition``` which is a ```aflon.PrimitiveAnimationDefinition``` which specifies how animation will look like. When animate is called, animation is started immediately. For example, if we want to make element fade out on click, we can use following code:
+
+```TypeScript
+import { Div, animate } from "aflon";
+
+let elem;
+
+(elem = new Div())
+    .setText("Hello world")
+    .on(elem.eventClick, () => animate(elem, { track: "opacity", to: "0.0" }));
+```
+
+```aflon.PrimitiveAnimationDefinition``` is a data structure which stores information about how animation should look like. In Aflon terminology, 'primitive' animation means that only single CSS parameter (which is called ```track```) is animated. Apart from other parameters, it contains following:
+- ```track``` - specifies which CSS property should be animated; mandatory;
+- ```to``` - specifies end value of animation; mandatory;
+- ```from``` - specifies start value of animation; if not specified current value of CSS property will be used;
+- ```target``` - specifies the name of child upon which animation should execute; if not specified animation will be executed upon the element itself;
+- ```ease``` - easing function for animation; default is linear. This property can have value of either one of predefined string constants which specify easing function, or the function which maps interval [0, 1] to [0, 1];
+- ```duration``` - duration of animation; default value is 300 milliseconds;
+- ```delay``` - specifies delay between calling start function and actual start of animation, default value is 0;
+- ```elapsed``` - specifies point on animation timeline from which animation should start when start function is called;
+
+Drawback of using ```aflon.animate``` function is that animation cannot be controlled. Aflon offers ```aflon.Animation``` class which can be used to control animation playback. Also, ```aflon.Animation``` class supports complex animation, which are animations that change multiple CSS properties independantly. For example, we can create following animation:
+
+```TypeScript
+import { Div, Animation } from "aflon";
+
+class AnimElement extends Div {
+
+    private elem: Div;
+    private anim: Animation;
+
+    constructor() {
+        super();
+
+        this.append([
+            (this.elem = new Div())
+                .on(this.elem.eventClick, () => onClick())
+        ]);
+
+        this.anim = new Animation({
+            ease: "circOut", 
+            animations: [
+                { track: "fontSize", to: "20", duration: "2000" },
+                { track: "color", to: "#F00", delay: "1000" }
+            ]
+        }, this.elem);
+    }
+
+    onClick() {
+        this.anim.start();
+    }
+}
+```
+
+```aflon.Animation``` constructor use ```aflon.AnimationDefinition``` instead of ```aflon.PrimitiveAnimationDefinition```. ```aflon.AnimationDefinition``` contains field ```animations```, which is an array of ```aflon.PrimitiveAnimationDefinition```s, each of which specifies animation of single CSS property. Apart from ```animations``` field, it contains all optional fields of ```PrimitiveAnimationDefinition```; these values act as fallback values if separate animations haven't specified them. If fallback values are not specified, default values are used.
+
+```aflon.animation``` object contains following methods:
+- ```start()``` - restarts the animation; accepts optional callback function which is called when animation finishes;
+- ```startAsync()``` - same as ```start``` except that it returns promise which is resolved when animation finishes;
+- ```stop()``` - stops the running animation;
+- ```toBegining()``` - sets all animated properties to start values;
+- ```toEnd()``` - sets all animated properties to end values;
+- ```getElapsed()``` - returns number of milliseconds which ellapsed since starting the animation;
+- ```getProgress()``` - returnes number between 0 and 1 which indicates progress of animation since start.
+
+However, in order to avoid initializations of multiple ```Animation``` objects in code, Aflon offers fuincionality of setting animation definitions to static field ```animations``` of ```aflon.Element```. This variable is equvalent to static variable ```style```; it can be overriden before any instance of component is created. Type of ```animations``` field is ```AflonAnimation```, which is essentially a string dictionary where keys represent names of animations and values are objects representing ```AnimationDefinition```s. During construction, these definitions are converted to ```Animation``` objects which can be accessed using ```aflon.Element.animations``` function while passing the name of animation as input agument. **Each animation definition from ```AflonAnimation``` is converted to exactly one object which is persisted during multiple accesses.** This enables developer to stop animation or check its progress. Previous example can be rewritten in following manner:
+
+```TypeScript
+import { Div, Animation } from "aflon";
+
+class AnimElement extends Div {
+
+    private elem: Div;
+
+    constructor() {
+        super();
+
+        this.append([
+            (this.elem = new Div())
+                .on(this.elem.eventClick, () => onClick())
+        ]);
+    }
+
+    onClick() {
+        this.animations("anim").start();
+    }
+}
+
+AnimElement.animations = {
+    {
+        ease: "circOut",
+        target: "elem",
+        animations: [
+            { track: "fontSize", to: "20", duration: "2000" },
+            { track: "color", to: "#F00", delay: "1000" }
+        ]
+    }
+};
+```
 
 ### Using Aflon Studio
 
- 
+Aflon Studio is a browser app intended to be used during development of Aflon applications. Aflon Studio allows developer to independently test and style Aflon componenets.
+
+Aflon Studio is not part of ```aflon``` library; it is packed in its own stand-alone library ```aflon-studio```. Usage of Aflon Studio is fully optional. In any case, Aflon Studio is installed in following manner:
+
+```
+npm install --save-dev aflon-studio
+```
+
+Once installed, Aflon Studio needs separate entry point and separate compilation target. ```aflon-bootstrap``` application already has Aflon Studio configured. Examine it to see details. In following text we will first give short overview of Aflon Studio and then we will explain how it is used.
+
+Picture bellow is a screenshot of Aflon Studio and shows its main UI componenets:
+
+1. Header panel is used to choose what componenet is to be selected for preview and configuration.
+
+2. Preview panel is where Aflon componenets are shown. These componenets are fully interactive; they react to mouse and other input events.
+
+3. Style panel is used to configure component's static ```style``` property. All changes are reflected in Preview panel in real-time. Note, however, that Style panel does not change you code! You still need to copy your style object (by clicking the copy button on the top of Style panel), paste it in code and recompile. Style panel is organized in accordance to structure of AflonCss object. First it is devided to component selectors: selector ```root``` means that css confguration bellow is applied to the componenet container itself. Apart from it, for each field in componenet which has reference to some ```aflon.Element``` separate selector section is created. Within each componenet selector section, there is a list of pseudo-selectors. These pseudo-selectors are equivalent ot CSS pseudoselectors, except ```normal``` which deisgnates default CSS style of a component. Each pseudoselector section contins list of key-value pairs of CSS properties.
+
+4. Animation panel is used to configure componenet's static ```animations``` property. All changes are reflected in Preview panel in real-time. Animations can run using multimedia controls on the top of the Animation panel. Similar to Style panel, Animation panel does not change you code! You still need to copy yout animation object (by clicking the copy button on the top of Animation panel), paste it in code and recompile.
+
+The best way to start using Aflon Studio is to load existing component in it. To do so you need to register component to be shown in Aflon Studio and to import whole file where componenet is registered to Aflon Studio entry-point file. For example, if we want to preview CheckButton componenet, we need to modify file where CheckButton is defined in following manner:
+
+```TypeScript
+// file CheckButton.ts
+
+import { Div } from "aflon";
+import AflonStudio from "aflon-studio";
+
+class CheckButton extends Div {
+    ...
+}
+
+CheckButton.style = { ... };
+CheckButton.animations = { ... };
+
+AflonStudio.register({
+    class: CheckButton,
+    initializer: element => {
+        element.setChecked(true)
+    },
+    viewportSize: {
+        width: "200px",
+        height: "50%"
+    }
+    backgroundColor: "lightgray"
+});
+```
+
+Function ```AflonStudio.register``` is used to reguster component for previewing in Aflon Studio. It takes object with following properties:
+- ```class``` - specifies components class; mandatory;
+- ```initializer``` - specifies function to be executed immidiatelly after construction of component; this function does custom initialization of the component; optional;
+- ```viewportSize``` - specifies size of parent (in Preview panel) where component will be inserted; contains two fields ```width``` and ```height``` of which each can be set to either exact values or percetage; this is used to see how componenet behaves in different size contexts; optional;
+- ```backgroundColor``` - specifies color of Preview panel; optional.
+
+Once ```AflonStudio.register``` is called, whole file should be imported to Aflon Studio entry point:
+
+```TypeScript
+import "CheckButton.ts";
+
+import AflonStudio from "aflon-studio";
+
+AflonStudio.run();
+```

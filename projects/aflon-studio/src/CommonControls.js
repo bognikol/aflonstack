@@ -1,6 +1,6 @@
 import * as aflon from "aflon";
 
-export class TypiconButton extends aflon.Div {
+export class TypiconButton extends aflon.Input {
     setTypicon(typiconId) {
         this.addClasses(["typcn", `typcn-${typiconId}`]);
         return this;

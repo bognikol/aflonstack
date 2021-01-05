@@ -2,7 +2,7 @@ import * as aflon from "aflon";
 import AflonStudio from "aflon-studio";
 
 export default class LabeledTextBox<T extends aflon.AbstractTextBox> 
-    extends aflon.Div implements aflon.AbstractTextBox
+    extends aflon.Input implements aflon.AbstractTextBox
 {
     private textBox: aflon.AbstractTextBox;
     private placeholder: aflon.Div;
@@ -57,9 +57,9 @@ export default class LabeledTextBox<T extends aflon.AbstractTextBox>
         return this;
     }
 
-    isReadOnly(): boolean
+    getReadOnly(): boolean
     {
-        return this.textBox.isReadOnly();
+        return this.textBox.getReadOnly();
     }
 
     setText(text: string): this
@@ -238,7 +238,7 @@ LabeledTextBox.animations = {
 };
 
 AflonStudio.register({
-    class: LabeledTextBox,
+    class: LabeledTextBox.bind(null, aflon.TextBox),
     initializer: element => {
         element.setPlaceholder("Full name")
     }

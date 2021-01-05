@@ -24,6 +24,8 @@ export default class LogInControl extends aflon.Div
             (this.submitButton = new aflon.Button())
                 .setText("Submit")
         ]);
+
+        console.log(this);
     }
 }
 

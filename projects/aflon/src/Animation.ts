@@ -86,7 +86,6 @@ class PrimitiveAnimation {
 
     start(onComplete?: () => void): void {
         if (this._autoFrom || !this._animation) {
-            console.log("Starting anim");
             this._animation = this._createAndStartAnimation(onComplete);
         } else {
             this._animation.seek(0);
@@ -137,7 +136,6 @@ class PrimitiveAnimation {
             this._styler = (this._context.getHtmlElement() as AflonHtmlElement).styler;
         else
             this._styler = ((this._context as any)[this._animationDefinition.target].getHtmlElement() as AflonHtmlElement).styler;
-
     }
 
     private _createAndStartAnimation(onComplete?: () => void): popmotion.ColdSubscription {
@@ -188,10 +186,21 @@ class PrimitiveAnimation {
     }
 }
 
+
+/**
+ * Represents animation - synchronized change of multiple CSS properties
+ * among several aflon.Elements.
+ */
 export class Animation {
 
     private _primitiveAnimations: PrimitiveAnimation[] = [];
 
+    /**
+     * Creates new instance of aflon.Animation.
+     *
+     * @param animationDefinition - aflon.AnimationDefinition to be exectued
+     * @param context - aflon.Element upon which animation definition to be applied
+     */
     constructor(animationDefinition: AnimationDefinition, context: Element) {
         const fallbackAnimationDefinition: AnimationFallBackDefinition = {
             ease:     PredefinedEasingFuncs.linear,
@@ -231,6 +240,10 @@ export class Animation {
             );
     }
 
+    /**
+     * Starts animation.
+     * @param onComplete - argumentless callback to be executed when animation finishes.
+     */
     start(onComplete?: () => void): void {
         let completed: boolean = false;
         this._primitiveAnimations.forEach(animation => animation.start(() => {
@@ -240,6 +253,10 @@ export class Animation {
         }));
     }
 
+    /**
+     * Starts animation. This function returns promise which is resolved when
+     * animation finishes.
+     */
     async startAsync(): Promise<void> {
         return new Promise<void>(resolve => {
             this.start(() => {
@@ -248,18 +265,31 @@ export class Animation {
         });
     }
 
+    /** Stops animation. */
     stop(): void {
         this._primitiveAnimations.forEach(animation => animation.stop());
     }
 
+    /**
+     * Sets all CSS properties of animation to its start values.
+     *
+     * @remarks If field 'from' in AnimationDefinition is not specified for specific
+     * CSS poperty (track), this function does not have effect.
+     */
     toBegining(): void {
         this._primitiveAnimations.forEach(animation => animation.toBegining());
     }
 
+    /**
+     * Sets all CSS properties of animation to its end values.
+     */
     toEnd(): void {
         this._primitiveAnimations.forEach(animation => animation.toEnd());
     }
 
+    /**
+     * Returns number of milliseconds since animation start.
+     */
     getElapsed(): number {
         if (this._primitiveAnimations.length == 0)
             return 0;
@@ -267,6 +297,10 @@ export class Animation {
         return this._primitiveAnimations[0].getElapsed();
     }
 
+    /**
+     * Returns floating point number between 0 and 1 which indicates
+     * proportion of animation executed since animation start.
+     */
     getProgress(): number {
         if (this._primitiveAnimations.length == 0)
             return 0;
@@ -275,10 +309,30 @@ export class Animation {
     }
 }
 
-export function animate(context: Element, definition: PrimitiveAnimationDefintion, onCompleted?: () => void): void {
-    new PrimitiveAnimation(definition, context).start(onCompleted);
+/**
+ * Starts animation which animates single CSS property.
+ *
+ * @param context - aflon.Element upon which animation is executed.
+ * @param definition - aflon.PrimitiveAnimationDefintion for animation
+ * @param onComplete - argumentless callback called when animation finishes
+ *
+ * @remarks Animation started using 'animate' function cannot be controlled. For animation
+ * which can be controlled use aflon.Animation class.
+ */
+export function animate(context: Element, definition: PrimitiveAnimationDefintion, onComplete?: () => void): void {
+    new PrimitiveAnimation(definition, context).start(onComplete);
 }
 
+/**
+ * Starts animation which animates single CSS property. Returns promise
+ * which is resolved when animation finishes.
+ *
+ * @param context - aflon.Element upon which animation is executed.
+ * @param definition - aflon.PrimitiveAnimationDefintion for animation
+ *
+ * @remarks Animation started using 'animate' function cannot be controlled. For animation
+ * which can be controlled use aflon.Animation class.
+ */
 export async function animateAsync(context: Element, definition: PrimitiveAnimationDefintion): Promise<void> {
     return new PrimitiveAnimation(definition, context).startAsync();
 }
@@ -294,6 +348,20 @@ export class Anims {
     static async fadeInAsync(element: Element, duration: number = 250, ease: Easing = "linear"): Promise<void> {
         let animation = new Animation({
             animations: [{ track: "opacity", to: "1.0", duration: duration, ease: ease }]
+        }, element);
+        return animation.startAsync();
+    }
+
+    static fadeOut(element: Element, duration: number = 250, ease: Easing = "linear", onComplete?: () => void): void {
+        let animation = new Animation({
+            animations: [{ track: "opacity", to: "0.0", duration: duration, ease: ease }]
+        }, element);
+        animation.start(onComplete);
+    }
+
+    static async fadeOutAsync(element: Element, duration: number = 250, ease: Easing = "linear"): Promise<void> {
+        let animation = new Animation({
+            animations: [{ track: "opacity", to: "0.0", duration: duration, ease: ease }]
         }, element);
         return animation.startAsync();
     }

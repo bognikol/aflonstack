@@ -1,7 +1,7 @@
 export * from "./Css";
 
 export {
-    Element, Div, Span, H1, H2, H3, H4, H5, H6, P, Image, isAflonElement
+    AflonHtmlElement, ElementEvents, Element, IEventable, Div, Span, H1, H2, H3, H4, H5, H6, P, Image, isAflonElement
 } from "./Element";
 
 export {
@@ -18,7 +18,9 @@ export {
 } from "./Inputs";
 
 export {
-    PredefinedEasingFuncs, AflonAnimationDefinition, Animation, animate, animateAsync
+    PredefinedEasingFuncs, AflonAnimationDefinition, AnimationDefinition, PrimitiveAnimationDefintion,
+    Animation, animate, animateAsync, PredefinedEasing, EasingFunc, AnimatableValue, AnimationFallBackDefinition,
+    Easing
 } from "./Animation";
 
 export {
