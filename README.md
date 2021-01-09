@@ -17,6 +17,7 @@ Aflon ships with built-in support for styling and animation, as well as web appl
     * Styling Components
     * Defining and Running Animations
     * Using Aflon Studio
+* Structure of Repository & Build Instructions
 
 ## Quick Start
 
@@ -261,7 +262,6 @@ class CheckButton extends Div {
     }
     
     onInnerButtonClick = (e) => {
-        alert((e.target.aflonElement as AflonElement).getText());
         this.setInlineCss({ background: "green" });
         (e.target.aflonElement as AflonElement).off("click", this.onInnerButtonClick);
         this.raise("checked");
@@ -564,6 +564,148 @@ AnimElement.animations = {
         ]
     }
 };
+```
+
+### Complete Tutorial Example
+
+Following code snippet represents complete example developed in this tutorial:
+
+```TypeScript
+import { Div, Button, App, Input, CheckBox, AbstractToggableButton } from "aflon";
+    
+class CheckButton extends Input implements AbstractToggableButton {
+
+    private checked: boolean = false;
+
+    private innerButton: Button;
+
+    public eventChecked = "checked";
+
+    constructor() {
+        super();
+        
+        this
+            .setInlineCss({ background: "red" })
+            .append([
+                (this.innerButton = new Button())
+                    .on(this.innerButton.eventClick, () => this.onInnerButtonClick())
+            ]);
+    }
+    
+    onInnerButtonClick() {
+        this.setChecked(!this.checked);
+    }
+
+    setChecked(checked: boolean): this {
+        if (this.checked == checked) return this;
+
+        if (this.checked) {
+            this.animations("uncheck").start();
+            this.checked = false;
+        } else {
+            this.animations("check").start();
+            this.checked = true;
+        }
+
+        this.raise(this.eventChecked);
+
+        return this;
+    }
+
+    getChecked(): boolean {
+        return this.checked;
+    }
+
+    setText(text: string): this {
+        this.innerButton.setText(text);
+        return this;
+    }
+
+    getText(): string {
+        return this.innerButton.getText();
+    }
+
+    setDisabled(disabled: boolean): this {
+        this.innerButton.setDisabled(disabled);
+        return this;
+    }
+
+    getDisabled(): boolean {
+        return this.innerButton.getDisabled();
+    }
+
+    focus(): this {
+        this.innerButton.focus();
+        return this;
+    }
+
+    blur(): this {
+        this.innerButton.blur();
+        return this;
+    }
+}
+
+CheckButton.style = {
+    _: {
+        background: "red",
+        display: "inline-block",
+        margin: "10px"
+    },
+    innerButton: {
+        fontSize: "20px",
+        fontWeight: "bold",
+        margin: "10px"
+    }
+};
+
+CheckButton.animations = {
+    check: {
+        ease: "circOut",
+        duration: 200,
+        animations: [
+            { track: "background", to: "#0F0" },
+            { track: "margin", target: "innerButton", to: "5px" }
+        ]
+    },
+    uncheck: {
+        ease: "circOut",
+        duration: 200,
+        animations: [
+            { track: "background", to: "#F00" },
+            { track: "margin", target: "innerButton", to: "10px" }
+        ]
+    }
+};
+    
+class MultyCheck<T extends AbstractToggableButton> extends Div {
+
+    private checks;
+
+    constructor(private Type: new () => T) {
+        super();
+        
+        this.checks = ["Michael", "Steve", "Bill", "Joe", "Alfred"].map(name => 
+            new Type()
+                .setText(name)
+                .on("checked", () => this.onChecked())
+        );
+
+        this.append(this.checks);
+    }
+
+    onChecked() {
+        let result = "";
+
+        this.checks.forEach(check => {
+            if (check.getChecked())
+                result += check.getText();
+        });
+
+        console.log(result);
+    }
+}
+
+App.run(new MultyCheck<CheckButton>(CheckButton));
 ```
 
 ### Using Aflon Studio
