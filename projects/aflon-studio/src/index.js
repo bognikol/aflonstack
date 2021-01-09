@@ -4,6 +4,10 @@ import * as common from "./CommonControls";
 import AflonStylePanel from "./StylePanel";
 import { AflonAnimationPanel, NamedTextBox, NamedSelectBox, PrimitiveAnimationPanel } from "./AnimationPanel";
 
+aflon.CSS.createRule("*[disabled]", {
+    pointerEvents: "none"
+});
+
 class AflonPreviewer extends aflon.Div {
     constructor() {
         super();

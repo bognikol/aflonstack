@@ -1,12 +1,12 @@
 import * as aflon from "aflon";
 import AflonStudio from "aflon-studio";
 
-import LogInControl from "./controls/LogInControl";
+import RegisterControl from "./controls/RegisterControl";
 
 export default class DemoApp extends aflon.Div 
 {
     private aflonTitle: aflon.Div;
-    private logInControl: LogInControl;
+    private logInControl: RegisterControl;
 
     private currentScale: number = 1.0;
 
@@ -16,9 +16,16 @@ export default class DemoApp extends aflon.Div
         this.append([
             (this.aflonTitle = new aflon.Div())
                 .setText("Aflon"),
-            (this.logInControl = new LogInControl())
+            (this.logInControl = new RegisterControl())
+                .on(this.logInControl.eventSubmit, () => this.onSubmited())
         ])
         .on("wheel", (e: Event) => this.onMouseWheel(e));
+    }
+
+    onSubmited() {
+        let user = this.logInControl.getUserRecord();
+
+        alert(`FIRST NAME: ${user.firstName}; LAST NAME: ${user.lastName}; EMAIL: ${user.email}; ADDRESS: ${user.address}`);
     }
 
     async onMouseWheel(e: Event) {
@@ -40,14 +47,14 @@ export default class DemoApp extends aflon.Div
 }
 
 DemoApp.style = {
-    "_": {
+    _: {
         "display": "flex",
         "justifyContent": "center",
         "background": "#C4C4C4",
         "height": "100%",
         "alignItems": "center"
     },
-    "aflonTitle": {
+    aflonTitle: {
         "position": "absolute",
         "left": "10px",
         "top": "10px",
@@ -55,7 +62,7 @@ DemoApp.style = {
         "fontSize": "30px",
         "fontFamily": "'Source Serif Pro', serif"
     },
-    "logInControl": {
+    logInControl: {
         "width": "300px"
     }
 };

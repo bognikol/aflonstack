@@ -17,7 +17,13 @@ aflon.CSS.createRule("*", {
     position: "relative"
 });
 
-aflon.TextBox.style = {
+aflon.CSS.createRule("*:disabled", {
+    pointerEvents: "none"
+});
+
+export class TextBox extends aflon.TextBox {}
+
+TextBox.style = {
     "_": {
         "appearance": "none",
         "outline": "none",
@@ -35,17 +41,13 @@ aflon.TextBox.style = {
     }
 };
 
-aflon.PassBox.style = aflon.TextBox.style;
-
 AflonStudio.register({
-    class: aflon.TextBox
+    class: TextBox
 });
 
-AflonStudio.register({
-    class: aflon.PassBox
-});
+export class Button extends aflon.Button { }
 
-aflon.Button.style = {
+Button.style = {
     "_": {
         "padding": "7px 20px",
         "color": "white",
@@ -58,7 +60,7 @@ aflon.Button.style = {
         "fontSize": "15px",
         "boxShadow": "0px 2px 6px 0px rgba(0,0,0,0.3)",
         "&:focus": {
-            "border": "solid 1px red"
+            "border": "solid 1px purple"
         },
         "&:active": {
             "transform": "translate(0, 1px)"
@@ -67,7 +69,7 @@ aflon.Button.style = {
 };
 
 AflonStudio.register({
-    class: aflon.Button,
+    class:Button,
     initializer: element => element.setText("Submit"),
     backgroundColor: "#C4C4C4"
 });

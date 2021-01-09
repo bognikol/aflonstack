@@ -1,19 +1,20 @@
 import * as aflon from "aflon";
 import AflonStudio from "aflon-studio";
 
-export default class LabeledTextBox<T extends aflon.AbstractTextBox> 
-    extends aflon.Input implements aflon.AbstractTextBox
+import * as defaults from "../defaults";
+
+export default class LabeledTextBox extends aflon.Input implements aflon.AbstractTextBox
 {
     private textBox: aflon.AbstractTextBox;
     private placeholder: aflon.Div;
 
-    constructor(private textBoxType: new () => T)
+    constructor()
     {
         super();
 
         this.append([
             (this.placeholder = new aflon.Div()),
-            (this.textBox = new this.textBoxType())
+            (this.textBox = new defaults.TextBox())
                 .on("focus", () => this.onTextBoxFocus())
                 .on("blur",  () => this.onTextBoxBlur())
         ])
@@ -238,7 +239,7 @@ LabeledTextBox.animations = {
 };
 
 AflonStudio.register({
-    class: LabeledTextBox.bind(null, aflon.TextBox),
+    class: LabeledTextBox,
     initializer: element => {
         element.setPlaceholder("Full name")
     }

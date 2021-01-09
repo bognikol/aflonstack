@@ -9,7 +9,7 @@ export interface IInput {
 
     setText(text: string): this;
     getText(): string;
-    setDisabled(enabled: boolean): this;
+    setDisabled(disabled: boolean): this;
     getDisabled(): boolean;
     focus(): void;
     blur(): void;
@@ -104,7 +104,7 @@ export abstract class AbstractInput extends Element implements IInput {
 
     abstract setText(text: string): this;
     abstract getText(): string;
-    abstract setDisabled(enabled: boolean): this;
+    abstract setDisabled(disabled: boolean): this;
     abstract getDisabled(): boolean;
     abstract focus(): void;
     abstract blur(): void;
@@ -165,7 +165,7 @@ export abstract class AbstractSelectBox extends AbstractInput implements ISelect
  * Input is used to represent HTML input elements like button, text or password input.
  * However, it can represent any Element which is intended to be an Input.
  * Difference between non-Input and Input elements is that Inputs have functions
- * for controling whether they are enabled or not (when Input is disabled it cannot
+ * for controling whether they are disabled or not (when Input is disabled it cannot
  * react to mouse events and cannot obtain focus) and functions for granting focus
  * (when input is focused it receives keyboard events). Also, Inputs have two additional
  * events: eventChange and eventInput.
@@ -207,18 +207,18 @@ export class Input extends Element implements IInput, AbstractInput {
      * to associated HTMLElement. Derived classes might need to provide
      * their own implementation.
      */
-    setDisabled(enabled: boolean): this {
-        if (enabled) this.removeAttr("disabled");
-        else         this.addAttr("disabled");
+    setDisabled(disabled: boolean): this {
+        if (disabled) this.addAttr("disabled");
+        else          this.removeAttr("disabled");
 
         return this;
     }
 
     /**
-     * Returns if input is enabled.
+     * Returns if input is disabled.
      */
     getDisabled(): boolean {
-        return !this.hasAttr("disabled");
+        return this.hasAttr("disabled");
     }
 
     /**

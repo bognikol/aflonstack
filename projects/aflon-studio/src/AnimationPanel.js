@@ -467,14 +467,9 @@ export class AnimationControlBox extends aflon.Input {
         ]);
     }
 
-    setDisabled(enabled) {
-        if (!enabled) {
-            this.children().forEach(child => { if (child.setDisabled) child.setDisabled(false) });
-            super.setDisabled(false);
-        } else {
-            this.children().forEach(child => { if (child.setDisabled)  child.setDisabled(true) });
-            super.setDisabled(true);
-        }
+    setDisabled(disabled) {
+        this.children().forEach(child => { if (child.setDisabled) child.setDisabled(disabled) });
+        super.setDisabled(disabled);
     }
 }
 

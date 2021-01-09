@@ -16,6 +16,7 @@ Aflon ships with built-in support for styling and animation, as well as web appl
     * Eventing Infrastructure
     * Styling Components
     * Defining and Running Animations
+    * Complete Tutorial Example
     * Using Aflon Studio
 * Structure of Repository & Build Instructions
 
@@ -720,13 +721,15 @@ npm install --save-dev aflon-studio
 
 Once installed, Aflon Studio needs separate entry point and separate compilation target. ```aflon-bootstrap``` application already has Aflon Studio configured. Examine it to see details. In following text we will first give short overview of Aflon Studio and then we will explain how it is used.
 
-Picture bellow is a screenshot of Aflon Studio and shows its main UI componenets:
+![Aflon Studio](mics/aflon-studio-screenshot.png)
+
+Picture above is a screenshot of Aflon Studio and shows its main UI componenets:
 
 1. Header panel is used to choose what componenet is to be selected for preview and configuration.
 
 2. Preview panel is where Aflon componenets are shown. These componenets are fully interactive; they react to mouse and other input events.
 
-3. Style panel is used to configure component's static ```style``` property. All changes are reflected in Preview panel in real-time. Note, however, that Style panel does not change you code! You still need to copy your style object (by clicking the copy button on the top of Style panel), paste it in code and recompile. Style panel is organized in accordance to structure of AflonCss object. First it is devided to component selectors: selector ```root``` means that css confguration bellow is applied to the componenet container itself. Apart from it, for each field in componenet which has reference to some ```aflon.Element``` separate selector section is created. Within each componenet selector section, there is a list of pseudo-selectors. These pseudo-selectors are equivalent ot CSS pseudoselectors, except ```normal``` which deisgnates default CSS style of a component. Each pseudoselector section contins list of key-value pairs of CSS properties.
+3. Style panel is used to configure component's static ```style``` property. All changes are reflected in Preview panel in real-time. Note, however, that Style panel does not change your code! You still need to copy your style object (by clicking the copy button on the top of Style panel), paste it in code and recompile. Style panel is organized in accordance to structure of AflonCss object. First it is devided to component selectors: selector ```root``` means that css confguration bellow is applied to the componenet container itself. Apart from it, for each field in componenet which has reference to some ```aflon.Element``` separate selector section is created. Within each componenet selector section, there is a list of pseudo-selectors. These pseudo-selectors are equivalent ot CSS pseudoselectors, except ```normal``` which deisgnates default CSS style of a component. Each pseudoselector section contins list of key-value pairs of CSS properties.
 
 4. Animation panel is used to configure componenet's static ```animations``` property. All changes are reflected in Preview panel in real-time. Animations can run using multimedia controls on the top of the Animation panel. Similar to Style panel, Animation panel does not change you code! You still need to copy yout animation object (by clicking the copy button on the top of Animation panel), paste it in code and recompile.
 
