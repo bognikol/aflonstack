@@ -337,6 +337,9 @@ export async function animateAsync(context: Element, definition: PrimitiveAnimat
     return new PrimitiveAnimation(definition, context).startAsync();
 }
 
+/**
+ * @alpha
+ */
 export class Anims {
     static fadeIn(element: Element, duration: number = 250, ease: Easing = "linear", onComplete?: () => void): void {
         let animation = new Animation({
