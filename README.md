@@ -4,7 +4,7 @@ Aflon is strongly-typed object-oriented old-school UI framework for web.
 
 Compared to functional/declarative UI frameworks (React, Angular), Aflon is based on **stateful** components and extensive use of inheritance and encapsulation.
 
-Aflon ships with built-in support for styling and animation, as well as web application Aflon Studio, where every Aflon component can be independently isolated for testing and styling.
+Aflon ships with built-in support for styling and animation, as well as web application [Aflon Studio](https://bognikol.github.io/aflonsample/aflonStudio), where every Aflon component can be independently isolated for testing and styling.
 
 ## The Table of the Contents
 
@@ -22,7 +22,7 @@ Aflon ships with built-in support for styling and animation, as well as web appl
 
 ## Quick Start
 
-The easiest way to create Aflon application is to download aflon-bootstrap application and modify it.
+The easiest way to create Aflon application is to download [aflon-bootstrap](projects/aflon-bootstrap) application and modify it. View aflon-bootstrap application running [here](https://bognikol.github.io/aflonsample).
 
 For those who already have project and infrastructure in place, following steps are short walkthrough for including Aflon.
 
@@ -711,7 +711,7 @@ App.run(new MultyCheck<CheckButton>(CheckButton));
 
 ### Using Aflon Studio
 
-Aflon Studio is a browser app intended to be used during development of Aflon applications. Aflon Studio allows developer to independently test and style Aflon componenets.
+Aflon Studio is a browser app intended to be used during development of Aflon applications. Aflon Studio allows developer to independently test and style Aflon componenets. View [here](https://bognikol.github.io/aflonsample/aflonStudio) how aflon-studio looks like.
 
 Aflon Studio is not part of ```aflon``` library; it is packed in its own stand-alone library ```aflon-studio```. Usage of Aflon Studio is fully optional. In any case, Aflon Studio is installed in following manner:
 
