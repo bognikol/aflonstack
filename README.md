@@ -22,7 +22,7 @@ Aflon ships with built-in support for styling and animation, as well as web appl
 
 ## Quick Start
 
-The easiest way to create Aflon application is to download [aflon-bootstrap](projects/aflon-bootstrap) application and modify it. View aflon-bootstrap application running [here](https://bognikol.github.io/aflonsample).
+The easiest way to create Aflon application is to download [aflon-bootstrap](projects/aflon-bootstrap) application and modify it. Preview running aflon-bootstrap application [here](https://bognikol.github.io/aflonsample).
 
 For those who already have project and infrastructure in place, following steps are short walkthrough for including Aflon.
 
@@ -42,7 +42,7 @@ App.run(new Div().setText("Hello world!"));
 
 Code above is a valid Aflon program.
 
-Instead of configuring inline Div component, we can define ```HelloWorld``` component which by default contains "Hello world" text. If we want to style HelloWorld, we can set static ```HelloWorld.style``` to appropriate ```AflonCss``` object.
+Instead of configuring inline ```Div``` component, we can define ```HelloWorld``` component which by default contains "Hello world" text. If we want to style ```HelloWorld```, we can set static ```HelloWorld.style``` to appropriate ```AflonCss``` object.
 
 ```TypeScript
 import { App, Div } from "aflon";
@@ -65,7 +65,7 @@ HelloWorld.style = {
 App.run(new HelloWorld());
 ```
 
-View Tutorial and Documentation for more deatils.
+View Tutorial for more deatils.
 
 ## Motivation
 
@@ -91,11 +91,11 @@ Inspired by old-school UI frameworks like WinForms, I wanted to see how JavaScri
 
 ### Building UI Tree
 
-Aflon, in essence, is a very slim wrapper around JavaScript DOM API. Basic construct which represents an HTML node is abstract class aflon.Element. It contains a reference to a single HTMLElement which it represents, and offers a wide range of common functions for managing it. In general, DOM API should not be visible behind Aflon type system; Aflon type system is intended to represent complete abstraction of DOM API. However, HTMLElement can be accessed through aflon.Element.getHtmlElement() function for native operations.
+Aflon, in essence, is a very slim wrapper around JavaScript DOM API. Basic construct which represents an HTML node is abstract class ```aflon.Element```. It contains a reference to a single ```HTMLElement``` which it represents, and offers a wide range of common functions for managing it. In general, DOM API should not be visible behind Aflon type system; Aflon type system is intended to represent complete abstraction of DOM API. However, ```HTMLElement``` can be accessed through ```aflon.Element.getHtmlElement()``` function for native operations.
 
-All other HTML elements are modeled as classes inheriting aflon.Element, overriding the tag name of HTML node and optionally extending its functionality. Classes Div, Span, P, H1, H2, H3, H4, H5, H6, Image all represent appropriate HTML elements. Apart from these classes, Aflon also exposes basic input types. These types inherit abstract class aflon.Input which in turn inherits aflon.Element. Basic input classes in Aflon are TextBox, PassBox, TextArea, Button, CheckBox, RadioButton and SelectBox. All of these classes represent unique HTML elements (view documentation for exact details). Developers can easily create their own classes.
+All other HTML elements are modeled as classes inheriting ```aflon.Element```, overriding the tag name of HTML node and optionally extending its functionality. Classes ```Div```, ```Span```, ```P```, ```H1```, ```H2```, ```H3```, ```H4```, ```H5```, ```H6```, ```Image``` all represent appropriate HTML elements. Apart from these classes, Aflon also exposes basic input types. These types inherit abstract class ```aflon.Input``` which in turn inherits ```aflon.Element```. Basic input classes in Aflon are ```TextBox```, ```PassBox```, ```TextArea```, ```Button```, ```CheckBox```, ```RadioButton``` and ```SelectBox```. All of these classes represent unique HTML elements. Developers can easily create their own classes.
 
-Aflon components contain methods, of which some are setters and getters. Setters and getters are always functions; Aflon does not use ECMAScript properties. Setters in general start with 'set' word, and getters with 'get' word. **Every setter by convention returns ```this```.** This convention is important because it allows compact configuration of an object in code. This pattern is known as [chaining](https://en.wikipedia.org/wiki/Method_chaining). (Developers should stick to this convention when implementing their own types extended from aflon.Element.) For example, if we want to create ```<input type="button" />``` which contains text "Hello world", has class "innerButton", and reacts on click event, we can write something like this:
+Aflon components contain methods, of which some are setters and getters. Setters and getters are always functions; Aflon does not use ECMAScript properties. Setters in general start with 'set' word, and getters with 'get' word. **Every setter by convention returns ```this```.** This convention is important because it allows compact configuration of an object in code. This pattern is known as [chaining](https://en.wikipedia.org/wiki/Method_chaining). (Developers should stick to this convention when implementing their own types extended from ```aflon.Element```.) For example, if we want to create ```<input type="button" />``` which contains text "Hello world", has class "innerButton", and reacts on click event, we can write something like this:
 
 ```TypeScript
 new Button()
@@ -104,7 +104,7 @@ new Button()
     .on("click", () => alert("Checked!"));
 ```
 
-Furthermore, if we want to create red div which contains previous button, we can do it like this:
+Furthermore, if we want to create red ```Div``` which contains previous button, we can do it like this:
 
 ```TypeScript
 new Div()
@@ -131,7 +131,7 @@ Using chaining we can create hierarchical representation of UI in TypeScript cod
 
 ### Creating Custom Components and Running Application
 
-We can take previously configured red div and make it a custom component - let's call it CheckButton. Custom components are created by extending existing components. Because CheckButton is essentially a red div, we will extend aflon.Div class, and configure it in the constructor:
+We can take previously configured red div and make it a custom component - let's call it ```CheckButton```. Custom components are created by extending existing components. Because ```CheckButton``` is essentially a red div, we will extend ```aflon.Div``` class, and configure it in the constructor:
 
 ```TypeScript
 class CheckButton extends Div {
@@ -150,7 +150,7 @@ class CheckButton extends Div {
 }
 ```
 
-Now we can introduce private (or protected) field which would hold reference to button, so we can easily reference it in code, and add public method to CheckButton for changing the button textual content. Note that setText() and getText() methods are virtual methods inherited from aflon.Element.
+Now we can introduce private (or protected) field which would hold reference to button, so we can easily reference it in code, and add public method to ```CheckButton``` for changing the button textual content. Note that ```setText()``` and ```getText()``` methods are virtual methods inherited from ```aflon.Element```.
 
 ```TypeScript
 class CheckButton extends Div {
@@ -186,7 +186,7 @@ class CheckButton extends Div {
 }
 ```
 
-We can now instantiate CheckButton by calling its constructor. Let's say that we want to create new custom component called MultyCheck which is consisted of 5 CheckButtons:
+We can now instantiate ```CheckButton``` by calling its constructor. Let's say that we want to create new custom component called ```MultyCheck``` which is consisted of 5 ```CheckButton```s:
 
 ```TypeScript
 class MultyCheck extends Div {
@@ -204,7 +204,7 @@ class MultyCheck extends Div {
 }
 ```
 
-Let's say that MultyCheck is our application. Aflon has class App which is used for starting the application:
+Let's say that ```MultyCheck``` is our application. Aflon has class ```App``` which is used for starting the application:
 
 ```TypeScript
 aflon.App.run(new MultyCheck());
@@ -273,7 +273,7 @@ class CheckButton extends Div {
 
 ```checked``` event does not contain any particular additional data, only default event argument which native eventing system generated. This argument also has ```target.aflonElement``` property which contains a reference to ```CheckButton``` which raised the event. Note that we also unsubscribed ```onInnerButtonClick``` from ```click``` event. We also changed how we declared ```onInnerButtonClick``` in order to be able to unsubscribe it (view JavaScript context binding rules for method declarations).
 
-However, once we added ```checked``` event to ```CheckButton``` (it became a part of its interface actually), how we can enable strong typing in situations when we are working with CheckButton's instance or even subclass. There is no elegant way to do that because JavaScript (TypeScript) does not consider event to be a first-class object (like .NET languages for example). Therefore, in order to make events a part of an interface, for each event we are adding a string variable to the interface which is called ```event<actualEventName>``` and which contains event name. ```aflon.Element``` for example contains about 30 most popular events applicable to generic ```HTMLElement```; all its descendants contain them as well. However, **aflon.Element can handle any arbitrary event**; event name does not need to be a member of a component in order component to work with it. Furthermore, ```aflon.Input```, which is a subclass of ```aflon.Element``` inherits all ```aflon.Element``` events but adds two more, input-specific events: ```change``` and ```input```. To illustrate this, consider following code snippet:
+However, once we added ```checked``` event to ```CheckButton``` (it became a part of its interface actually), how we can enable strong typing in situations when we are working with ```CheckButton```'s instance or even subclass. There is no elegant way to do that because JavaScript (TypeScript) does not consider event to be a first-class object (as opposed to .NET languages for example). Therefore, in order to make events a part of an interface, for each event we are adding a string variable to the interface which is called ```event<actualEventName>``` and which contains event name. ```aflon.Element``` for example contains about 30 most popular events applicable to generic ```HTMLElement```; all its descendants contain them as well. However, **aflon.Element can handle any arbitrary event**; event name does not need to be a member of a component in order component to work with it. Furthermore, ```aflon.Input```, which is a subclass of ```aflon.Element``` inherits all ```aflon.Element``` events but adds two more, input-specific events: ```change``` and ```input```. To illustrate this, consider following code snippet:
 
 ```TypeScript
 interface ICheckable extends IEventable {
@@ -320,7 +320,7 @@ CSS.createRule("html, body", {
 
 Furthermore, as a component is the fundamental building block of Aflon applications, Aflon presumes that every component type should be coupled with unique style (which can later be redefined). In order to enable it in TypeScript, following object-oriented approach, every Aflon component has static field ```style``` which contains style information for that particular component.
 
-Static ```style``` field (of type AflonCss) is essentially a string dictionary of CSSProperties (eg. ```Record<string, CSSProperties>```). If component class has field ```this.something``` which contains a reference to its child, then the key ```something``` in style record configures CSS of that child. Key ```_``` (underscore) configures CSS of the component itself. For example:
+Static ```style``` field (of type ```AflonCss```) is essentially a string dictionary of ```CSSProperties``` (eg. ```Record<string, CSSProperties>```). If component class has field ```this.something``` which contains a reference to its child, then the key ```something``` in style record configures CSS of that child. Key ```_``` (underscore) configures CSS of the component itself. For example:
 
 ```TypeScript
 class SomeComponent extends aflon.Div {
@@ -429,7 +429,7 @@ Note that ```innerButtonClass``` and ```checkButtonClass``` are not names of CSS
 
 In any case, we can notice that we have already given name to our button - ```this.innerButton``` - and to our root CheckButton div - as ```class CheckButton```. Therefore exposing name of default CSS class for any element introduce redundancy and noise.
 
-In order to simplify styling of complex components, we can use static ```style``` field of type AflonCss which represents default style of the component. This style can be overriden before any instance of component is created. Therefore, instead of creating a class and then adding class name to component, we only specify ```style``` field while rest is done in background. Following code is equivalent to previous snippets:
+In order to simplify styling of complex components, we can use static ```style``` field of type ```AflonCss``` which represents default style of the component. This style can be overriden before any instance of component is created. Therefore, instead of creating a class and then adding class name to component, we only specify ```style``` field while rest is done in background. Following code is equivalent to previous snippets:
 
 ```TypeScript
 class CheckButton extends Div {
@@ -466,7 +466,7 @@ CheckButton.style = {
 
 ### Defining and Running Animations
 
-There are several ways to define and run animations in Aflon. The simplest way is to use ```aflon.animate``` or ```aflon.animateAsync``` functions. Both functions are essentially the same except ```aflon.animateAsync``` returns promise which is resolved when animation finishes. It takes two arguments: ```element```, which is an ```aflon.Element``` upon which animation will be executed, and ```definition``` which is a ```aflon.PrimitiveAnimationDefinition``` which specifies how animation will look like. When animate is called, animation is started immediately. For example, if we want to make element fade out on click, we can use following code:
+There are several ways to define and run animations in Aflon. The simplest way is to use ```aflon.animate``` or ```aflon.animateAsync``` functions. Both functions are essentially the same except ```aflon.animateAsync``` returns promise which is resolved when animation finishes. It takes two arguments: ```element```, which is an ```aflon.Element``` upon which animation will be executed, and ```definition``` which is a ```aflon.PrimitiveAnimationDefinition``` which specifies how animation will look like. When ```animate``` is called, animation is started immediately. For example, if we want to make element fade out on click, we can use following code:
 
 ```TypeScript
 import { Div, animate } from "aflon";
@@ -556,7 +556,7 @@ class AnimElement extends Div {
 }
 
 AnimElement.animations = {
-    {
+    anim: {
         ease: "circOut",
         target: "elem",
         animations: [
@@ -727,7 +727,7 @@ Picture above is a screenshot of Aflon Studio and shows its main UI componenets:
 
 1. Header panel is used to choose what componenet is to be selected for preview and configuration.
 
-2. Preview panel is where Aflon componenets are shown. These componenets are fully interactive; they react to mouse and other input events.
+2. Preview panel is where Aflon components are shown. These components are fully interactive; they react to mouse and other input events.
 
 3. Style panel is used to configure component's static ```style``` property. All changes are reflected in Preview panel in real-time. Note, however, that Style panel does not change your code! You still need to copy your style object (by clicking the copy button on the top of Style panel), paste it in code and recompile. Style panel is organized in accordance to structure of AflonCss object. First it is devided to component selectors: selector ```root``` means that css confguration bellow is applied to the componenet container itself. Apart from it, for each field in componenet which has reference to some ```aflon.Element``` separate selector section is created. Within each componenet selector section, there is a list of pseudo-selectors. These pseudo-selectors are equivalent ot CSS pseudoselectors, except ```normal``` which deisgnates default CSS style of a component. Each pseudoselector section contins list of key-value pairs of CSS properties.
 
@@ -779,7 +779,7 @@ AflonStudio.run();
 
 ## Structure of Repository & Build Instructions
 
-This repository contains three inter-dependent npm projects: aflon, aflon-studio and aflon-bootstrap. All projects are located in ./projects directory. 
+This repository contains three interdependent npm projects: aflon, aflon-studio and aflon-bootstrap. All projects are located in ./projects directory. 
 
 This repository uses [rush](https://rushjs.io/) as a multiproject manager for npm projects. Rush manages dependecies of projects in unified way, track changes and builds projects in coordinated way. Before installing rush, you need [NodeJS](https://nodejs.org/en/) installed. Install rush by running following command in your terminal:
 ```
