@@ -631,3 +631,27 @@ import AflonStudio from "aflon-studio";
 
 AflonStudio.run();
 ```
+
+## Structure of Repository & Build Instructions
+
+This repository contains three inter-dependent npm projects: aflon, aflon-studio and aflon-bootstrap. All projects are located in ./projects directory. 
+
+This repository uses [rush](https://rushjs.io/) as a multiproject manager for npm projects. Rush manages dependecies of projects in unified way, track changes and builds projects in coordinated way. Before installing rush, you need [NodeJS](https://nodejs.org/en/) installed. Install rush by running following command in your terminal:
+```
+npm install -g @microsoft/rush
+```
+
+To install dependencies navigate to aflonstack root and run:
+```
+rush update
+```
+
+To build all projects, run:
+```
+rush build
+```
+
+To clear all temporary files run:
+```
+rush purge
+```

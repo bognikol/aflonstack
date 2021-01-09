@@ -32,58 +32,7 @@ export function isAflonElement(object: any): boolean {
 }
 
 export class ElementEvents {
-    // Resource events
-    public eventError        = "error";
-    public eventAbort        = "abort";
-    public eventLoad         = "load";
-    public eventBeforeUnload = "beforeunload";
-    public eventUnload       = "unload";
 
-    // Focus events
-    public eventFocus    = "focus";
-    public eventBlur     = "blur";
-    public eventFocusIn  = "focusin";
-    public eventFocusOut = "focusout";
-
-    // View events
-    public eventFullScreenChange = "fullscreenchange";
-    public eventFullScreenError  = "fullscreenerror";
-    public eventResize           = "resize";
-    public eventScroll           = "scroll";
-
-    // Clipboard events
-    public eventCut   = "cut";
-    public eventCopy  = "copy";
-    public eventPaste = "paste";
-
-    // Keyboard events
-    public eventKeyDown  = "keydown";
-    public eventKeyPress = "keypress";
-    public eventKeyUp    = "keyup";
-
-    // Mouse events
-    public eventAuxClick    = "auxclick";
-    public eventClick       = "click";
-    public eventContextMenu = "contextmenu";
-    public eventDblClick    = "dblclick";	
-    public eventMouseDown   = "mousedown";
-    public eventMouseEnter  = "mouseenter";	
-    public eventMouseLeave  = "mouseleave";
-    public eventMouseMove   = "mousemove";
-    public eventMouseOver   = "mouseover";
-    public eventMouseOut    = "mouseout";
-    public eventMouseUp	    = "mouseup";
-    public eventSelect      = "select";
-    public eventWheel       = "wheel";
-
-    // Drag & Drop events
-    public eventDrag      = "drag";
-    public eventDragEnd   = "dragend";
-    public eventDragEnter = "dragenter";
-    public eventDragStart = "dragstart";
-    public eventDragLeave = "dragleave";
-    public eventDragOver  = "dragover";
-    public eventDrop      = "drop";
 }
 
 /**
@@ -120,12 +69,67 @@ export interface IEventable {
  * coupled with undelaying wrapped HTMLElement. In further text, term 'associated HTMLElement'
  * referes to this HTMLElement.
  */
-export abstract class Element extends ElementEvents implements IEventable {
+export abstract class Element implements IEventable {
 
     public static style: AflonCss = {};
     public static animations: AflonAnimationDefinition;
 
     private static _aflonElementTag: string = "u44qfkX2EK";
+
+    //#region EVENT VARIABLES
+    // Resource events
+    public eventError        = "error";
+    public eventAbort        = "abort";
+    public eventLoad         = "load";
+    public eventBeforeUnload = "beforeunload";
+    public eventUnload       = "unload";
+
+    // Focus events
+    public eventFocus    = "focus";
+    public eventBlur     = "blur";
+    public eventFocusIn  = "focusin";
+    public eventFocusOut = "focusout";
+
+    // View events
+    public eventFullScreenChange = "fullscreenchange";
+    public eventFullScreenError  = "fullscreenerror";
+    public eventResize           = "resize";
+    public eventScroll           = "scroll";
+
+    // Clipboard events
+    public eventCut   = "cut";
+    public eventCopy  = "copy";
+    public eventPaste = "paste";
+
+    // Keyboard events
+    public eventKeyDown  = "keydown";
+    public eventKeyPress = "keypress";
+    public eventKeyUp    = "keyup";
+
+    // Mouse events
+    public eventAuxClick    = "auxclick";
+    public eventClick       = "click";
+    public eventContextMenu = "contextmenu";
+    public eventDblClick    = "dblclick";
+    public eventMouseDown   = "mousedown";
+    public eventMouseEnter  = "mouseenter";
+    public eventMouseLeave  = "mouseleave";
+    public eventMouseMove   = "mousemove";
+    public eventMouseOver   = "mouseover";
+    public eventMouseOut    = "mouseout";
+    public eventMouseUp	    = "mouseup";
+    public eventSelect      = "select";
+    public eventWheel       = "wheel";
+
+    // Drag & Drop events
+    public eventDrag      = "drag";
+    public eventDragEnd   = "dragend";
+    public eventDragEnter = "dragenter";
+    public eventDragStart = "dragstart";
+    public eventDragLeave = "dragleave";
+    public eventDragOver  = "dragover";
+    public eventDrop      = "drop";
+    //#endregion
 
     private _root: AflonHtmlElement;
     private _style: AflonCss = {};
@@ -133,8 +137,6 @@ export abstract class Element extends ElementEvents implements IEventable {
     private _animations: Record<string, Animation> = {};
 
     constructor() {
-        super();
-
         this._root = this._createElement();
         this._root.aflonElement = this;
         this._root.styler = popmotion.styler(this._root);

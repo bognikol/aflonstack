@@ -33,7 +33,7 @@ export default class DemoApp extends aflon.Div
 
         let newScaleString = `scale(${this.currentScale}, ${this.currentScale})`;
 
-        await aflon.animateAsync(this.logInControl, {
+        aflon.animate(this.logInControl, {
             track: "transform", to: newScaleString, from: currentScaleString, ease: "circOut"
         });
     }
