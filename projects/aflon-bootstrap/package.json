@@ -8,7 +8,7 @@
     "build": "webpack --config webpack.config.js"
   },
   "devDependencies": {
-    "aflon-studio": "1.0.15",
+    "aflon-studio": "1.0.18",
     "local-web-server": "^4.2.1",
     "ts-loader": "~8.0.11",
     "typescript": "~4.0.5",
@@ -16,6 +16,6 @@
     "webpack-cli": "~4.2.0"
   },
   "dependencies": {
-    "aflon": "^1.2.0"
+    "aflon": "^2.0.0"
   }
 }

@@ -1,11 +1,11 @@
 dependencies:
-  '@microsoft/api-documenter': 7.12.0
   '@microsoft/api-extractor': 7.12.1
   '@rush-temp/aflon': 'file:projects/aflon.tgz'
   '@rush-temp/aflon-bootstrap': 'file:projects/aflon-bootstrap.tgz'
   '@rush-temp/aflon-studio': 'file:projects/aflon-studio.tgz'
   '@typescript-eslint/eslint-plugin': 4.7.0_e0872ac31e5aafe6623f77947c0152d6
   '@typescript-eslint/parser': 4.7.0_eslint@7.13.0+typescript@4.0.5
+  aflon-studio: 1.0.17
   eslint: 7.13.0
   eslint-plugin-tsdoc: 0.2.10
   local-web-server: 4.2.1
@@ -522,6 +522,20 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-XNP0PqF1XD19ZlLKvB7cMmnZswW4C/03pRHgirB30uSJTaS3A3V1/P4sS3HPvFmjoriPCJQs+JDSbm4bL1TxGQ==
+  /aflon-studio/1.0.17:
+    dependencies:
+      aflon: 2.0.0
+    dev: false
+    resolution:
+      integrity: sha512-ax4rBRHkIO8U/6pfnVOcf2HCl0dJpg1kP3uP4esr7IRynwYenWvn5ZkcNpprMm5R6SqnlSsTVycU9wal/jsGnQ==
+  /aflon/2.0.0:
+    dependencies:
+      popmotion: 8.7.6
+      stylefire: 7.0.3
+      typestyle: 2.1.0
+    dev: false
+    resolution:
+      integrity: sha512-QkWbzbIvEIzvKpG4eedHvMM7Jc3IsLVs77LplE9xpj0ZY8R+0MR96oTMRGLGhP8h4S589Nal+SftHs6qkNofOg==
   /agent-base/6.0.1:
     dependencies:
       debug: 4.2.0
@@ -3736,6 +3750,7 @@ packages:
       integrity: sha512-DUOKC/IhbkdLKKiV89gw9DUauTV8U/8yJl1sjf6MtDmzevLKOF2duNJ495S3MFVjqZarr+qNGCPbkg4mu4PpLw==
   'file:projects/aflon-bootstrap.tgz':
     dependencies:
+      aflon-studio: 1.0.17
       local-web-server: 4.2.1
       ts-loader: 8.0.11_typescript@4.0.5+webpack@5.4.0
       typescript: 4.0.5
@@ -3744,7 +3759,7 @@ packages:
     dev: false
     name: '@rush-temp/aflon-bootstrap'
     resolution:
-      integrity: sha512-3yuMFkwpGgPN0l9+6DHV7fATkKu5foHPkH6cMjDIjBe+jbGa9NRAlz4tTkFl4LBc9h/pVo3859l4mJqSH413NA==
+      integrity: sha512-gCmvPAa2X8jvy/IKvytNSkVXAjl1BeDP+nd7Q2lUu9XUqEqqmkUsqy/s00Nu1Ggp5VbyWLKEioHNlIc1y2soww==
       tarball: 'file:projects/aflon-bootstrap.tgz'
     version: 0.0.0
   'file:projects/aflon-studio.tgz':
@@ -3754,7 +3769,7 @@ packages:
     dev: false
     name: '@rush-temp/aflon-studio'
     resolution:
-      integrity: sha512-Cs/cn1woyE+KCuywlVYYekee4lRJPzYQ5HlQphA2IXED5tLDLUlj5V3LTo5XkihIeUqsgCFa3t2KAJ30le6XHA==
+      integrity: sha512-OXIBdC1WeJBOrEsoznahql9NL+efDMNh0Ht2f9CMjRl+SpcCDPsHFKMik4J0vJZDwHO9tq500UscLitOT0xyMQ==
       tarball: 'file:projects/aflon-studio.tgz'
     version: 0.0.0
   'file:projects/aflon.tgz':
@@ -3776,18 +3791,18 @@ packages:
     dev: false
     name: '@rush-temp/aflon'
     resolution:
-      integrity: sha512-oUqZeogSJIijeWJ9UBN2zd1vFprbrSLVEQ9losyERl1qiKZN5ugn/977ganVNs6kkLjFNiNadnyY2TElVraPeQ==
+      integrity: sha512-zG7UgrFE0qi/6AJ8RL7/mvh8I7RdueKf6hfO0FqpWctMMkqQU5/TXDeNEGymQJGxGWMRxLugcfxlfzrG52ne8A==
       tarball: 'file:projects/aflon.tgz'
     version: 0.0.0
 registry: ''
 specifiers:
-  '@microsoft/api-documenter': ~7.12.0
   '@microsoft/api-extractor': ~7.12.1
   '@rush-temp/aflon': 'file:./projects/aflon.tgz'
   '@rush-temp/aflon-bootstrap': 'file:./projects/aflon-bootstrap.tgz'
   '@rush-temp/aflon-studio': 'file:./projects/aflon-studio.tgz'
   '@typescript-eslint/eslint-plugin': ~4.7.0
   '@typescript-eslint/parser': ~4.7.0
+  aflon-studio: 1.0.17
   eslint: ~7.13.0
   eslint-plugin-tsdoc: ~0.2.10
   local-web-server: ^4.2.1
