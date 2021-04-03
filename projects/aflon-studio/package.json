@@ -1,6 +1,6 @@
 {
   "name": "aflon-studio",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "",
   "main": "dist/index.js",
   "files": [
@@ -13,7 +13,7 @@
   "author": "Bogdan Nikolic <bogdan_nikolic@hotmail.com>",
   "license": "ISC",
   "dependencies": {
-    "aflon": "^2.0.0"
+    "aflon": "^2.0.1"
   },
   "devDependencies": {
     "webpack": "~5.4.0",

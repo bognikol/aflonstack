@@ -1,6 +1,6 @@
 {
   "name": "aflon-bootstrap",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bootstrap app for aflon web UI framework.",
   "scripts": {
     "start": "ws -d ./dist --spa index.html -p 9000",
@@ -16,6 +16,6 @@
     "webpack-cli": "~4.2.0"
   },
   "dependencies": {
-    "aflon": "^2.0.0"
+    "aflon": "^2.0.1"
   }
 }
