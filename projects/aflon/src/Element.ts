@@ -31,8 +31,14 @@ export function isAflonElement(object: any): boolean {
     return String(aflonElementTag) == "u44qfkX2EK";
 }
 
-export class ElementEvents {
-
+/**
+ * Extracts aflon.Element that rasied event from Event object, if any.
+ * If missing returns null.
+ * @param e - Event object
+ */
+export function getAflonTarget(e: Event): Element {
+    if (!e.target.hasOwnProperty("aflonTarget")) return null;
+    return <Element>(<AflonHtmlElement>(e.target)).aflonElement;
 }
 
 /**
@@ -203,9 +209,10 @@ export abstract class Element implements IEventable {
      * @param elem - aflon.Element to be inserted.
      */
     insertAfter(elem: Element): this {
-        this._root.insertBefore(elem._root, this._root.nextElementSibling);
         let parent = this.parent();
-        if (parent) parent._applyAflonStyleToChildren();
+        if (parent == null) return;
+        parent._root.insertBefore(elem._root, this._root.nextElementSibling);
+        parent._applyAflonStyleToChildren();
         return this;
     }
 
@@ -214,9 +221,10 @@ export abstract class Element implements IEventable {
      * @param elem - aflon.Element to be inserted.
      */
     insertBefore(elem: Element): this {
-        this._root.insertBefore(elem._root, this._root);
         let parent = this.parent();
-        if (parent) parent._applyAflonStyleToChildren();
+        if (parent == null) return;
+        parent._root.insertBefore(elem._root, this._root);
+        parent._applyAflonStyleToChildren();
         return this;
     }
 
@@ -534,7 +542,7 @@ export abstract class Element implements IEventable {
 }
 
 /**
- * Represents <div> element.
+ * Represents div element.
  */
 export class Div extends Element {
     protected _createElement(): AflonHtmlElement {
@@ -542,66 +550,104 @@ export class Div extends Element {
     }
 }
 
-/** Represents <span> element. */
+/** Represents span element. */
 export class Span extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("span");
     }
 }
 
-/** Represents <h1> element. */
+/** Represents h1 element. */
 export class H1 extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("h1");
     }
 }
 
-/** Represents <h2> element. */
+/** Represents h2 element. */
 export class H2 extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("h2");
     }
 }
 
-/** Represents <h3> element. */
+/** Represents h3 element. */
 export class H3 extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("h3");
     }
 }
 
-/** Represents <h4> element. */
+/** Represents h4 element. */
 export class H4 extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("h4");
     }
 }
 
-/** Represents <h5> element. */
+/** Represents h5 element. */
 export class H5 extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("h5");
     }
 }
 
-/** Represents <h6> element. */
+/** Represents h6 element. */
 export class H6 extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("h6");
     }
 }
 
-/** Represents <p> element. */
+/** Represents p element. */
 export class P extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("p");
     }
 }
 
-/** Represents <img> element. */
+/** Represents br element. */
+export class Br extends Element {
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("br");
+    }
+}
+
+/** Represents a element. */
+export class A extends Element {
+    /** Sets href (target url) attribute of of associated a element. */
+    setHref(url: string): this {
+        this.addAttr("href", url);
+        return this;
+    }
+
+    /** Gets href (target url) attribute of of associated a element. */
+    getHref(): string {
+        return this.getAttr("href");
+    }
+
+    /** Sets whether link should be open in new window. */
+    setOpenInNewWindow(openInNewWindow: boolean): this {
+        if (openInNewWindow) this.addAttr("target", "_blank");
+        else this.removeAttr("target");
+
+        return this;
+    }
+
+    /** Gets whether link should be open in new window. */
+    getOpenInNewWindow(): boolean {
+        return this.getAttr("target") == "_blank";
+    }
+
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("a");
+    }
+}
+
+/** Represents img element. */
 export class Image extends Element {
     /**
-     * Sets 'src' attribute to associated <img> element.
+     * Sets 'src' attribute to associated img element.
      * @param source - Path to image source.
      */
     setSource(source: string): this {
@@ -610,7 +656,7 @@ export class Image extends Element {
     }
 
     /**
-     * Returns 'src' attribute of associated <img> element if present, or null otherwise.
+     * Returns 'src' attribute of associated img element if present, or null otherwise.
      */
     getSource(): string | null {
         return this.getAttr("src");
