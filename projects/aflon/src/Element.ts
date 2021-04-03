@@ -37,7 +37,7 @@ export function isAflonElement(object: any): boolean {
  * @param e - Event object
  */
 export function getAflonTarget(e: Event): Element {
-    if (!e.target.hasOwnProperty("aflonTarget")) return null;
+    if (!e.target.hasOwnProperty("aflonElement")) return null;
     return <Element>(<AflonHtmlElement>(e.target)).aflonElement;
 }
 
