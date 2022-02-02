@@ -32,7 +32,7 @@ export function isAflonElement(object: any): boolean {
 }
 
 /**
- * Extracts aflon.Element that rasied event from Event object, if any.
+ * Extracts aflon.Element that raised event from Event object, if any.
  * If missing returns null.
  * @param e - Event object
  */
@@ -42,25 +42,37 @@ export function getAflonTarget(e: Event): Element {
 }
 
 /**
+ * Extracts aflon.Element that raised event from Event object, if it is present
+ * and if it is of type T. Otherwise returns null.
+ * @param e - Event object
+ */
+export function typeAflonTarget<T extends Element = Element>(e: Event, elementType: new() => T): T {
+    if (!e.target.hasOwnProperty("aflonElement")) return null;
+    let element = (<AflonHtmlElement>(e.target)).aflonElement;
+    if (element instanceof elementType) return element;
+    return null;
+}
+
+/**
  * Represents an entity which can raise events.
  */
 export interface IEventable {
     /**
      * Subscribes EventListener to be called when event with eventName name is raised.
      * @param eventName - string identifier of event type.
-     * @param handler - EventListner to be called when event is raised.
+     * @param handler - EventListener to be called when event is raised.
      */
     on(eventName: string, handler: EventListener): this;
     /**
-     * Unubscribes EventListener to be called when event with eventName name is raised.
+     * Unsubscribes EventListener to be called when event with eventName name is raised.
      * @param eventName - string identifier of event.
      * @param handler - EventListener to be unsubscribed. EventListener needs to be
-     * a function with identity and propper binding, eg. not an unnamed function.
+     * a function with identity and proper binding, eg. not an unnamed function.
      */
     off(eventName: string, handler: EventListener): this;
     /**
      * Raises an event.
-     * @param eventName - string identitfier of event type.
+     * @param eventName - string identifier of event type.
      * @param args - Additional parameters of custom event.
      * @param bubbles - Specifies if event should bubble up.
      */
@@ -68,12 +80,12 @@ export interface IEventable {
 }
 
 /**
- * Represnts UI component.
+ * Represents UI component.
  *
  * @remarks
- * aflon.Element is an abstract class whcih represent a UI component. It is tightly
- * coupled with undelaying wrapped HTMLElement. In further text, term 'associated HTMLElement'
- * referes to this HTMLElement.
+ * aflon.Element is an abstract class which represent a UI component. It is tightly
+ * coupled with underlying wrapped HTMLElement. In further text, term 'associated HTMLElement'
+ * refers to this HTMLElement.
  */
 export abstract class Element implements IEventable {
 
@@ -141,6 +153,8 @@ export abstract class Element implements IEventable {
     private _style: AflonCss = {};
     private _activeClasses: Record<string, string> = {};
     private _animations: Record<string, Animation> = {};
+    private _inDom: boolean = false;
+    private _inlineStyleDisplayToRestore: string = null;
 
     constructor() {
         this._root = this._createElement();
@@ -153,7 +167,7 @@ export abstract class Element implements IEventable {
     }
 
     /**
-     * Returns HTMLElemnt associated with this aflon.Element.
+     * Returns HTMLElement associated with this aflon.Element.
      */
     getHtmlElement(): HTMLElement {
         return this._root;
@@ -181,6 +195,7 @@ export abstract class Element implements IEventable {
     append(children: Array<Element>): this {
         children.forEach(child => this._root.appendChild(child._root));
         this._applyAflonStyleToChildren();
+        children.forEach(child => child._reportDomChange(this._inDom));
         return this;
     }
 
@@ -191,6 +206,7 @@ export abstract class Element implements IEventable {
     prepend(children: Array<Element>): this {
         children.reverse().forEach(child => this._root.prepend(child._root));
         this._applyAflonStyleToChildren();
+        children.forEach(child => child._reportDomChange(this._inDom));
         return this;
     }
 
@@ -201,6 +217,7 @@ export abstract class Element implements IEventable {
     removeChild(child: Element): this {
         this._root.removeChild(child._root);
         this._removeAflonStyleFromChild(child);
+        child._reportDomChange(false);
         return this;
     }
 
@@ -213,6 +230,7 @@ export abstract class Element implements IEventable {
         if (parent == null) return;
         parent._root.insertBefore(elem._root, this._root.nextElementSibling);
         parent._applyAflonStyleToChildren();
+        elem._reportDomChange(parent._inDom);
         return this;
     }
 
@@ -225,6 +243,7 @@ export abstract class Element implements IEventable {
         if (parent == null) return;
         parent._root.insertBefore(elem._root, this._root);
         parent._applyAflonStyleToChildren();
+        elem._reportDomChange(parent._inDom);
         return this;
     }
 
@@ -241,9 +260,13 @@ export abstract class Element implements IEventable {
     }
 
     /**
-     * Returns children of this aflon.Element.
+     * Returns children of this aflon.Element. Only children created
+     * by aflon will be returned. If a child is added using native
+     * DOM manipulation, it will be skipped.
      */
     children(): Element[] {
+        if (this._root.children.length == 0) return [];
+
         let children: Array<Element> = [];
         this._root.childNodes.forEach(child => {
             const aflonElement = (child as AflonHtmlElement).aflonElement;
@@ -262,6 +285,7 @@ export abstract class Element implements IEventable {
      * empty string.
      */
     empty(): this {
+        this.children().forEach(child => child._reportDomChange(false));
         this._root.innerHTML = "";
         return this;
     }
@@ -279,7 +303,7 @@ export abstract class Element implements IEventable {
      *
      * @remarks
      * Default implementation sets property textContent of associated HTMLElement.
-     * Some Input componenets have this function overriden.
+     * Some Input components have this function overridden.
      */
     setText(text: string): this {
         this._root.textContent = text;
@@ -291,7 +315,7 @@ export abstract class Element implements IEventable {
      *
      * @remarks
      * Default implementation returns property textContent of associated HTMLElement.
-     * Some Input componenets have this function overriden.
+     * Some Input components have this function overridden.
      */
     getText(): string {
         if (this._root.textContent == null)
@@ -303,7 +327,7 @@ export abstract class Element implements IEventable {
     /**
      * Adds attribute to associated HTMLElement.
      * @param attributeName - Name of attribute to be added.
-     * @param value - Value of attribute. Defualt value is empty string.
+     * @param value - Value of attribute. Default value is empty string.
      */
     addAttr(attributeName: string, value: string = ""): this {
         this._root.setAttribute(attributeName, value);
@@ -423,7 +447,7 @@ export abstract class Element implements IEventable {
     }
 
     /**
-     * Sets values from CSSProperties object to inlance style of associated HTMLElement.
+     * Sets values from CSSProperties object to inline style of associated HTMLElement.
      * @param css - CSSProperties object to be applied to inline style.
      */
     setInlineCss(css: CSSProperties): this {
@@ -431,6 +455,45 @@ export abstract class Element implements IEventable {
             this._root.style[key as any] = (css as any)[key];
         }
         return this;
+    }
+
+    /**
+     * Hides or unhides aflon.Element by manipulating display property of inline CSS style.
+     *
+     * @param hidden - Specifies whether aflon.Element should be hidden.
+     *
+     * @remarks
+     * When hidden is true, value of display property of inline CSS style is cached
+     * and then set to 'none'. When hidden is false, value of display property of inline
+     * CSS style is restored to original value.
+     */
+    setHidden(hidden: boolean): this {
+        if (hidden) {
+            let inlineDisplay = this.getInlineCss()["display"];
+
+            if (inlineDisplay == "none") return this;
+
+            this._inlineStyleDisplayToRestore = inlineDisplay;
+            this.setInlineCss({ display: "none" });
+        } else {
+            if (this._inlineStyleDisplayToRestore == null) return this;
+
+            if (this._inlineStyleDisplayToRestore == "")
+                this.getInlineCss().removeProperty("display");
+            else
+                this.setInlineCss({ display: this._inlineStyleDisplayToRestore });
+
+            this._inlineStyleDisplayToRestore = null;
+        }
+
+        return this;
+    }
+
+    /**
+     * Gets whether aflon.Element is hidden using setHidden method.
+     */
+    getHidden(): boolean {
+        return this._inlineStyleDisplayToRestore != null;
     }
 
     /**
@@ -467,12 +530,48 @@ export abstract class Element implements IEventable {
      * This function use native mechanism for raising events upon HTMLElements.
      * EventListener receives single argument which the same object generated
      * by native eventing system for event. Additional data of custom event can
-     * be accessed thorugh this object by examining property detail of EventListener's
+     * be accessed through this object by examining property detail of EventListener's
      * argument.
      */
     raise(eventName: string, args: Record<string, unknown> = {}, bubbles: boolean = false): this {
         this.getHtmlElement().dispatchEvent(new CustomEvent(eventName, { bubbles: bubbles, detail: args }));
         return this;
+    }
+
+    /**
+     * Called just after aflon.Element is inserted in DOM of active document.
+     *
+     * @remarks
+     * This method is called only if insertion of element is initiated via
+     * Element.prepend, Element.append, Element.insertAfter or iElement.insertBefore
+     * methods as well as when aflon.App.run is called.
+     */
+    protected _onEnteringDom(): void {
+        return;
+    }
+
+    /**
+     * Called just before aflon.Element is removed from DOM of active document.
+     *
+     * @remarks
+     * This method is called only if removal of element is initiated via
+     * Element.removeChild or Element.empty.
+     */
+    protected _onLeavingDom(): void {
+        return;
+    }
+
+    private _reportDomChange(inDom: boolean): void {
+        if (this._inDom == inDom) return;
+
+        this._inDom = inDom;
+
+        if (this._inDom)
+            this._onEnteringDom();
+        else
+            this._onLeavingDom();
+
+        this.children().forEach(child => child._reportDomChange(this._inDom));
     }
 
     private _setAflonAnimations(): void {

@@ -12,19 +12,22 @@ export class App {
      *
      * @remarks
      * If rootId is not provided, root will be appended to existing body element.
-     * If rootIt is provided and existant, root will be appended to it.
-     * If rootId is provided but non-existant, an Error will be thrown.
+     * If rootIt is provided and existent, root will be appended to it.
+     * If rootId is provided but non-existent, an Error will be thrown.
      */
     static run(root: Element, rootId: string = null): void {
         if (rootId == null) {
             document.body.appendChild(root.getHtmlElement());
+            <any>root["_reportDomChange"](true);
             return;
         }
 
         let element = document.getElementById(rootId);
-        if (element)
+        if (element) {
             element.appendChild(root.getHtmlElement());
-        else
+            <any>root["_reportDomChange"](true);
+        } else {
             throw new Error(`Error running Aflon application. Cannot find root element with id ${rootId}.`);
+        }
     }
 }
