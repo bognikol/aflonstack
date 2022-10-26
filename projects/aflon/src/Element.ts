@@ -46,7 +46,7 @@ export function getAflonTarget(e: Event): Element {
  * and if it is of type T. Otherwise returns null.
  * @param e - Event object
  */
-export function typeAflonTarget<T extends Element = Element>(e: Event, elementType: new() => T): T {
+export function typeAflonTarget<T extends Element = Element>(e: Event, elementType: new(...args: Array<any>) => T): T {
     if (!e.target.hasOwnProperty("aflonElement")) return null;
     let element = (<AflonHtmlElement>(e.target)).aflonElement;
     if (element instanceof elementType) return element;
@@ -460,15 +460,18 @@ export abstract class Element implements IEventable {
     /**
      * Hides or unhides aflon.Element by manipulating display property of inline CSS style.
      *
-     * @param hidden - Specifies whether aflon.Element should be hidden.
+     * @param visibility - Specifies whether aflon.Element should be visible.
      *
      * @remarks
-     * When hidden is true, value of display property of inline CSS style is cached
-     * and then set to 'none'. When hidden is false, value of display property of inline
+     * When visible is false, value of display property of inline CSS style is cached
+     * and then set to 'none'. When visible is false, value of display property of inline
      * CSS style is restored to original value.
+     *
+     * Setting visibility to true does not guarantee that element will be visible,
+     * only that it will undo effects of setting visibility to false.
      */
-    setHidden(hidden: boolean): this {
-        if (hidden) {
+    setVisibility(visible: boolean): this {
+        if (!visible) {
             let inlineDisplay = this.getInlineCss()["display"];
 
             if (inlineDisplay == "none") return this;
@@ -492,8 +495,8 @@ export abstract class Element implements IEventable {
     /**
      * Gets whether aflon.Element is hidden using setHidden method.
      */
-    getHidden(): boolean {
-        return this._inlineStyleDisplayToRestore != null;
+    getVisibility(): boolean {
+        return this._inlineStyleDisplayToRestore == null;
     }
 
     /**
@@ -583,7 +586,22 @@ export abstract class Element implements IEventable {
     }
 
     private _setAflonStyle(): void {
-        this._style = (this.constructor as any)["style"];
+        if (!(this.constructor as any)["actualStyle"]) {
+            let style = (this.constructor as any)["style"];
+            let baseActualStyle = null;
+
+            try {
+                baseActualStyle = Object.getPrototypeOf(Object.getPrototypeOf(this)).constructor.actualStyle;
+            } catch {
+                // pass
+            }
+
+            if (baseActualStyle) {
+                (this.constructor as any)["actualStyle"] = CSS.extendAflonCss(baseActualStyle, style);
+            }
+        }
+
+        this._style = (this.constructor as any)["actualStyle"];
     }
 
     private _applyAflonStyleToOwner(): void {

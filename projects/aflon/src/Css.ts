@@ -50,6 +50,18 @@ export class CSS {
     static createRule(selector: string, css: NestedCSSProperties): void {
         cssRule(selector, css);
     }
+
+    static extendAflonCss(baseStyle: AflonCss, extensionStyle: AflonCss): AflonCss {
+        let allKeys = new Set([ ...Object.keys(baseStyle), ...Object.keys(extensionStyle) ]);
+
+        let newAflonCss: AflonCss = {};
+
+        for (let key of allKeys) {
+            newAflonCss[key] = { ...baseStyle[key], ...extensionStyle[key] };
+        }
+
+        return newAflonCss;
+    }
 }
 
 /**

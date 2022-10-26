@@ -12,6 +12,57 @@ export interface UserRecord
     address: string;
 }
 
+class Hello extends aflon.Div
+{
+    private _text: aflon.Div;
+    private _additionalText: aflon.Div;
+
+    constructor() 
+    {
+        super();
+
+        this.append([
+            (this._text = new aflon.Div())
+                .setText("Hello Aflon"),
+            (this._additionalText = new aflon.Div())
+                .setText("Additional div")
+        ]);
+    }
+}
+
+Hello.style = {
+    _: {
+        background: "red"
+    },
+    _text: {
+        color: "blue",
+        fontSize: "20px",
+        fontFamily: "serif"
+    },
+    _additionalText: {
+        color: "yellow",
+        fontSize: "12px",
+        fontFamily: "sans-serif",
+        "&:hover": {
+            fontWeight: "bold",
+            color: "green"
+        }
+    }
+};
+
+class HelloExt extends Hello { }
+
+HelloExt.style = {
+    _: {
+        background: "gray"
+    }   
+}
+
+let bla = new HelloExt();
+
+console.log(Object.getPrototypeOf(HelloExt).style);
+console.log(Object.getPrototypeOf(Object.getPrototypeOf(new HelloExt())).constructor.style);
+
 export default class RegisterControl extends aflon.Div
 {
     private title: aflon.Div;
@@ -40,7 +91,8 @@ export default class RegisterControl extends aflon.Div
                 .setPlaceholder("Address"),
             (this.submitButton = new defaults.Button())
                 .setText("Submit")
-                .on(this.submitButton.eventClick, () => this.raise(this.eventSubmit))
+                .on(this.submitButton.eventClick, () => this.raise(this.eventSubmit)),
+            new Hello()
         ]);
     }
 
