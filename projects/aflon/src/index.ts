@@ -7,6 +7,10 @@ export {
 } from "./Element";
 
 export {
+    Container
+} from "./Container";
+
+export {
 
     IInput,          AbstractInput,          Input,
     ITextBox,        AbstractTextBox,        TextBox, PassBox, TextArea,

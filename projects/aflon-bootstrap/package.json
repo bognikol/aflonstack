@@ -16,6 +16,6 @@
     "webpack-cli": "~4.2.0"
   },
   "dependencies": {
-    "aflon": "^2.0.7"
+    "aflon": "^2.0.8"
   }
 }

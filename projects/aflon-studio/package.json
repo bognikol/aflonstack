@@ -13,7 +13,7 @@
   "author": "Bogdan Nikolic <bogdan_nikolic@hotmail.com>",
   "license": "ISC",
   "dependencies": {
-    "aflon": "^2.0.7"
+    "aflon": "^2.0.8"
   },
   "devDependencies": {
     "webpack": "~5.4.0",

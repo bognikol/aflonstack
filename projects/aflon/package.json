@@ -1,6 +1,6 @@
 {
   "name": "aflon",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Old-school, strongly typed, object-oriented web front-end framework.",
   "files": [
     "dist"
