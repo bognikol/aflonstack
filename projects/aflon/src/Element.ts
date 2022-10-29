@@ -166,6 +166,33 @@ export abstract class Element implements IEventable {
         this._applyAflonStyleToOwner();
     }
 
+    private static _setActualStylesToInheritanceChainOfElement(element: Element): void {
+        let currentPrototype = Object.getPrototypeOf(element);
+
+        let inheritanceChain: Array<any> = [];
+
+        while (currentPrototype != Element.prototype) {
+            inheritanceChain.push(currentPrototype);
+            currentPrototype = Object.getPrototypeOf(currentPrototype);
+        }
+
+        inheritanceChain = inheritanceChain.reverse();
+
+        let lastActualStyle = null;
+
+        for (let prototype of inheritanceChain) {
+            if (prototype.constructor.hasOwnProperty("actualStyle")) {
+                continue;
+            } else if (lastActualStyle) {
+                prototype.constructor["actualStyle"] = CSS.extendAflonCss(lastActualStyle, prototype.constructor["style"]);
+            } else {
+                prototype.constructor["actualStyle"] = prototype.constructor["style"];
+            }
+
+            lastActualStyle = prototype.constructor["actualStyle"];
+        }
+    }
+
     /**
      * Returns HTMLElement associated with this aflon.Element.
      */
@@ -586,22 +613,12 @@ export abstract class Element implements IEventable {
     }
 
     private _setAflonStyle(): void {
-        if (!(this.constructor as any)["actualStyle"]) {
-            let style = (this.constructor as any)["style"];
-            let baseActualStyle = null;
+        let cstr: any = this.constructor;
 
-            try {
-                baseActualStyle = Object.getPrototypeOf(Object.getPrototypeOf(this)).constructor.actualStyle;
-            } catch {
-                // pass
-            }
+        if (!cstr.hasOwnProperty("actualStyle"))
+            Element._setActualStylesToInheritanceChainOfElement(this);
 
-            if (baseActualStyle) {
-                (this.constructor as any)["actualStyle"] = CSS.extendAflonCss(baseActualStyle, style);
-            }
-        }
-
-        this._style = (this.constructor as any)["actualStyle"];
+        this._style = cstr["actualStyle"];
     }
 
     private _applyAflonStyleToOwner(): void {
@@ -613,6 +630,7 @@ export abstract class Element implements IEventable {
 
     private _applyAflonStyleToChildren(): void {
         for (let key in this._style) {
+            if (key == "_") continue;
             if (!this.hasOwnProperty(key)) continue;
 
             let element = (this as any)[key] as Element;
