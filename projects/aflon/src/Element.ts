@@ -166,33 +166,6 @@ export abstract class Element implements IEventable {
         this._applyAflonStyleToOwner();
     }
 
-    private static _setActualStylesToInheritanceChainOfElement(element: Element): void {
-        let currentPrototype = Object.getPrototypeOf(element);
-
-        let inheritanceChain: Array<any> = [];
-
-        while (currentPrototype != Element.prototype) {
-            inheritanceChain.push(currentPrototype);
-            currentPrototype = Object.getPrototypeOf(currentPrototype);
-        }
-
-        inheritanceChain = inheritanceChain.reverse();
-
-        let lastActualStyle = null;
-
-        for (let prototype of inheritanceChain) {
-            if (prototype.constructor.hasOwnProperty("actualStyle")) {
-                continue;
-            } else if (lastActualStyle) {
-                prototype.constructor["actualStyle"] = CSS.extendAflonCss(lastActualStyle, prototype.constructor["style"]);
-            } else {
-                prototype.constructor["actualStyle"] = prototype.constructor["style"];
-            }
-
-            lastActualStyle = prototype.constructor["actualStyle"];
-        }
-    }
-
     /**
      * Returns HTMLElement associated with this aflon.Element.
      */
@@ -613,12 +586,7 @@ export abstract class Element implements IEventable {
     }
 
     private _setAflonStyle(): void {
-        let cstr: any = this.constructor;
-
-        if (!cstr.hasOwnProperty("actualStyle"))
-            Element._setActualStylesToInheritanceChainOfElement(this);
-
-        this._style = cstr["actualStyle"];
+        this._style = (this.constructor as any)["style"];
     }
 
     private _applyAflonStyleToOwner(): void {
