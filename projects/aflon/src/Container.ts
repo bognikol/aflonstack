@@ -49,7 +49,7 @@ export class Container<TChild extends Element> extends Div {
      * @param child - TChild to be removed.
      */
     public removeChild(child: TChild): this {
-        this.removeChild(child);
+        super.removeChild(child);
         return this;
     }
 }
