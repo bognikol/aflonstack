@@ -5,13 +5,12 @@
   "scripts": {
     "start": "ws -d ./dist --spa index.html -p 9000",
     "start-studio": "ws -d ./dist --spa aflonStudio.html -p 9090",
-    "build": "webpack --config webpack.config.js"
+    "build": "tsc -p tsconfig.json && webpack --config webpack.config.js"
   },
   "devDependencies": {
     "aflon-studio": "1.0.23",
     "local-web-server": "^4.2.1",
-    "ts-loader": "~9.6.2",
-    "typescript": "~5.9.2",
+    "typescript": "~7.0.2",
     "webpack": "~5.95.0",
     "webpack-cli": "~5.1.4"
   },

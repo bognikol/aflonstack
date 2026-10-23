@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^npm view eslint version && node -p \"require\\('/Users/bogdannikolic/Repositories/aflonstack/projects/aflon/node_modules/eslint/package\\.json'\\)\\.version\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

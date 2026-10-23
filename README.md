@@ -790,6 +790,9 @@ It uses [Rush](https://rushjs.io/) to manage the monorepo and coordinate install
 - Node.js 24.x
 - Rush 5.x
 - pnpm 12.x
+- TypeScript 7.0.2
+
+TypeScript projects run `tsc` for type-checking and emission, then webpack bundles the generated JavaScript. In `aflon`, `@typescript/native` supplies TypeScript 7's `tsc`; the `typescript` alias supplies the TypeScript 6 API required by ESLint. API Extractor processes the generated declarations using its bundled compiler.
 
 Do not install Rush globally. This repo is intentionally pinned to a repo-local Rush bootstrap, so all repo-wide commands are run from the repository root and stay consistent with the version declared in [rush.json](rush.json):
 
