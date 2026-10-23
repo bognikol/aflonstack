@@ -783,28 +783,35 @@ AflonStudio.run();
 
 ## Structure of Repository & Build Instructions
 
-This repository contains three interdependent npm projects: aflon, aflon-studio and aflon-bootstrap. All projects are located in ./projects directory.
+This repository contains three interdependent packages under the [projects](projects) directory: `aflon`, `aflon-studio`, and `aflon-bootstrap`.
 
-This repository uses [rush](https://rushjs.io/) as a multi-project manager for npm projects. Rush manages dependencies of projects in the unified way, track changes and builds projects in coordinated way. Before installing rush, you need [NodeJS](https://nodejs.org/en/) installed. Install rush by running following command in your terminal:
+It uses [Rush](https://rushjs.io/) to manage the monorepo and coordinate installs and builds. The repo is configured for the current stable toolchain:
 
-```bash
-npm install -g @microsoft/rush
-```
+- Node.js 24.x
+- Rush 5.x
+- pnpm 12.x
 
-To install dependencies navigate to aflonstack root and run:
-
-```bash
-rush update
-```
-
-To build all projects, run:
+Do not install Rush globally. This repo is intentionally pinned to a repo-local Rush bootstrap, so all repo-wide commands are run from the repository root and stay consistent with the version declared in [rush.json](rush.json):
 
 ```bash
-rush build
+npm install
+npm run build
 ```
 
-To clear all temporary files run:
+These are monorepo-level commands, not package-level commands. They operate on the whole repository and orchestrate all projects under [projects](projects):
+
+- `npm install` runs the root install script, which in turn calls `rush update --full` for the repo.
+- `npm run build` runs `rush build` for the entire repo in dependency order.
+- `npm run clean` or `npm run rush -- purge` removes Rush temp state and generated build output.
+
+The explicit Rush form is:
 
 ```bash
-rush purge
+npm run rush -- update --full
+npm run rush -- build
+npm run rush -- purge
 ```
+
+The `npm run rush` part invokes the local wrapper script in [package.json](package.json), and the `--` passes the remaining arguments to Rush itself. In other words, `npm run rush -- build` is equivalent to running the repo-local Rush command `rush build` without depending on any globally installed Rush binary.
+
+The root `package.json` exposes these commands for convenience, while keeping the build isolated from any globally installed Rush version.

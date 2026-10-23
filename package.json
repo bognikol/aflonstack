@@ -1,0 +1,17 @@
+{
+  "name": "aflonstack",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Aflon monorepo managed by Rush and pnpm.",
+  "packageManager": "pnpm@12.15.0",
+  "scripts": {
+    "rush": "node common/scripts/install-run-rush.js",
+    "install": "npm run rush -- update --full",
+    "update": "npm run rush -- update --full",
+    "build": "npm run rush -- build",
+    "clean": "npm run rush -- purge"
+  },
+  "engines": {
+    "node": ">=24.0.0 <=24.99.99"
+  }
+}
