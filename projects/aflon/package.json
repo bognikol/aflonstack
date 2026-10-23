@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && webpack --config webpack.config.js && api-extractor run",
     "lint": "eslint ./src",
+    "test": "node --test test/playback.cjs",
     "prepublish": "npm run-script build"
   },
   "author": "Bogdan Nikolic <bogdan_nikolic@hotmail.com>",
@@ -16,9 +17,8 @@
   "devDependencies": {
     "@typescript/native": "npm:typescript@~7.0.2",
     "typescript": "npm:@typescript/typescript6@~6.0.2",
-    "webpack": "~5.95.0",
-    "webpack-cli": "~5.1.4",
-    "webpack-dev": "^1.1.1",
+    "webpack": "~5.112.2",
+    "webpack-cli": "~7.2.3",
     "eslint": "~10.13.0",
     "@eslint/js": "~10.0.1",
     "@typescript-eslint/parser": "~8.72.0",
@@ -27,7 +27,7 @@
     "@microsoft/api-extractor": "~7.59.4"
   },
   "dependencies": {
-    "popmotion": "^8.7.6",
+    "popmotion": "8.7.6",
     "stylefire": "^7.0.3",
     "typestyle": "^2.4.0"
   }

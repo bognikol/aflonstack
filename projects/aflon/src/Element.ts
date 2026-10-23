@@ -1,5 +1,4 @@
-import * as stylefire from "stylefire";
-import * as popmotion from "popmotion";
+import styler, * as stylefire from "stylefire";
 
 import { AflonCss, CSS, CSSProperties } from "./Css";
 import { AflonAnimationDefinition, Animation } from "./Animation";
@@ -159,7 +158,7 @@ export abstract class Element implements IEventable {
     constructor() {
         this._root = this._createElement();
         this._root.aflonElement = this;
-        this._root.styler = popmotion.styler(this._root);
+        this._root.styler = styler(this._root);
 
         this._setAflonAnimations();
         this._setAflonStyle();
