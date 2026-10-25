@@ -1,4 +1,6 @@
 export * from "./Css";
+export { Events, EventDescriptor } from "./Events";
+export { SimpleEvent, SimpleEventListener, ISimpleEventable, SimpleEventBroker } from "./SimpleEventBroker";
 
 export {
     AflonHtmlElement, Element, IEventable,

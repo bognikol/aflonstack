@@ -1,11 +1,12 @@
 import { Element, AflonHtmlElement } from "./Element";
+import { EventDescriptor, Events } from "./Events";
 
 /**
  * IInput represent general-purpose input.
  */
 export interface IInput {
-    eventChange: string;
-    eventInput: string;
+    readonly eventChange: EventDescriptor<Event>;
+    readonly eventInput: EventDescriptor<Event>;
 
     setText(text: string): this;
     getText(): string;
@@ -35,7 +36,7 @@ export interface IButton extends IInput { }
  * turned on of off.
  */
 export interface IToggableButton extends IButton {
-    eventChecked: string;
+    readonly eventChecked: EventDescriptor<CustomEvent<void>>;
 
     setChecked(checked: boolean): this;
     getChecked(): boolean;
@@ -64,7 +65,7 @@ export interface ISelectOption {
  * (similar to radio button).
  */
 export interface ISelectBox extends IInput {
-    eventSelected: string;
+    readonly eventSelected: EventDescriptor<CustomEvent<void>>;
 
     insertOption(option: ISelectOption): this;
     removeOption(optionValue: string): this;
@@ -99,8 +100,8 @@ export interface IValidateable {
  * AbstractInput is an abstract aflon.Element that inherits IInput.
  */
 export abstract class AbstractInput extends Element implements IInput {
-    eventChange: string = "change";
-    eventInput: string  = "input";
+    readonly eventChange = Events.native("change");
+    readonly eventInput  = Events.native("input");
 
     abstract setText(text: string): this;
     abstract getText(): string;
@@ -129,7 +130,7 @@ export abstract class AbstractButton extends AbstractInput implements IButton { 
  * AbstractToggableButton is an abstract aflon.Element that inherits IToggableButton.
  */
 export abstract class AbstractToggableButton extends AbstractInput implements IToggableButton {
-    eventChecked: string = "checked";
+    readonly eventChecked = Events.custom("checked");
 
     abstract setChecked(checked: boolean): this;
     abstract getChecked(): boolean;
@@ -148,7 +149,7 @@ export abstract class AbstractRadioButton extends AbstractToggableButton impleme
  * AbstractSelectBox is an abstract aflon.Element that inherits ISelectBox.
  */
 export abstract class AbstractSelectBox extends AbstractInput implements ISelectBox {
-    eventSelected: string = "selected";
+    readonly eventSelected = Events.custom("selected");
 
     abstract insertOption(option: ISelectOption): this;
     abstract removeOption(optionValue: string): this;
@@ -175,8 +176,8 @@ export abstract class AbstractSelectBox extends AbstractInput implements ISelect
  * need to override Input's functions in order to make use of them.
  */
 export class Input extends Element implements IInput, AbstractInput {
-    eventChange: string = "change";
-    eventInput: string  = "input";
+    readonly eventChange = Events.native("change");
+    readonly eventInput  = Events.native("input");
 
     /**
      * Sets input's text.
@@ -333,7 +334,7 @@ export class CheckBox extends Input implements IToggableButton, AbstractToggable
      * @remarks
      * This event is added in order to deferentiate ToggleButton from generic Input.
      */
-    public eventChecked = "checked";
+    public readonly eventChecked = Events.custom("checked");
 
     /** Sets whether the CheckBox is checked or not. */
     setChecked(checked: boolean): this {
@@ -394,7 +395,7 @@ export class RadioButton extends CheckBox implements IRadioButton, AbstractRadio
 
 /** Represents select HTML element. */
 export class SelectBox extends Input implements ISelectBox, AbstractSelectBox {
-    public eventSelected = "selected";
+    public readonly eventSelected = Events.custom("selected");
 
     /**
      * Creates SelectBox.

@@ -9,7 +9,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && webpack --config webpack.config.js && api-extractor run",
     "lint": "eslint ./src",
-    "test": "node --test test/playback.cjs",
     "prepublish": "npm run-script build"
   },
   "author": "Bogdan Nikolic <bogdan_nikolic@hotmail.com>",

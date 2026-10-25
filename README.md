@@ -213,11 +213,11 @@ aflon.App.run(new MultiCheck());
 
 ### Eventing Infrastructure
 
-Aflon tries to offer eventing mechanism which: (1) seamlessly extend and fit into native HTML eventing infrastructure, and (2) use TypeScript's type system to offer strongly typed event handling experience for the developer.
+Aflon offers an eventing mechanism which: (1) extends and fits into native HTML eventing infrastructure, and (2) uses TypeScript's type system to offer strongly typed event handling.
 
-It the nutshell, Aflon eventing mechanism is implemented through 3 methods of ```aflon.Element```: ```on```, ```off``` and ```raise```. These three methods are part of ```IEventable``` interface which ```aflon.Element``` implements.
+In a nutshell, Aflon eventing is implemented through three methods of ```aflon.Element```: ```on```, ```off``` and ```raise```. These methods are part of the ```IEventable``` interface which ```aflon.Element``` implements. Like other setters, they return ```this``` and support chaining.
 
-```on``` and ```off``` methods simply add or remove event handlers for specific string-identified event which are raised by underlying ```HTMLElement```. Event handlers receive native event arguments from the eventing system (whose type depends on the type of event handled) with a single difference - property ```target``` (which contains reference to background native ```HTMLElement``` which raised the event) contains property ```aflonElement``` - a reference to an Aflon counterpart of native element. For example:
+```on``` and ```off``` add or remove event handlers on the underlying ```HTMLElement```. Events are identified by readonly fields named ```event<actualEventName>```, such as ```eventClick``` or ```eventKeyDown```. These fields contain typed event descriptors, so TypeScript infers the handler's argument type without annotations or casts. For example:
 
 ```TypeScript
 class CheckButton extends Div {
@@ -231,61 +231,39 @@ class CheckButton extends Div {
             .append([
                 (this.innerButton = new Button())
                     ...
-                    .on("click", e => this.onInnerButtonClick(e))
+                    .on(this.innerButton.eventClick, e => this.onInnerButtonClick(e))
             ]);
     }
     
-    onInnerButtonClick(e): void {
-        alert(e.target.aflonElement.getText());
+    onInnerButtonClick(e: MouseEvent): void {
+        const target = aflon.getAflonTarget(e);
+        if (target) alert(target.getText());
         this.setInlineCss({ background: "green" });
     }
     ...
 }
 ```
 
-Note though that ```aflonElement``` is not present if the origin of the event is ```HTMLElement``` which is not created through Aflon, e.g. does not have corresponding ```aflon.Element```.
+Handlers receive native event objects, not wrappers. ```aflon.getAflonTarget(e)``` returns the Aflon element associated with the event's exact DOM target, or ```null``` if that target was not created through Aflon. It does not search the target's ancestors.
 
-```raise``` method, on the other hand, use native HTML eventing infrastructure to raise a string-identified event with custom event data; events raised this way can be handled even using ```addEventListener``` and ```removeEventListener``` methods. ```raise``` by default raises a non-bubbling event, but this can be configured. For example, if we want to raise custom event ```checked``` at the moment when our ```CheckButton``` component becomes green, we can modify ```onInnerButtonClick``` in the following way:
+Native descriptors are created using ```Events.native```. Aflon's elements already expose common native events; ```Input``` additionally exposes ```eventChange``` and ```eventInput```. Developers can declare other native identifiers in the same way:
+
+```TypeScript
+readonly eventKeyDown = Events.native("keydown");
+```
+
+For custom events, use ```Events.custom``` and specify the payload type. ```raise``` dispatches a native ```CustomEvent```, and handlers receive its payload through ```detail```. For example, we can expose the checked state of ```CheckButton``` as follows:
 
 ```TypeScript
 class CheckButton extends Div {
     private innerButton: Button;
+    public readonly eventChecked = Events.custom<boolean>("checked");
     
     constructor() {
         super();
         
         this
             .setInlineCss({ background: "red" })
-            .append([
-                (this.innerButton = new Button())
-                    ...
-                    .on("click", this.onInnerButtonClick)
-            ]);
-    }
-    
-    onInnerButtonClick = (e) => {
-        this.setInlineCss({ background: "green" });
-        (e.target.aflonElement as AflonElement).off("click", this.onInnerButtonClick);
-        this.raise("checked");
-    }
-    ...
-}
-```
-
-```checked``` event does not contain any particular additional data, only default event argument which native eventing system generated. This argument also has ```target.aflonElement``` property which contains a reference to ```CheckButton``` which raised the event. Note that we also unsubscribed ```onInnerButtonClick``` from ```click``` event. We also changed how we declared ```onInnerButtonClick``` in order to be able to unsubscribe it (view JavaScript context binding rules for method declarations).
-
-However, once we added ```checked``` event to ```CheckButton``` (it became a part of its interface actually), how we can enable strong typing in situations when we are working with ```CheckButton```'s instance or even subclass. There is no elegant way to do that because JavaScript (TypeScript) does not consider event to be a first-class object (as opposed to .NET languages for example). Therefore, in order to make events a part of an interface, for each event we are adding a string variable to the interface which is called ```event<actualEventName>``` and which contains event name. ```aflon.Element``` for example contains about 30 most popular events applicable to generic ```HTMLElement```; all its descendants contain them as well. However, **aflon.Element can handle any arbitrary event**; event name does not need to be a member of a component in order component to work with it. Furthermore, ```aflon.Input```, which is a subclass of ```aflon.Element``` inherits all ```aflon.Element``` events but adds two more, input-specific events: ```change``` and ```input```. To illustrate this, consider following code snippet:
-
-```TypeScript
-interface ICheckable extends IEventable {
-    public eventChecked;
-}
-
-class CheckButton extends Div implements ICheckable {
-    public eventChecked = "checked";
-    ...
-    constructor() {
-        this
             .append([
                 (this.innerButton = new Button())
                     ...
@@ -294,15 +272,78 @@ class CheckButton extends Div implements ICheckable {
     }
     
     onInnerButtonClick = () => {
-        ...
+        this.setInlineCss({ background: "green" });
         this.innerButton.off(this.innerButton.eventClick, this.onInnerButtonClick);
-        this.raise(this.eventChecked);
+        this.raise(this.eventChecked, true);
     }
     ...
 }
+```
 
-let someCheckable: ICheckable = new CheckButton();
-someCheckable.on(someCheckable.eventChecked, () => alert("Some checkable is checked!"));
+The payload is checked both when raising the event and when handling it:
+
+```TypeScript
+const checkButton = new CheckButton();
+checkButton.on(checkButton.eventChecked, e => {
+    const checked: boolean = e.detail;
+    alert(checked ? "Checked!" : "Unchecked!");
+});
+```
+
+Passing a string instead of a boolean to ```raise``` is a type error, as is omitting the required payload. If an event has no payload, declare it as ```Events.custom("checked")``` and raise it with ```this.raise(this.eventChecked)```. To expose an event through an interface, declare its descriptor type:
+
+```TypeScript
+interface ICheckable extends IEventable {
+    readonly eventChecked: EventDescriptor<CustomEvent<boolean>>;
+}
+```
+
+Descriptors carry DOM event names, not unique identities. Two descriptors named ```checked``` use the same event channel, so their payload contracts must agree. Custom event names should not conflict with native events. ```raise``` creates non-bubbling events by default; pass ```true``` as its third argument to enable bubbling:
+
+```TypeScript
+this.raise(this.eventChecked, true, true);
+```
+
+```on``` accepts native listener options. For a handler that should run only once, use:
+
+```TypeScript
+button.on(button.eventClick, () => submit(), { once: true });
+```
+
+To remove several subscriptions together, pass an ```AbortSignal``` to each subscription, then abort its controller:
+
+```TypeScript
+const subscriptions = new AbortController();
+
+button.on(button.eventClick, () => submit(), { signal: subscriptions.signal });
+textBox.on(textBox.eventInput, () => updatePreview(), { signal: subscriptions.signal });
+
+subscriptions.abort();
+```
+
+Other native options, such as ```passive``` and ```capture```, are forwarded unchanged. When using ```off```, retain the same handler reference and specify the same capture value used when subscribing. The arrow-function field in ```CheckButton``` preserves both the handler's identity and its component context.
+
+**Aflon can still handle arbitrary string-identified events.** Existing calls such as ```on("click", handler)``` and ```raise("checked")``` remain supported, but string-based handlers do not infer descriptor-specific event types. Built-in event fields are now readonly descriptors rather than strings; use their ```name``` property when passing them directly to DOM APIs, for example ```element.addEventListener(button.eventClick.name, handler)```.
+
+For objects which do not represent DOM elements, Aflon provides ```SimpleEventBroker```. It uses the same custom event descriptors and listener options, but dispatches events through a standalone ```EventTarget```. A broker can be owned by any object, for example a preferences model:
+
+```TypeScript
+class Preferences {
+    public readonly eventColorThemeChanged = Events.custom<string>("colorThemeChanged");
+    public readonly events = new SimpleEventBroker(this);
+
+    setColorTheme(theme: string): void {
+        this.events.raise(this.eventColorThemeChanged, theme);
+    }
+}
+
+const preferences = new Preferences();
+preferences.events.on(preferences.eventColorThemeChanged, e => {
+    console.log(e.sender === preferences);
+    console.log(e.detail);
+}, { once: true });
+
+preferences.setColorTheme("dark");
 ```
 
 ### Styling Components
@@ -575,7 +616,7 @@ AnimElement.animations = {
 Following code snippet represents complete example developed in this tutorial:
 
 ```TypeScript
-import { Div, Button, App, Input, CheckBox, AbstractToggableButton } from "aflon";
+import { Div, Button, App, Input, CheckBox, AbstractToggableButton, Events } from "aflon";
     
 class CheckButton extends Input implements AbstractToggableButton {
 
@@ -583,7 +624,7 @@ class CheckButton extends Input implements AbstractToggableButton {
 
     private innerButton: Button;
 
-    public eventChecked = "checked";
+    public readonly eventChecked = Events.custom("checked");
 
     constructor() {
         super();

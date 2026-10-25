@@ -2,6 +2,7 @@ import styler, * as stylefire from "stylefire";
 
 import { AflonCss, CSS, CSSProperties } from "./Css";
 import { AflonAnimationDefinition, Animation } from "./Animation";
+import { EventDescriptor, Events } from "./Events";
 
 /**
  * Extension of HTMLElement which contains reference to aflon.Element owner.
@@ -61,21 +62,24 @@ export interface IEventable {
      * @param eventName - string identifier of event type.
      * @param handler - EventListener to be called when event is raised.
      */
-    on(eventName: string, handler: EventListener): this;
+    on<TEvent extends Event>(eventName: EventDescriptor<TEvent>, handler: (event: TEvent) => void, options?: boolean | AddEventListenerOptions): this;
+    on(eventName: string, handler: EventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * Unsubscribes EventListener to be called when event with eventName name is raised.
      * @param eventName - string identifier of event.
      * @param handler - EventListener to be unsubscribed. EventListener needs to be
      * a function with identity and proper binding, eg. not an unnamed function.
      */
-    off(eventName: string, handler: EventListener): this;
+    off<TEvent extends Event>(eventName: EventDescriptor<TEvent>, handler: (event: TEvent) => void, options?: boolean | EventListenerOptions): this;
+    off(eventName: string, handler: EventListener, options?: boolean | EventListenerOptions): this;
     /**
      * Raises an event.
      * @param eventName - string identifier of event type.
      * @param args - Additional parameters of custom event.
      * @param bubbles - Specifies if event should bubble up.
      */
-    raise(eventName: string, args: Record<string, unknown>, bubbles: boolean): this;
+    raise<TPayload>(eventName: EventDescriptor<CustomEvent<TPayload>>, ...args: [TPayload] extends [void] ? [args?: NoInfer<TPayload>, bubbles?: boolean] : [args: NoInfer<TPayload>, bubbles?: boolean]): this;
+    raise(eventName: string, args?: Record<string, unknown>, bubbles?: boolean): this;
 }
 
 /**
@@ -95,57 +99,57 @@ export abstract class Element implements IEventable {
 
     //#region EVENT VARIABLES
     // Resource events
-    public eventError        = "error";
-    public eventAbort        = "abort";
-    public eventLoad         = "load";
-    public eventBeforeUnload = "beforeunload";
-    public eventUnload       = "unload";
+    public readonly eventError        = Events.native("error");
+    public readonly eventAbort        = Events.native("abort");
+    public readonly eventLoad         = Events.native("load");
+    public readonly eventBeforeUnload = Events.native("beforeunload");
+    public readonly eventUnload       = Events.native("unload");
 
     // Focus events
-    public eventFocus    = "focus";
-    public eventBlur     = "blur";
-    public eventFocusIn  = "focusin";
-    public eventFocusOut = "focusout";
+    public readonly eventFocus    = Events.native("focus");
+    public readonly eventBlur     = Events.native("blur");
+    public readonly eventFocusIn  = Events.native("focusin");
+    public readonly eventFocusOut = Events.native("focusout");
 
     // View events
-    public eventFullScreenChange = "fullscreenchange";
-    public eventFullScreenError  = "fullscreenerror";
-    public eventResize           = "resize";
-    public eventScroll           = "scroll";
+    public readonly eventFullScreenChange = Events.native("fullscreenchange");
+    public readonly eventFullScreenError  = Events.native("fullscreenerror");
+    public readonly eventResize           = Events.native("resize");
+    public readonly eventScroll           = Events.native("scroll");
 
     // Clipboard events
-    public eventCut   = "cut";
-    public eventCopy  = "copy";
-    public eventPaste = "paste";
+    public readonly eventCut   = Events.native("cut");
+    public readonly eventCopy  = Events.native("copy");
+    public readonly eventPaste = Events.native("paste");
 
     // Keyboard events
-    public eventKeyDown  = "keydown";
-    public eventKeyPress = "keypress";
-    public eventKeyUp    = "keyup";
+    public readonly eventKeyDown  = Events.native("keydown");
+    public readonly eventKeyPress = Events.native("keypress");
+    public readonly eventKeyUp    = Events.native("keyup");
 
     // Mouse events
-    public eventAuxClick    = "auxclick";
-    public eventClick       = "click";
-    public eventContextMenu = "contextmenu";
-    public eventDblClick    = "dblclick";
-    public eventMouseDown   = "mousedown";
-    public eventMouseEnter  = "mouseenter";
-    public eventMouseLeave  = "mouseleave";
-    public eventMouseMove   = "mousemove";
-    public eventMouseOver   = "mouseover";
-    public eventMouseOut    = "mouseout";
-    public eventMouseUp	    = "mouseup";
-    public eventSelect      = "select";
-    public eventWheel       = "wheel";
+    public readonly eventAuxClick    = Events.native("auxclick");
+    public readonly eventClick       = Events.native("click");
+    public readonly eventContextMenu = Events.native("contextmenu");
+    public readonly eventDblClick    = Events.native("dblclick");
+    public readonly eventMouseDown   = Events.native("mousedown");
+    public readonly eventMouseEnter  = Events.native("mouseenter");
+    public readonly eventMouseLeave  = Events.native("mouseleave");
+    public readonly eventMouseMove   = Events.native("mousemove");
+    public readonly eventMouseOver   = Events.native("mouseover");
+    public readonly eventMouseOut    = Events.native("mouseout");
+    public readonly eventMouseUp     = Events.native("mouseup");
+    public readonly eventSelect      = Events.native("select");
+    public readonly eventWheel       = Events.native("wheel");
 
     // Drag & Drop events
-    public eventDrag      = "drag";
-    public eventDragEnd   = "dragend";
-    public eventDragEnter = "dragenter";
-    public eventDragStart = "dragstart";
-    public eventDragLeave = "dragleave";
-    public eventDragOver  = "dragover";
-    public eventDrop      = "drop";
+    public readonly eventDrag      = Events.native("drag");
+    public readonly eventDragEnd   = Events.native("dragend");
+    public readonly eventDragEnter = Events.native("dragenter");
+    public readonly eventDragStart = Events.native("dragstart");
+    public readonly eventDragLeave = Events.native("dragleave");
+    public readonly eventDragOver  = Events.native("dragover");
+    public readonly eventDrop      = Events.native("drop");
     //#endregion
 
     private _root: AflonHtmlElement;
@@ -507,8 +511,10 @@ export abstract class Element implements IEventable {
      * EventListener receives single argument which the same object generated by native eventing
      * system for event.
      */
-    on(eventName: string, handler: EventListener): this {
-        this.getHtmlElement().addEventListener(eventName, handler);
+    on<TEvent extends Event>(eventName: EventDescriptor<TEvent>, handler: (event: TEvent) => void, options?: boolean | AddEventListenerOptions): this;
+    on(eventName: string, handler: EventListener, options?: boolean | AddEventListenerOptions): this;
+    on(eventName: string | EventDescriptor<Event>, handler: EventListener, options?: boolean | AddEventListenerOptions): this {
+        this.getHtmlElement().addEventListener(typeof eventName === "string" ? eventName : eventName.name, handler, options);
         return this;
     }
 
@@ -517,8 +523,10 @@ export abstract class Element implements IEventable {
      * @param eventName - String identifier of event type.
      * @param handler - EventListener to be added.
      */
-    off(eventName: string, handler: EventListener): this {
-        this.getHtmlElement().removeEventListener(eventName, handler);
+    off<TEvent extends Event>(eventName: EventDescriptor<TEvent>, handler: (event: TEvent) => void, options?: boolean | EventListenerOptions): this;
+    off(eventName: string, handler: EventListener, options?: boolean | EventListenerOptions): this;
+    off(eventName: string | EventDescriptor<Event>, handler: EventListener, options?: boolean | EventListenerOptions): this {
+        this.getHtmlElement().removeEventListener(typeof eventName === "string" ? eventName : eventName.name, handler, options);
         return this;
     }
 
@@ -535,8 +543,10 @@ export abstract class Element implements IEventable {
      * be accessed through this object by examining property detail of EventListener's
      * argument.
      */
-    raise(eventName: string, args: Record<string, unknown> = {}, bubbles: boolean = false): this {
-        this.getHtmlElement().dispatchEvent(new CustomEvent(eventName, { bubbles: bubbles, detail: args }));
+    raise<TPayload>(eventName: EventDescriptor<CustomEvent<TPayload>>, ...args: [TPayload] extends [void] ? [args?: NoInfer<TPayload>, bubbles?: boolean] : [args: NoInfer<TPayload>, bubbles?: boolean]): this;
+    raise(eventName: string, args?: Record<string, unknown>, bubbles?: boolean): this;
+    raise(eventName: string | EventDescriptor<Event>, args?: unknown, bubbles: boolean = false): this {
+        this.getHtmlElement().dispatchEvent(new CustomEvent(typeof eventName === "string" ? eventName : eventName.name, { bubbles: bubbles, detail: typeof eventName === "string" && args === undefined ? {} : args }));
         return this;
     }
 

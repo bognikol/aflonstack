@@ -21,7 +21,7 @@ export default class RegisterControl extends aflon.Div
     private addressTextBox: LabeledTextBox;
     private submitButton: aflon.AbstractButton;
 
-    public eventSubmit = "userSubmit";
+    public readonly eventSubmit = aflon.Events.custom("userSubmit");
 
     constructor()
     {
