@@ -23,7 +23,8 @@ export default class LabeledTextBox extends aflon.Input implements aflon.Abstrac
     
     onClick(): void
     {
-        this.textBox.focus();
+        if (!this.getDisabled())
+            this.focus();
     }
 
     onTextBoxBlur(): void
@@ -44,12 +45,23 @@ export default class LabeledTextBox extends aflon.Input implements aflon.Abstrac
 
     focus(): void
     {
-        this.getHtmlElement().focus();
+        this.textBox.focus();
     }
 
     blur(): void
     {
-        this.getHtmlElement().blur();
+        this.textBox.blur();
+    }
+
+    setDisabled(disabled: boolean): this
+    {
+        this.textBox.setDisabled(disabled);
+        return this;
+    }
+
+    getDisabled(): boolean
+    {
+        return this.textBox.getDisabled();
     }
 
     setReadOnly(readOnly: boolean): this
