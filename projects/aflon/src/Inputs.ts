@@ -1,6 +1,31 @@
 import { Element, AflonHtmlElement } from "./Element";
 import { EventDescriptor, Events } from "./Events";
 
+/** Represents a native HTML form. */
+export class Form extends Element {
+    public readonly eventSubmit = Events.native("submit");
+    public readonly eventReset = Events.native("reset");
+
+    /** Checks native validation constraints without displaying validation messages. */
+    checkValidity(): boolean {
+        return (this.getHtmlElement() as HTMLFormElement).checkValidity();
+    }
+
+    /** Requests submission using native validation and submit event handling. */
+    requestSubmit(submitter?: Element): void {
+        (this.getHtmlElement() as HTMLFormElement).requestSubmit(submitter?.getHtmlElement());
+    }
+
+    /** Restores the form controls to their native default values. */
+    reset(): void {
+        (this.getHtmlElement() as HTMLFormElement).reset();
+    }
+
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("form");
+    }
+}
+
 /**
  * IInput represent general-purpose input.
  */
@@ -179,6 +204,22 @@ export class Input extends Element implements IInput, AbstractInput {
     readonly eventChange = Events.native("change");
     readonly eventInput  = Events.native("input");
 
+    /** Sets the control name used in native form submission. */
+    setName(name: string): this {
+        return this.addAttr("name", name);
+    }
+
+    /** Sets whether a value is required for native validation. */
+    setRequired(required: boolean): this {
+        if (required) return this.addAttr("required");
+        return this.removeAttr("required");
+    }
+
+    /** Sets the browser autocomplete hint, such as username or current-password. */
+    setAutocomplete(autocomplete: string): this {
+        return this.addAttr("autocomplete", autocomplete);
+    }
+
     /**
      * Sets input's text.
      *
@@ -257,6 +298,16 @@ export class Input extends Element implements IInput, AbstractInput {
  * Represents button element.
  */
 export class Button extends Input implements IButton, AbstractButton {
+    /** Sets the native button action. */
+    setType(type: "button" | "submit" | "reset"): this {
+        return this.addAttr("type", type);
+    }
+
+    /** Returns the effective native button type. */
+    getType(): "button" | "submit" | "reset" {
+        return (this.getHtmlElement() as HTMLButtonElement).type;
+    }
+
     setText(text: string): this {
         this.getHtmlElement().textContent = text;
         return this;
@@ -270,7 +321,9 @@ export class Button extends Input implements IButton, AbstractButton {
     }
 
     protected _createElement(): AflonHtmlElement {
-        return document.createElement("button");
+        const button = document.createElement("button");
+        button.type = "button";
+        return button;
     }
 }
 

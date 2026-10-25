@@ -15,6 +15,7 @@ export {
 
 export {
 
+    Form,
     IInput,          AbstractInput,          Input,
     ITextBox,        AbstractTextBox,        TextBox, PassBox, TextArea,
     IButton,         AbstractButton,         Button,
