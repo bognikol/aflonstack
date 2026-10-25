@@ -1,4 +1,4 @@
-import { Element, AflonHtmlElement } from "./Element";
+import { Element, AflonHtmlElement, Label } from "./Element";
 import { EventDescriptor, Events } from "./Events";
 
 /** Represents a native HTML form. */
@@ -101,11 +101,11 @@ export interface ISelectBox extends IInput {
 }
 
 /**
- * Represents a component which has name.
+ * Represents a component associated with a native label.
  */
 export interface ILabeled {
-    setLabel(label: string): this;
-    getLabel(): string;
+    setLabel(label: Label | null): this;
+    getLabel(): Label | null;
 }
 
 /**

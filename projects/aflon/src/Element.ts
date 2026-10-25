@@ -163,6 +163,7 @@ export abstract class Element implements IEventable {
     private _animations: Record<string, Animation> = {};
     private _inDom: boolean = false;
     private _inlineStyleDisplayToRestore: string = null;
+    private _label: Label | null = null;
 
     constructor() {
         this._root = this._createElement();
@@ -452,6 +453,27 @@ export abstract class Element implements IEventable {
         return this;
     }
 
+    /** Associates a native label without inserting or moving either element. */
+    setLabel(label: Label | null): this {
+        if (this._label && this._label.getAttr("for") === this._root.id)
+            this._label.removeAttr("for");
+
+        this._label = label;
+        if (!label) return this;
+
+        if (!this._root.id) {
+            this._root.id = `aflon-label-target-${crypto.randomUUID()}`;
+        }
+
+        label.addAttr("for", this._root.id);
+        return this;
+    }
+
+    /** Returns the label assigned through setLabel, or null if none. */
+    getLabel(): Label | null {
+        return this._label;
+    }
+
     /**
      * Removes id attribute from associated HTMLElement, if any.
      */
@@ -729,6 +751,13 @@ export class Article extends Element {
 export class Aside extends Element {
     protected _createElement(): AflonHtmlElement {
         return document.createElement("aside");
+    }
+}
+
+/** Represents a native label element. */
+export class Label extends Element {
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("label");
     }
 }
 

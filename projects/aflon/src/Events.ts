@@ -4,8 +4,8 @@ export interface EventDescriptor<TEvent extends Event> {
     readonly eventType?: TEvent;
 }
 
-type NativeEvent = HTMLElementEventMap & WindowEventMap;
-type NativeEventName = keyof NativeEvent;
+export type NativeEvent = HTMLElementEventMap & WindowEventMap;
+export type NativeEventName = keyof NativeEvent;
 
 /** Creates typed identifiers for native and custom DOM events. */
 export class Events {
