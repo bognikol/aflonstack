@@ -193,11 +193,11 @@ packages:
     resolution: {integrity: sha512-jYO/8319fKoNLMlY4ZJPiPu8Ea8occYwRZhxpaNn/kZsK4QG2E7XFlXZMJBsTWDw7I1i0uaqyC4zn1nwEezLzg==}
 
   '@rush-temp/aflon-bootstrap@file:projects/aflon-bootstrap.tgz':
-    resolution: {integrity: sha512-Y+8HVAggb+OLSTH/HWKt460E1exzFF0UCBTQ0fD0RoQoEk7UAy4vT9GcMeaGA/2JDAgihcEej/a4N3lQUP6YJw==, tarball: file:projects/aflon-bootstrap.tgz}
+    resolution: {integrity: sha512-uLh3aiTDUozicg6E+svVJ1ZzlAkuR+7JQHKE5+V/a6HdRTTeMbTrU67kogM2yFn8ylff2Gt6O+la3hbBudgytA==, tarball: file:projects/aflon-bootstrap.tgz}
     version: 0.0.0
 
   '@rush-temp/aflon-studio@file:projects/aflon-studio.tgz':
-    resolution: {integrity: sha512-/lYwgTCiY+AQA5lMtzIrURrrdGJuLxQ/HGRYqU09+3+AAdqcTfT7gUfDhWC0UbHI0eMODVTasj2t/BC+SsGa/A==, tarball: file:projects/aflon-studio.tgz}
+    resolution: {integrity: sha512-6mwmgNch0ieb+VVx9o8/CHPEkHDm7rQtjufSOLBlugKV6iYJ9+s6805/d6tJLoLGkaHGjm92AQVaafFXdNoZ/Q==, tarball: file:projects/aflon-studio.tgz}
     version: 0.0.0
 
   '@rush-temp/aflon@file:projects/aflon.tgz':

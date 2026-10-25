@@ -16,7 +16,7 @@
   "author": "Bogdan Nikolic <bogdan_nikolic@hotmail.com>",
   "license": "ISC",
   "dependencies": {
-    "aflon": "^2.0.10"
+    "aflon": "^3.0.0"
   },
   "devDependencies": {
     "local-web-server": "^5.4.2",
