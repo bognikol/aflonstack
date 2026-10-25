@@ -683,6 +683,55 @@ export class Div extends Element {
     }
 }
 
+/** Represents main element. */
+export class Main extends Element {
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("main");
+    }
+}
+
+/** Represents nav element. */
+export class Nav extends Element {
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("nav");
+    }
+}
+
+/** Represents header element. */
+export class Header extends Element {
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("header");
+    }
+}
+
+/** Represents footer element. */
+export class Footer extends Element {
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("footer");
+    }
+}
+
+/** Represents section element. */
+export class Section extends Element {
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("section");
+    }
+}
+
+/** Represents article element. */
+export class Article extends Element {
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("article");
+    }
+}
+
+/** Represents aside element. */
+export class Aside extends Element {
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("aside");
+    }
+}
+
 /** Represents span element. */
 export class Span extends Element {
     protected _createElement(): AflonHtmlElement {

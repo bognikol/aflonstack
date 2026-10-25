@@ -5,6 +5,7 @@ export { SimpleEvent, SimpleEventListener, ISimpleEventable, SimpleEventBroker }
 export {
     AflonHtmlElement, Element, IEventable, AriaAttribute,
     Div, Span, H1, H2, H3, H4, H5, H6, P, Image, Br, A,
+    Main, Nav, Header, Footer, Section, Article, Aside,
     isAflonElement, getAflonTarget, typeAflonTarget
 } from "./Element";
 
