@@ -2,7 +2,10 @@
   "name": "aflon-studio",
   "version": "1.0.23",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
+  "exports": {
+    ".": "./dist/index.mjs"
+  },
   "files": [
     "dist"
   ],
@@ -16,6 +19,7 @@
     "aflon": "^2.0.10"
   },
   "devDependencies": {
+    "local-web-server": "^5.4.2",
     "webpack": "~5.112.2",
     "webpack-cli": "~7.2.3"
   }

@@ -1,9 +1,11 @@
 module.exports = {
+    mode: "production",
     entry: "./temp/js/index.js",
+    experiments: { outputModule: true },
     output: {
-      filename: "index.js",
-      library: "aflon",
-      libraryTarget: "amd"
+      filename: "index.mjs",
+      library: { type: "module" },
+      clean: true
     },
     resolve: {
       extensions: [".js", ".json"],

@@ -5,7 +5,15 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    }
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json && webpack --config webpack.config.js && api-extractor run",
     "lint": "eslint ./src",
