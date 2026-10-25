@@ -1,8 +1,10 @@
 module.exports = {
+    mode: "production",
     entry: "./src/index.js",
+    experiments: { outputModule: true },
     output: {
-        filename: "index.js",
-        library: "aflon-studio",
-        libraryTarget: "amd"
+        filename: "index.mjs",
+        library: { type: "module" },
+        clean: true
     }
 };

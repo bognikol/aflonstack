@@ -1,11 +1,37 @@
-import { Element, AflonHtmlElement } from "./Element";
+import { Element, AflonHtmlElement, Label } from "./Element";
+import { EventDescriptor, Events } from "./Events";
+
+/** Represents a native HTML form. */
+export class Form extends Element {
+    public readonly eventSubmit = Events.native("submit");
+    public readonly eventReset = Events.native("reset");
+
+    /** Checks native validation constraints without displaying validation messages. */
+    checkValidity(): boolean {
+        return (this.getHtmlElement() as HTMLFormElement).checkValidity();
+    }
+
+    /** Requests submission using native validation and submit event handling. */
+    requestSubmit(submitter?: Element): void {
+        (this.getHtmlElement() as HTMLFormElement).requestSubmit(submitter?.getHtmlElement());
+    }
+
+    /** Restores the form controls to their native default values. */
+    reset(): void {
+        (this.getHtmlElement() as HTMLFormElement).reset();
+    }
+
+    protected _createElement(): AflonHtmlElement {
+        return document.createElement("form");
+    }
+}
 
 /**
  * IInput represent general-purpose input.
  */
 export interface IInput {
-    eventChange: string;
-    eventInput: string;
+    readonly eventChange: EventDescriptor<Event>;
+    readonly eventInput: EventDescriptor<Event>;
 
     setText(text: string): this;
     getText(): string;
@@ -35,7 +61,7 @@ export interface IButton extends IInput { }
  * turned on of off.
  */
 export interface IToggableButton extends IButton {
-    eventChecked: string;
+    readonly eventChecked: EventDescriptor<CustomEvent<void>>;
 
     setChecked(checked: boolean): this;
     getChecked(): boolean;
@@ -64,7 +90,7 @@ export interface ISelectOption {
  * (similar to radio button).
  */
 export interface ISelectBox extends IInput {
-    eventSelected: string;
+    readonly eventSelected: EventDescriptor<CustomEvent<void>>;
 
     insertOption(option: ISelectOption): this;
     removeOption(optionValue: string): this;
@@ -75,11 +101,11 @@ export interface ISelectBox extends IInput {
 }
 
 /**
- * Represents a component which has name.
+ * Represents a component associated with a native label.
  */
 export interface ILabeled {
-    setLabel(label: string): this;
-    getLabel(): string;
+    setLabel(label: Label | null): this;
+    getLabel(): Label | null;
 }
 
 /**
@@ -99,8 +125,8 @@ export interface IValidateable {
  * AbstractInput is an abstract aflon.Element that inherits IInput.
  */
 export abstract class AbstractInput extends Element implements IInput {
-    eventChange: string = "change";
-    eventInput: string  = "input";
+    readonly eventChange = Events.native("change");
+    readonly eventInput  = Events.native("input");
 
     abstract setText(text: string): this;
     abstract getText(): string;
@@ -129,7 +155,7 @@ export abstract class AbstractButton extends AbstractInput implements IButton { 
  * AbstractToggableButton is an abstract aflon.Element that inherits IToggableButton.
  */
 export abstract class AbstractToggableButton extends AbstractInput implements IToggableButton {
-    eventChecked: string = "checked";
+    readonly eventChecked = Events.custom("checked");
 
     abstract setChecked(checked: boolean): this;
     abstract getChecked(): boolean;
@@ -148,7 +174,7 @@ export abstract class AbstractRadioButton extends AbstractToggableButton impleme
  * AbstractSelectBox is an abstract aflon.Element that inherits ISelectBox.
  */
 export abstract class AbstractSelectBox extends AbstractInput implements ISelectBox {
-    eventSelected: string = "selected";
+    readonly eventSelected = Events.custom("selected");
 
     abstract insertOption(option: ISelectOption): this;
     abstract removeOption(optionValue: string): this;
@@ -175,8 +201,24 @@ export abstract class AbstractSelectBox extends AbstractInput implements ISelect
  * need to override Input's functions in order to make use of them.
  */
 export class Input extends Element implements IInput, AbstractInput {
-    eventChange: string = "change";
-    eventInput: string  = "input";
+    readonly eventChange = Events.native("change");
+    readonly eventInput  = Events.native("input");
+
+    /** Sets the control name used in native form submission. */
+    setName(name: string): this {
+        return this.addAttr("name", name);
+    }
+
+    /** Sets whether a value is required for native validation. */
+    setRequired(required: boolean): this {
+        if (required) return this.addAttr("required");
+        return this.removeAttr("required");
+    }
+
+    /** Sets the browser autocomplete hint, such as username or current-password. */
+    setAutocomplete(autocomplete: string): this {
+        return this.addAttr("autocomplete", autocomplete);
+    }
 
     /**
      * Sets input's text.
@@ -256,6 +298,16 @@ export class Input extends Element implements IInput, AbstractInput {
  * Represents button element.
  */
 export class Button extends Input implements IButton, AbstractButton {
+    /** Sets the native button action. */
+    setType(type: "button" | "submit" | "reset"): this {
+        return this.addAttr("type", type);
+    }
+
+    /** Returns the effective native button type. */
+    getType(): "button" | "submit" | "reset" {
+        return (this.getHtmlElement() as HTMLButtonElement).type;
+    }
+
     setText(text: string): this {
         this.getHtmlElement().textContent = text;
         return this;
@@ -269,7 +321,9 @@ export class Button extends Input implements IButton, AbstractButton {
     }
 
     protected _createElement(): AflonHtmlElement {
-        return document.createElement("button");
+        const button = document.createElement("button");
+        button.type = "button";
+        return button;
     }
 }
 
@@ -333,7 +387,7 @@ export class CheckBox extends Input implements IToggableButton, AbstractToggable
      * @remarks
      * This event is added in order to deferentiate ToggleButton from generic Input.
      */
-    public eventChecked = "checked";
+    public readonly eventChecked = Events.custom("checked");
 
     /** Sets whether the CheckBox is checked or not. */
     setChecked(checked: boolean): this {
@@ -394,7 +448,7 @@ export class RadioButton extends CheckBox implements IRadioButton, AbstractRadio
 
 /** Represents select HTML element. */
 export class SelectBox extends Input implements ISelectBox, AbstractSelectBox {
-    public eventSelected = "selected";
+    public readonly eventSelected = Events.custom("selected");
 
     /**
      * Creates SelectBox.

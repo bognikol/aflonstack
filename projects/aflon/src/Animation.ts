@@ -406,7 +406,7 @@ class PrimitiveAnimation {
             loop: this._animationDefinition.loop,
             yoyo: this._animationDefinition.yoyo
         }).start({
-            update: (v: any) => this._styler.set(this._animationDefinition.track, v),
+            update: (value: any) => this._styler.set(this._animationDefinition.track, value),
             complete: () => {
                 if (onComplete) onComplete();
             }
@@ -441,10 +441,10 @@ class PrimitiveAnimation {
             loop: this._animationDefinition.loop,
             yoyo: this._animationDefinition.yoyo
         }).start({
-            update: (v: any) => {
-                if (v >= 1)
+            update: (value: any) => {
+                if (value >= 1)
                     this._styler.set(this._animationDefinition.track, this._animationDefinition.to);
-                else if (v < 1)
+                else if (value < 1)
                     this._styler.set(this._animationDefinition.track, effectiveFrom);
             },
             complete: () => {

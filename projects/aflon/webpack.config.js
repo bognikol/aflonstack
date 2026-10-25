@@ -1,17 +1,13 @@
 module.exports = {
-    entry: "./src/index.ts", 
+    mode: "production",
+    entry: "./temp/js/index.js",
+    experiments: { outputModule: true },
     output: {
-      filename: "index.js",
-      library: "aflon",
-      libraryTarget: "amd"
+      filename: "index.mjs",
+      library: { type: "module" },
+      clean: true
     },
     resolve: {
-      extensions: [".tsx", ".ts", ".js", ".json"],
-    },
-    module: {
-      rules: [
-        // all files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'
-        { test: /\.tsx?$/, use: ["ts-loader"], exclude: /node_modules/ },
-      ],
+      extensions: [".js", ".json"],
     },
   };

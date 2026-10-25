@@ -1,10 +1,17 @@
 import { style, media, cssRaw, cssRule } from "typestyle";
 import * as typestyleTypes from "typestyle/lib/types";
 
-/** JavaScript object representation of CSS. */
-export type CSSProperties = typestyleTypes.CSSProperties | typestyleTypes.NestedCSSSelectors;
+/** Nested selectors and conditional rules accepted in a style definition. */
+export type NestedSelector = `&${string}` | `@media ${string}` | `@supports ${string}` | `@container ${string}`;
 
-export type NestedCSSProperties = typestyleTypes.NestedCSSProperties;
+/** JavaScript object representation of CSS, including recursively typed selectors. */
+export type CSSProperties = typestyleTypes.CSSProperties & {
+    [selector in NestedSelector]?: CSSProperties;
+} & {
+    [property: `--${string}`]: string | number | undefined;
+};
+
+export type NestedCSSProperties = CSSProperties;
 export type MediaQuery = typestyleTypes.MediaQuery;
 
 /** Utility class which groups collection of static functions. */
@@ -29,7 +36,7 @@ export class CSS {
      * @alpha
      */
     static media(mediaQuery: MediaQuery, ...css: NestedCSSProperties[]): NestedCSSProperties {
-        return media(mediaQuery, ...css);
+        return media(mediaQuery, ...css) as NestedCSSProperties;
     }
 
     /**

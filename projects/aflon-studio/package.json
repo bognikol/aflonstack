@@ -2,7 +2,10 @@
   "name": "aflon-studio",
   "version": "1.0.23",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
+  "exports": {
+    ".": "./dist/index.mjs"
+  },
   "files": [
     "dist"
   ],
@@ -13,10 +16,11 @@
   "author": "Bogdan Nikolic <bogdan_nikolic@hotmail.com>",
   "license": "ISC",
   "dependencies": {
-    "aflon": "^2.0.10"
+    "aflon": "^3.0.0"
   },
   "devDependencies": {
-    "webpack": "~5.4.0",
-    "webpack-cli": "~4.2.0"
+    "local-web-server": "^5.4.2",
+    "webpack": "~5.112.2",
+    "webpack-cli": "~7.2.3"
   }
 }
