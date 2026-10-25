@@ -4,6 +4,11 @@ import { AflonCss, CSS, CSSProperties } from "./Css";
 import { AflonAnimationDefinition, Animation } from "./Animation";
 import { EventDescriptor, Events } from "./Events";
 
+/** ARIA attribute names without the aria- prefix. */
+export type AriaAttribute = keyof {
+    [TKey in keyof ARIAMixin as TKey extends `aria${infer TName}` ? Lowercase<TName> : never]: unknown;
+};
+
 /**
  * Extension of HTMLElement which contains reference to aflon.Element owner.
  *
@@ -343,6 +348,19 @@ export abstract class Element implements IEventable {
      */
     getAttr(attributeName: string): string | null {
         return this._root.getAttribute(attributeName);
+    }
+
+    /** Sets an ARIA attribute, or removes it when value is null. */
+    setAria(attributeName: AriaAttribute, value: string | boolean | number | null): this {
+        if (value === null)
+            return this.removeAttr(`aria-${attributeName}`);
+
+        return this.addAttr(`aria-${attributeName}`, String(value));
+    }
+
+    /** Returns an ARIA attribute's string value, or null if absent. */
+    getAria(attributeName: AriaAttribute): string | null {
+        return this.getAttr(`aria-${attributeName}`);
     }
 
     /**

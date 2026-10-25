@@ -3,7 +3,7 @@ export { Events, EventDescriptor } from "./Events";
 export { SimpleEvent, SimpleEventListener, ISimpleEventable, SimpleEventBroker } from "./SimpleEventBroker";
 
 export {
-    AflonHtmlElement, Element, IEventable,
+    AflonHtmlElement, Element, IEventable, AriaAttribute,
     Div, Span, H1, H2, H3, H4, H5, H6, P, Image, Br, A,
     isAflonElement, getAflonTarget, typeAflonTarget
 } from "./Element";
