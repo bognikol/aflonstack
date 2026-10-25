@@ -608,7 +608,10 @@ export abstract class Element implements IEventable {
     private _applyAflonStyleToChildren(): void {
         for (let key in this._style) {
             if (key == "_") continue;
-            if (!this.hasOwnProperty(key)) continue;
+            if (!this.hasOwnProperty(key)) {
+                console.error(`${this.constructor.name}.style: child "${key}" does not exist.`);
+                continue;
+            }
 
             let element = (this as any)[key] as Element;
 
